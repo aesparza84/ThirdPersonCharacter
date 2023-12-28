@@ -6,17 +6,24 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody myBody;
+    [SerializeField] private Rigidbody myBody;
     //private PlayerInputs input; //My custom action map
     private InputManager inputHandler;
 
-    //private Vector3 moveVector;
-    private Vector2 moveVector;
+    private Vector3 moveVector;
+    //private Vector2 moveVector;
+    private Transform direction;
+    private Transform prevDirection;
+
+
     [SerializeField] private float BaseSpeed;
     [SerializeField] private float SprintSpeed;
     [SerializeField] private float CurrentSpeed;
 
-    private CinemachineFreeLook followCam;
+    private float HorizontalInput;
+    private float VerticalInput;
+
+    [SerializeField] private ThirdPersonCamera followCam;
 
     #region Initialization
     private void Awake()
@@ -29,10 +36,18 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        myBody = gameObject.GetComponent<Rigidbody>();
-        moveVector = Vector2.zero;
+        if (myBody == null)
+        {
+            myBody = GetComponent<Rigidbody>();
+        }
 
-        followCam = GameObject.Find("PlayerFollowCam").GetComponent<CinemachineFreeLook>();
+        if (followCam == null)
+        {
+            followCam = GetComponentInChildren<ThirdPersonCamera>();
+        }
+
+
+        moveVector = Vector2.zero;
 
         SprintSpeed = BaseSpeed * 2.3f;
         CurrentSpeed = BaseSpeed;
@@ -60,12 +75,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovementPerformed(object sender, Vector2 e)
     {
-        moveVector = e;
+        //moveVector = e;
+        HorizontalInput = e.x;
+        VerticalInput = e.y;
+        //moveVector = new Vector3(HorizontalInput, 0, VerticalInput);
+        moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);
+        
     }
     #endregion
 
     void Update()
     {
+        direction = followCam.forwaredRotation;
+        if (prevDirection != direction)
+        {
+
+        }        
+        prevDirection = direction;
+
         
     }
 
@@ -75,8 +102,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Movement()
-    {
-        myBody.velocity = moveVector * CurrentSpeed;
+    {        
+        myBody.velocity =  moveVector * CurrentSpeed;
     }
 
     #region Original Input
