@@ -32,7 +32,7 @@ public class InputManager : MonoBehaviour
         input.Player.MovementWASD.canceled += OnMovementCancelled;
 
         input.Player.Sprint.performed += OnSprintPerformed;
-        input.Player.Sprint.performed += OnSprintCancelled;
+        input.Player.Sprint.canceled += OnSprintCancelled;
     }
 
     public void OnSprintCancelled(UnityEngine.InputSystem.InputAction.CallbackContext obj)

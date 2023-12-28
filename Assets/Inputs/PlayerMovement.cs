@@ -13,8 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 moveVector;
     //private Vector2 moveVector;
     private Transform direction;
-    private Transform prevDirection;
-
+    [SerializeField] private Transform playerTransform;
 
     [SerializeField] private float BaseSpeed;
     [SerializeField] private float SprintSpeed;
@@ -46,8 +45,12 @@ public class PlayerMovement : MonoBehaviour
             followCam = GetComponentInChildren<ThirdPersonCamera>();
         }
 
+        if (playerTransform == null)
+        {
+            playerTransform = gameObject.transform;
+        }
 
-        moveVector = Vector2.zero;
+        moveVector = Vector3.zero;
 
         SprintSpeed = BaseSpeed * 2.3f;
         CurrentSpeed = BaseSpeed;
@@ -60,49 +63,57 @@ public class PlayerMovement : MonoBehaviour
 
     private void SprintCancelled(object sender, System.EventArgs e)
     {
+        Debug.Log("Stopped Sprinting");
         CurrentSpeed = BaseSpeed;
     }
 
     private void SprintPerformed(object sender, System.EventArgs e)
     {
+        Debug.Log("Sprinting");
         CurrentSpeed = SprintSpeed;
     }
 
     private void MovementCancelled(object sender, System.EventArgs e)
     {
-        moveVector = Vector2.zero;
+        SetInputs(0,0);
     }
 
     private void MovementPerformed(object sender, Vector2 e)
     {
-        //moveVector = e;
-        HorizontalInput = e.x;
-        VerticalInput = e.y;
-        //moveVector = new Vector3(HorizontalInput, 0, VerticalInput);
-        moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);
-        
+        SetInputs(e.x, e.y);
+    }
+
+    private void SetInputs(float x, float y)
+    {
+        HorizontalInput = x;
+        VerticalInput = y;
     }
     #endregion
 
     void Update()
     {
         direction = followCam.forwaredRotation;
-        if (prevDirection != direction)
-        {
 
-        }        
-        prevDirection = direction;
-
-        
+        #region Debugging
+        //Debug.Log("Move Vector "+moveVector);
+        Debug.Log("Current Speed "+CurrentSpeed);
+        #endregion
     }
 
     private void FixedUpdate()
     {
         Movement();
+        if (moveVector != Vector3.zero)
+        {
+            //playerTransform.forward = Vector3.Slerp(playerTransform.forward, direction.forward.normalized, Time.deltaTime); Aiming style
+            playerTransform.forward = Vector3.Slerp(playerTransform.forward, moveVector.normalized, Time.deltaTime * 10);
+
+        }
     }
 
     private void Movement()
     {        
+        moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);        
         myBody.velocity =  moveVector * CurrentSpeed;
     }
 

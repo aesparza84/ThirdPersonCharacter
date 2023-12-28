@@ -7,8 +7,6 @@ public class ThirdPersonCamera : MonoBehaviour
     [Header("References to Player Body")]
     [SerializeField] private GameObject Player;
     private Rigidbody myBody;
-
-    private InputManager inputHandler;
     private float HorizontalInput;
     private float VerticalInput;
 
@@ -17,24 +15,12 @@ public class ThirdPersonCamera : MonoBehaviour
 
     private void Start()
     {
-        if (inputHandler == null)
-        {
-            inputHandler = GetComponentInParent<InputManager>();
-        }
-        inputHandler.OnMovementPerf += MovementRecieved;
 
         if (myBody == null)
         {
             //myBody = Player.GetComponent<Rigidbody>();
             myBody = GetComponentInParent<Rigidbody>();
         }
-    }
-
-    private void MovementRecieved(object sender, Vector2 e)
-    {
-        //Get float values
-        HorizontalInput = e.x;
-        VerticalInput = e.y;
     }
 
     private void Update()
