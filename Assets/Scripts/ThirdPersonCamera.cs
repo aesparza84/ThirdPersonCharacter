@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class ThirdPersonCamera : MonoBehaviour
 {
+    /// <summary>
+    /// Referenced: https://www.youtube.com/watch?v=UCwwn2q4Vys&list=LL&index=3&t=228s
+    /// </summary>
+    /// 
+
     [Header("References to Player Body")]
     [SerializeField] private GameObject Player;
     private Rigidbody myBody;

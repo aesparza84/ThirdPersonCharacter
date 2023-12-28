@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private ThirdPersonCamera followCam;
 
+    [SerializeField] private MovementStates movingState;
+
     #region Initialization
     private void Awake()
     {
@@ -51,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         moveVector = Vector3.zero;
+        movingState = MovementStates.Idle;
 
         SprintSpeed = BaseSpeed * 2.3f;
         CurrentSpeed = BaseSpeed;
@@ -59,7 +62,10 @@ public class PlayerMovement : MonoBehaviour
         inputHandler.OnMovementCanc += MovementCancelled;
         inputHandler.OnSprintPerf += SprintPerformed;
         inputHandler.OnSprintCanc += SprintCancelled;
+
+
     }
+    #endregion
 
     private void SprintCancelled(object sender, System.EventArgs e)
     {
@@ -88,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
         HorizontalInput = x;
         VerticalInput = y;
     }
-    #endregion
+    
 
     void Update()
     {
