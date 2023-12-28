@@ -63,13 +63,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void SprintCancelled(object sender, System.EventArgs e)
     {
-        Debug.Log("Stopped Sprinting");
+        //Debug.Log("Stopped Sprinting");
         CurrentSpeed = BaseSpeed;
     }
 
     private void SprintPerformed(object sender, System.EventArgs e)
     {
-        Debug.Log("Sprinting");
+        //Debug.Log("Sprinting");
         CurrentSpeed = SprintSpeed;
     }
 
@@ -93,22 +93,22 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         direction = followCam.forwaredRotation;
+        if (moveVector != Vector3.zero)
+        {
+            //playerTransform.forward = Vector3.Slerp(playerTransform.forward, direction.forward.normalized, Time.deltaTime); Aiming style
+            playerTransform.forward = Vector3.Slerp(playerTransform.forward, moveVector.normalized, Time.deltaTime * 10);
+        }
 
         #region Debugging
         //Debug.Log("Move Vector "+moveVector);
-        Debug.Log("Current Speed "+CurrentSpeed);
+        //Debug.Log("Current Speed "+CurrentSpeed);
         #endregion
     }
 
     private void FixedUpdate()
     {
         Movement();
-        if (moveVector != Vector3.zero)
-        {
-            //playerTransform.forward = Vector3.Slerp(playerTransform.forward, direction.forward.normalized, Time.deltaTime); Aiming style
-            playerTransform.forward = Vector3.Slerp(playerTransform.forward, moveVector.normalized, Time.deltaTime * 10);
-
-        }
+        
     }
 
     private void Movement()
