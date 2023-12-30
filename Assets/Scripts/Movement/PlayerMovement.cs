@@ -3,28 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Player Components")]
     [SerializeField] private Rigidbody myBody;
+    [SerializeField] private Transform playerTransform;
+
+    [Header("Vector2 Input-Values")]
+    [SerializeField] private float HorizontalInput;
+    [SerializeField] private float VerticalInput;
+
     //private PlayerInputs input; //My custom action map
     private InputManager inputHandler;
 
     private Vector3 moveVector;
     //private Vector2 moveVector;
     private Transform direction;
-    [SerializeField] private Transform playerTransform;
 
+    [Header("Player-Movement Fields")]
     [SerializeField] private float BaseSpeed;
     [SerializeField] private float SprintSpeed;
     [SerializeField] private float CurrentSpeed;
-
-    private float HorizontalInput;
-    private float VerticalInput;
-
+    [Header("Camera")]
     [SerializeField] private ThirdPersonCamera followCam;
 
+    [Header("Animator")]
+    [SerializeField] private Animator myAnimator;
+    
+    [Header("Move State")]
     [SerializeField] private MovementStates movingState;
+    private MovementStates prevState;
 
     #region Initialization
     private void Awake()
@@ -37,19 +47,24 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        if (myBody == null)
+        if (myBody == null && TryGetComponent<Rigidbody>(out Rigidbody n))
         {
-            myBody = GetComponent<Rigidbody>();
+            myBody = n;
         }
 
-        if (followCam == null)
+        if (followCam == null && TryGetComponent<ThirdPersonCamera>(out ThirdPersonCamera t))
         {
-            followCam = GetComponentInChildren<ThirdPersonCamera>();
+            followCam = t;
         }
 
         if (playerTransform == null)
         {
             playerTransform = gameObject.transform;
+        }
+
+        if (myAnimator == null && TryGetComponent<Animator>(out Animator a))
+        {
+            myAnimator = a;
         }
 
         moveVector = Vector3.zero;
@@ -58,41 +73,86 @@ public class PlayerMovement : MonoBehaviour
         SprintSpeed = BaseSpeed * 2.3f;
         CurrentSpeed = BaseSpeed;
 
-        inputHandler.OnMovementPerf += MovementPerformed;
-        inputHandler.OnMovementCanc += MovementCancelled;
-        inputHandler.OnSprintPerf += SprintPerformed;
-        inputHandler.OnSprintCanc += SprintCancelled;
+        //Custom input handling
+        //inputHandler.OnMovementPerf += MovementPerformed;
+        //inputHandler.OnMovementCanc += MovementCancelled;
+        //inputHandler.OnSprintPerf += SprintPerformed;
+        //inputHandler.OnSprintCanc += SprintCancelled;
 
+        //Input managers Own handling
+        inputHandler.input.Player.MovementWASD.performed += OnMovementPerformed;
+        inputHandler.input.Player.MovementWASD.canceled += OnMovementCancelled;
 
-    }
-    #endregion
-
-    private void SprintCancelled(object sender, System.EventArgs e)
-    {
-        //Debug.Log("Stopped Sprinting");
-        CurrentSpeed = BaseSpeed;
-    }
-
-    private void SprintPerformed(object sender, System.EventArgs e)
-    {
-        //Debug.Log("Sprinting");
-        CurrentSpeed = SprintSpeed;
+        inputHandler.input.Player.Sprint.performed += OnSprintPerformed;
+        inputHandler.input.Player.Sprint.canceled += OnSprintCancelled;
     }
 
-    private void MovementCancelled(object sender, System.EventArgs e)
+    #region InputManager's Own Events
+    private void OnSprintCancelled(InputAction.CallbackContext obj)
     {
+        movingState = MovementStates.Walking;
+    }
+
+    private void OnSprintPerformed(InputAction.CallbackContext obj)
+    {
+        movingState = MovementStates.Running;
+    }
+
+    private void OnMovementCancelled(InputAction.CallbackContext obj)
+    {
+        movingState = MovementStates.Idle;
         SetInputs(0,0);
     }
 
-    private void MovementPerformed(object sender, Vector2 e)
+    private void OnMovementPerformed(InputAction.CallbackContext obj)
     {
-        SetInputs(e.x, e.y);
+        movingState = MovementStates.Walking;
+        SetInputs(obj.ReadValue<Vector2>().x, obj.ReadValue<Vector2>().y);
     }
+    #endregion
+
+    #endregion
+
+    #region My custon inputManager Events
+    //private void SprintCancelled(object sender, System.EventArgs e)
+    //{
+    //    //Debug.Log("Stopped Sprinting");
+    //    CurrentSpeed = BaseSpeed;
+    //    movingState = MovementStates.Walking;
+    //}
+
+    //private void SprintPerformed(object sender, System.EventArgs e)
+    //{
+    //    //Debug.Log("Sprinting");
+    //    movingState = MovementStates.Running;
+    //    CurrentSpeed = SprintSpeed;
+    //}
+
+    //private void MovementCancelled(object sender, System.EventArgs e)
+    //{
+    //    SetInputs(0,0);
+    //    movingState = MovementStates.Idle;
+    //}
+
+    //private void MovementPerformed(object sender, Vector2 e)
+    //{
+    //    SetInputs(e.x, e.y);
+    //    movingState = MovementStates.Walking;
+    //}
+    #endregion
 
     private void SetInputs(float x, float y)
     {
         HorizontalInput = x;
         VerticalInput = y;
+    }
+
+    private void checkWalking()
+    {
+        if (HorizontalInput == 0 && VerticalInput == 0)
+        {
+            movingState = MovementStates.Idle;
+        }
     }
     
 
@@ -104,10 +164,42 @@ public class PlayerMovement : MonoBehaviour
             //playerTransform.forward = Vector3.Slerp(playerTransform.forward, direction.forward.normalized, Time.deltaTime); Aiming style
             playerTransform.forward = Vector3.Slerp(playerTransform.forward, moveVector.normalized, Time.deltaTime * 10);
         }
+        checkWalking();
+
+        switch (movingState)
+        {
+            case MovementStates.Idle:
+                myAnimator.SetBool("IsWalking", false);
+                break;
+            case MovementStates.Walking:
+                myAnimator.SetBool("IsRunning", false);
+                myAnimator.SetBool("IsWalking", true);
+                CurrentSpeed = BaseSpeed;
+
+                break;
+            case MovementStates.Running:
+                myAnimator.SetBool("IsRunning", true);
+                CurrentSpeed = SprintSpeed;
+
+                break;
+            case MovementStates.CrouchIdle:
+                break;
+            case MovementStates.CrouchWalking:
+                break;
+            case MovementStates.Jumping:
+                break;
+            case MovementStates.Falling:
+                break;
+            default:
+                break;
+        }
+
+        prevState = movingState;
 
         #region Debugging
         //Debug.Log("Move Vector "+moveVector);
         //Debug.Log("Current Speed "+CurrentSpeed);
+        Debug.Log("MovState " + movingState);
         #endregion
     }
 
@@ -118,8 +210,11 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Movement()
-    {        
-        moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);        
+    {
+        if (direction)
+        {
+            moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);
+        }
         myBody.velocity =  moveVector * CurrentSpeed;
     }
 

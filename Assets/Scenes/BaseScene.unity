@@ -523,7 +523,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 735966277}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.013756745, y: -0.0020894934, z: -0.000028747414, w: 0.9999032}
+  m_LocalRotation: {x: -0.013756746, y: -0.0020895624, z: -0.000028748365, w: 0.9999032}
   m_LocalPosition: {x: 6.173004, y: 2.5, z: -4.7186685}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1088,17 +1088,17 @@ PrefabInstance:
     - target: {fileID: 1790171532135642387, guid: aaed4ee37b0b8984cb671ddc0632aec8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.013756741
+      value: -0.013756743
       objectReference: {fileID: 0}
     - target: {fileID: 1790171532135642387, guid: aaed4ee37b0b8984cb671ddc0632aec8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0020895102
+      value: -0.0020895447
       objectReference: {fileID: 0}
     - target: {fileID: 1790171532135642387, guid: aaed4ee37b0b8984cb671ddc0632aec8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000028747632
+      value: -0.000028748107
       objectReference: {fileID: 0}
     - target: {fileID: 2382103126218895780, guid: aaed4ee37b0b8984cb671ddc0632aec8,
         type: 3}
@@ -1118,17 +1118,17 @@ PrefabInstance:
     - target: {fileID: 2382103126218895780, guid: aaed4ee37b0b8984cb671ddc0632aec8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.015077707
+      value: 0.015077692
       objectReference: {fileID: 0}
     - target: {fileID: 2382103126218895780, guid: aaed4ee37b0b8984cb671ddc0632aec8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0020895
+      value: -0.0020894709
       objectReference: {fileID: 0}
     - target: {fileID: 2382103126218895780, guid: aaed4ee37b0b8984cb671ddc0632aec8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.00003150852
+      value: 0.000031508043
       objectReference: {fileID: 0}
     - target: {fileID: 2414721164520547475, guid: aaed4ee37b0b8984cb671ddc0632aec8,
         type: 3}

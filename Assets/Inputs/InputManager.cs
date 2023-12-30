@@ -9,13 +9,14 @@ public class InputManager : MonoBehaviour
     /// Movements, jump, crouch, cover, etc.
     /// 
 
-    private PlayerInputs input;
+    public PlayerInputs input;
 
-    public event EventHandler<Vector2> OnMovementPerf;
-    public event EventHandler OnMovementCanc;
-    public event EventHandler OnSprintPerf;
-    public event EventHandler OnSprintCanc;
-    public event EventHandler n;
+    //public event EventHandler<Vector2> OnMovementPerf;
+    //public event EventHandler OnMovementCanc;
+    //public event EventHandler OnSprintPerf;
+    //public event EventHandler OnSprintCanc;
+
+    //public event EventHandler n;
 
     private Vector2 MoveVectorValue;
 
@@ -28,33 +29,36 @@ public class InputManager : MonoBehaviour
 
         input.Enable();
 
-        input.Player.MovementWASD.performed += OnMovementPerformed;
-        input.Player.MovementWASD.canceled += OnMovementCancelled;
+        //Custom Events
+        //input.Player.MovementWASD.performed += OnMovementPerformed;
+        //input.Player.MovementWASD.canceled += OnMovementCancelled;
 
-        input.Player.Sprint.performed += OnSprintPerformed;
-        input.Player.Sprint.canceled += OnSprintCancelled;
+        //input.Player.Sprint.performed += OnSprintPerformed;
+        //input.Player.Sprint.canceled += OnSprintCancelled;
     }
 
-    public void OnSprintCancelled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        OnSprintCanc.Invoke(this, EventArgs.Empty);
-    }
+    #region Evoking my custom events
+    //public void OnSprintCancelled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    //{
+    //    OnSprintCanc.Invoke(this, EventArgs.Empty);
+    //}
 
-    public void OnSprintPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {        
-        OnSprintPerf.Invoke(this, EventArgs.Empty);
-    }
+    //public void OnSprintPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    //{        
+    //    OnSprintPerf.Invoke(this, EventArgs.Empty);
+    //}
 
-    public void OnMovementCancelled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        OnMovementCanc.Invoke(this, EventArgs.Empty);
-    }
+    //public void OnMovementCancelled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    //{
+    //    OnMovementCanc.Invoke(this, EventArgs.Empty);
+    //}
 
-    public void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        MoveVectorValue = obj.ReadValue<Vector2>();
-        OnMovementPerf.Invoke(this, MoveVectorValue);
-    }
+    //public void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    //{
+    //    MoveVectorValue = obj.ReadValue<Vector2>();
+    //    OnMovementPerf.Invoke(this, MoveVectorValue);
+    //}
+    #endregion
 
     private void Update()
     {
@@ -63,10 +67,10 @@ public class InputManager : MonoBehaviour
     private void OnDisable()
     {
         input.Disable();
-        input.Player.MovementWASD.performed -= OnMovementPerformed;
-        input.Player.MovementWASD.canceled -= OnMovementCancelled;
-        input.Player.Sprint.performed -= OnSprintPerformed;
-        input.Player.Sprint.performed -= OnSprintCancelled;
+        //input.Player.MovementWASD.performed -= OnMovementPerformed;
+        //input.Player.MovementWASD.canceled -= OnMovementCancelled;
+        //input.Player.Sprint.performed -= OnSprintPerformed;
+        //input.Player.Sprint.performed -= OnSprintCancelled;
     }
 
 }
