@@ -4,16 +4,29 @@ using UnityEngine;
 
 public class WalkingState : MovingState
 {
-    public override MovingState NextState { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public override MovingState PrevState { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-
-    public override void DoAction()
+    public WalkingState(PlayerMovement passedPlayer, Animator passedAnim)
+    {
+        player = passedPlayer;
+        playerBody = player.myBody;
+        animator = passedAnim;
+    }
+    public override void DoUpdateAction()
     {
 
     }
 
+    public override void EnterState()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ExitState()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public override void SwitchToState()
     {
-
+        throw new System.NotImplementedException();
     }
 }

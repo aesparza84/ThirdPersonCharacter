@@ -5,9 +5,17 @@ using UnityEngine;
 public abstract class MovingState
 {
     //In each instance, we define the functionality differently
-    public abstract MovingState NextState { get; set; }
-    public abstract MovingState PrevState { get; set; }
+    protected PlayerMovement player;
 
-    public abstract void DoAction();
+    protected Animator animator;
+    protected Rigidbody playerBody { get; set; }
+    protected float CurrentSpeed { get; set; }
+    public MovingState NextState { get; set; }
+    public MovingState PrevState { get; set; }
+
+    public abstract void DoUpdateAction();
     public abstract void SwitchToState();
+
+    public abstract void EnterState();
+    public abstract void ExitState();
 }

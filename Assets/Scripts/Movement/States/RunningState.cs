@@ -4,12 +4,25 @@ using UnityEngine;
 
 public class RunningState : MovingState
 {
-    public override MovingState NextState { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public override MovingState PrevState { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-
-    public override void DoAction()
+    public RunningState(PlayerMovement passedPlayer, Animator passedAnim)
     {
+        player = passedPlayer;
+        playerBody = player.myBody;
+        animator = passedAnim;
+    }
+    public override void DoUpdateAction()
+    {
+        throw new System.NotImplementedException();
+    }
 
+    public override void EnterState()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ExitState()
+    {
+        throw new System.NotImplementedException();
     }
 
     public override void SwitchToState()

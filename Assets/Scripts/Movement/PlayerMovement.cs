@@ -8,7 +8,7 @@ using UnityEngine.Windows;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Player Components")]
-    [SerializeField] private Rigidbody myBody;
+    public Rigidbody myBody;
     [SerializeField] private Transform playerTransform;
 
     [Header("Vector2 Input-Values")]
@@ -23,14 +23,14 @@ public class PlayerMovement : MonoBehaviour
     private Transform direction;
 
     [Header("Player-Movement Fields")]
-    [SerializeField] private float BaseSpeed;
-    [SerializeField] private float SprintSpeed;
-    [SerializeField] private float CurrentSpeed;
+    public float BaseSpeed;
+    public float SprintSpeed;
+    public float CurrentSpeed;
     [Header("Camera")]
     [SerializeField] private ThirdPersonCamera followCam;
 
     [Header("Animator")]
-    [SerializeField] private Animator myAnimator;
+    public Animator myAnimator;
     
     [Header("Move State")]
     [SerializeField] private MovementStates movingState;

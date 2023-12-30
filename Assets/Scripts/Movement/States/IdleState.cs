@@ -4,16 +4,30 @@ using UnityEngine;
 
 public class IdleState : MovingState
 {
-    public override MovingState NextState { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public override MovingState PrevState { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public IdleState(PlayerMovement passedPlayer, Animator passedAnim)
+    {
+        player = passedPlayer;
+        playerBody = player.myBody;
+        animator = passedAnim;
+    }
+    public override void DoUpdateAction()
+    {
+        //Nothing for idle
+    }
 
-    public override void DoAction()
+    public override void EnterState()
+    {
+        animator.SetBool("IsWalking", false);
+        animator.SetBool("IsRunning", false);
+    }
+
+    public override void ExitState()
     {
 
     }
 
     public override void SwitchToState()
     {
-        throw new System.NotImplementedException();
+
     }
 }

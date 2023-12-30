@@ -10,6 +10,9 @@ public class MoveStateManager : MonoBehaviour
     /// </summary>
     /// 
 
+    [Header("Player Movement Stats/Script")]
+    [SerializeField] private PlayerMovement player;
+
     [SerializeField] private MovingState currentState;
 
     private WalkingState walkingState;
@@ -20,18 +23,31 @@ public class MoveStateManager : MonoBehaviour
 
     private void Awake()
     {
-        walkingState = new WalkingState();
-        runnningState = new RunningState();
-        idleState = new IdleState();
-        crouchState = new CrouchState(); 
+        if (player == null && TryGetComponent<PlayerMovement>(out PlayerMovement t))
+        {
+            player = t;
+        }
+
+        walkingState = new WalkingState(player, player.myAnimator);
+        runnningState = new RunningState(player, player.myAnimator);
+        idleState = new IdleState(player, player.myAnimator);
+        crouchState = new CrouchState(player, player.myAnimator); 
     }
     void Start()
     {
         currentState = idleState;
+        currentState.EnterState();
     }
 
     void Update()
     {
-        currentState.DoAction();
+        currentState.DoUpdateAction();
+    }
+
+    private void switctStates(MovingState passedState)
+    {
+        currentState.ExitState();
+        currentState = passedState;
+        currentState.EnterState();
     }
 }

@@ -163,6 +163,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 81bb9eea30387e442899949a80011e55,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 1920079980957383041}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 81bb9eea30387e442899949a80011e55,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2718237035424672198}
     - targetCorrespondingSourceObject: {fileID: 635547659545568360, guid: 81bb9eea30387e442899949a80011e55,
         type: 3}
@@ -193,9 +197,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 038f2ba0578aac24ca401d45762f7961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myBody: {fileID: 0}
+  playerTransform: {fileID: 0}
+  HorizontalInput: 0
+  VerticalInput: 0
   BaseSpeed: 3
   SprintSpeed: 0
   CurrentSpeed: 0
+  followCam: {fileID: 0}
+  myAnimator: {fileID: 0}
+  movingState: 0
 --- !u!114 &2295175164512212722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,6 +219,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6e6d4e5c5fa3624ca812e78f8558a61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1920079980957383041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4306345047484496197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 876456206754efa4d85f8a8df13ed6be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 7402703831974211666}
 --- !u!54 &2718237035424672198
 Rigidbody:
   m_ObjectHideFlags: 0
