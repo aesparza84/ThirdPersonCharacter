@@ -145,7 +145,7 @@ public class MoveStateManager : MonoBehaviour
             StartedWalking.Invoke(this, this);
         }
 
-        SetInputs(obj.ReadValue<Vector2>().x, obj.ReadValue<Vector2>().y);       
+        SetInputs(obj.ReadValue<Vector2>().x, obj.ReadValue<Vector2>().y);
     }
 
     private void SetInputs(float x, float y)

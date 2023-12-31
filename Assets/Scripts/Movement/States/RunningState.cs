@@ -11,7 +11,10 @@ public class RunningState : MovingState
 
     private void OnSprintStop(object sender, MoveStateManager e)
     {
-        e.switctStates(e.walkingState);
+        if (active)
+        {
+            e.switctStates(e.walkingState);
+        }
     }
 
     public override void DoUpdateAction(MoveStateManager context)
