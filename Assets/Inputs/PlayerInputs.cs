@@ -163,7 +163,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7fc5e894-7bcc-4ef3-9f55-f4eae07e448a"",
-                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""path"": ""<Keyboard>/c"",
                     ""interactions"": ""Tap"",
                     ""processors"": """",
                     ""groups"": """",

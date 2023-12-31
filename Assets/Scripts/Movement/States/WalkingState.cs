@@ -39,7 +39,11 @@ public class WalkingState : MovingState
 
     public override void DoUpdateAction(MoveStateManager context)
     {
-        context.Currentspeed = context.BaseSpeed;        
+        context.Currentspeed = context.BaseSpeed;
+        if (context.inputZeroCheck == 0)
+        {
+            context.switctStates(context.idleState);
+        }
     }
 
     public override void EnterState(MoveStateManager context)

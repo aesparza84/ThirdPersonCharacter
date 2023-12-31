@@ -17,6 +17,10 @@ public class RunningState : MovingState
     public override void DoUpdateAction(MoveStateManager context)
     {
         context.Currentspeed = context.SprintSpeed;
+        if (context.inputZeroCheck == 0)
+        {
+            context.switctStates(context.idleState);
+        }
     }
 
     public override void EnterState(MoveStateManager context)

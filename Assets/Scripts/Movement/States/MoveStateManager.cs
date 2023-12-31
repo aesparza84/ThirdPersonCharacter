@@ -36,7 +36,7 @@ public class MoveStateManager : MonoBehaviour
 
     public float HorizontalInput;
     public float VerticalInput;
-    [SerializeField] private float inputZeroCheck;
+    public float inputZeroCheck;
 
 
     [SerializeField] private MovingState currentState;
@@ -93,7 +93,7 @@ public class MoveStateManager : MonoBehaviour
         moveVector = Vector3.zero;
         Currentspeed = 0;
         SprintSpeed = BaseSpeed * 2.3f; //A random number I chose
-        CrouchSpeed = BaseSpeed * 0.4f; //A random number I chose
+        CrouchSpeed = BaseSpeed * 0.85f; //A random number I chose
         crouched = false;
 
         PlayerInputs.input.Player.MovementWASD.performed += OnMovementPerformed; 

@@ -8,14 +8,25 @@ public class CrouchWalkState : MovingState
     {
         context.StoppedWalking += OnStopWalk;
         context.StoppedCrouch += OnStopCrouch;
+        context.StartedSprint += OnSprintFromCrouch;
+    }
+
+    private void OnSprintFromCrouch(object sender, MoveStateManager e)
+    {
+        if (active)
+        {
+            leaveCrouch(e);
+            e.switctStates(e.runnningState);
+        }
     }
 
     private void OnStopCrouch(object sender, MoveStateManager e)
     {
         if (active)
         {
-            e.crouched = false;
-            e.MyAnimator.SetBool("IsCrouching", false);
+            //e.crouched = false;
+            //e.MyAnimator.SetBool("IsCrouching", false);
+            leaveCrouch(e);
             e.switctStates(e.walkingState);
         }
     }
@@ -45,6 +56,11 @@ public class CrouchWalkState : MovingState
     public override void ExitState(MoveStateManager context)
     {
         active = false;
+    }
 
+    private void leaveCrouch(MoveStateManager context)
+    {
+        context.crouched = false;
+        context.MyAnimator.SetBool("IsCrouching", false);
     }
 }
