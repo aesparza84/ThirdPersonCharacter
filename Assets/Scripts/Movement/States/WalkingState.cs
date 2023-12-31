@@ -22,7 +22,6 @@ public class WalkingState : MovingState
 
     public override void DoUpdateAction(MoveStateManager context)
     {
-        //TODO: Walking rigidbody
         context.Currentspeed = context.BaseSpeed;        
     }
 

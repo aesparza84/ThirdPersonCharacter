@@ -6,8 +6,14 @@ public class IdleState : MovingState
 {
     public IdleState(MoveStateManager context)
     {
-
+        context.StartedWalking += OnWalk;
     }
+
+    private void OnWalk(object sender, MoveStateManager e)
+    {
+        e.switctStates(e.walkingState);
+    }
+
     public override void DoUpdateAction(MoveStateManager context)
     {
         //Nothing for idle
@@ -15,8 +21,6 @@ public class IdleState : MovingState
 
     public override void EnterState(MoveStateManager context)
     {
-        context.MyAnimator.SetBool("IsWalking", false);
-        context.MyAnimator.SetBool("IsRunning", false);
         context.Currentspeed = 0;
 
         //animator.SetBool("IsWalking", false);

@@ -16,7 +16,6 @@ public class RunningState : MovingState
 
     public override void DoUpdateAction(MoveStateManager context)
     {
-        //TODO: Import runnning rigidbody code
         context.Currentspeed = context.SprintSpeed;
     }
 

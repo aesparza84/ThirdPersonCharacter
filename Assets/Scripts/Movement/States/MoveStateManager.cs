@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class MoveStateManager : MonoBehaviour
 {
@@ -30,11 +31,11 @@ public class MoveStateManager : MonoBehaviour
     public float Currentspeed;
     public float SprintSpeed;
 
-    public Vector3 MoveVector;
+    [SerializeField] private Vector3 moveVector;
 
     public float HorizontalInput;
     public float VerticalInput;
-
+    [SerializeField] private float inputZeroCheck;
 
 
     [SerializeField] private MovingState currentState;
@@ -46,6 +47,7 @@ public class MoveStateManager : MonoBehaviour
 
     public event EventHandler<MoveStateManager> StartedSprint;
     public event EventHandler<MoveStateManager> StoppedSprint;
+    public event EventHandler<MoveStateManager> StartedWalking;
     public event EventHandler<MoveStateManager> StoppedWalking;
 
     private void Awake()
@@ -81,7 +83,7 @@ public class MoveStateManager : MonoBehaviour
     }
     void Start()
     {
-        MoveVector = Vector3.zero;
+        moveVector = Vector3.zero;
         Currentspeed = 0;
         SprintSpeed = BaseSpeed * 2.3f; //A random number I chose
 
@@ -114,19 +116,27 @@ public class MoveStateManager : MonoBehaviour
 
     private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        SetInputs(obj.ReadValue<Vector2>().x, obj.ReadValue<Vector2>().y);
+        //If the previous input was 0, then we will start walking from IDLE
+        if (inputZeroCheck == 0)
+        {
+            StartedWalking.Invoke(this, this);
+        }
+
+        SetInputs(obj.ReadValue<Vector2>().x, obj.ReadValue<Vector2>().y);       
     }
 
     private void SetInputs(float x, float y)
     {
         HorizontalInput = x;
-        VerticalInput = y;
+        VerticalInput = y;  
     }
     #endregion
 
     void Update()
     {
         Debug.Log(currentState);
+
+        inputZeroCheck = (HorizontalInput * 2) + (VerticalInput * 1.7f);
         SetPlayersForward();
         currentState.DoUpdateAction(this);
     }
@@ -134,10 +144,10 @@ public class MoveStateManager : MonoBehaviour
     private void SetPlayersForward()
     {
         direction = followCam.forwaredRotation;
-        if (MoveVector != Vector3.zero)
+        if (moveVector != Vector3.zero)
         {
             //playerTransform.forward = Vector3.Slerp(playerTransform.forward, direction.forward.normalized, Time.deltaTime); Aiming style
-            playerTransform.forward = Vector3.Slerp(playerTransform.forward, MoveVector.normalized, Time.deltaTime * 10);
+            playerTransform.forward = Vector3.Slerp(playerTransform.forward, moveVector.normalized, Time.deltaTime * 10);
         }
     }
 
@@ -150,9 +160,9 @@ public class MoveStateManager : MonoBehaviour
     {
         if (direction)
         {
-            MoveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);
+            moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);
         }
-        PlayerBody.velocity = MoveVector * Currentspeed;
+        PlayerBody.velocity = moveVector * Currentspeed;
     }
 
     public void switctStates(MovingState passedState)
