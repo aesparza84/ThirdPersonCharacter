@@ -4,29 +4,29 @@ using UnityEngine;
 
 public class RunningState : MovingState
 {
-    public RunningState(PlayerMovement passedPlayer, Animator passedAnim)
+    public RunningState(MoveStateManager context)
     {
-        player = passedPlayer;
-        playerBody = player.myBody;
-        animator = passedAnim;
-    }
-    public override void DoUpdateAction()
-    {
-        throw new System.NotImplementedException();
+        context.StoppedSprint += OnSprintStop;
     }
 
-    public override void EnterState()
+    private void OnSprintStop(object sender, MoveStateManager e)
     {
-        throw new System.NotImplementedException();
+        e.switctStates(e.walkingState);
     }
 
-    public override void ExitState()
+    public override void DoUpdateAction(MoveStateManager context)
     {
-        throw new System.NotImplementedException();
+        //TODO: Import runnning rigidbody code
+        context.Currentspeed = context.SprintSpeed;
     }
 
-    public override void SwitchToState()
+    public override void EnterState(MoveStateManager context)
     {
-        throw new System.NotImplementedException();
+        context.MyAnimator.SetBool("IsRunning", true);
+    }
+
+    public override void ExitState(MoveStateManager context)
+    {
+        context.MyAnimator.SetBool("IsRunning", false);
     }
 }

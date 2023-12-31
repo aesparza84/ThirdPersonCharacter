@@ -4,28 +4,21 @@ using UnityEngine;
 
 public class CrouchState : MovingState
 {
-    public CrouchState(PlayerMovement passedPlayer, Animator passedAnim)
+    public CrouchState()
     {
-        player = passedPlayer;
-        playerBody = player.myBody;
-        animator = passedAnim;
+
     }
-    public override void DoUpdateAction()
+    public override void DoUpdateAction(MoveStateManager context)
     {
         throw new System.NotImplementedException();
     }
 
-    public override void EnterState()
+    public override void EnterState(MoveStateManager context)
     {
         throw new System.NotImplementedException();
     }
 
-    public override void ExitState()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void SwitchToState()
+    public override void ExitState(MoveStateManager context)
     {
         throw new System.NotImplementedException();
     }

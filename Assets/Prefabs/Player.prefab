@@ -231,7 +231,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 878933068974979070}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.015077708, y: -0.002089504, z: 0.000031508574, w: 0.9998842}
+  m_LocalRotation: {x: 0.015077713, y: -0.002089505, z: 0.000031508607, w: 0.9998842}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -850,6 +850,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1920079980957383041, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
+        type: 3}
+      propertyPath: followCam
+      value: 
+      objectReference: {fileID: 7020477294783863586}
     - target: {fileID: 2718237035424672198, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
         type: 3}
       propertyPath: m_Constraints
@@ -920,6 +925,11 @@ PrefabInstance:
       propertyPath: followCam
       value: 
       objectReference: {fileID: 7020477294783863586}
+    - target: {fileID: 7402703831974211666, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7402703831974211666, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
         type: 3}
       propertyPath: MeshTransform

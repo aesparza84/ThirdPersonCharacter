@@ -4,30 +4,27 @@ using UnityEngine;
 
 public class IdleState : MovingState
 {
-    public IdleState(PlayerMovement passedPlayer, Animator passedAnim)
+    public IdleState(MoveStateManager context)
     {
-        player = passedPlayer;
-        playerBody = player.myBody;
-        animator = passedAnim;
+
     }
-    public override void DoUpdateAction()
+    public override void DoUpdateAction(MoveStateManager context)
     {
         //Nothing for idle
     }
 
-    public override void EnterState()
+    public override void EnterState(MoveStateManager context)
     {
-        animator.SetBool("IsWalking", false);
-        animator.SetBool("IsRunning", false);
+        context.MyAnimator.SetBool("IsWalking", false);
+        context.MyAnimator.SetBool("IsRunning", false);
+        context.Currentspeed = 0;
+
+        //animator.SetBool("IsWalking", false);
+        //animator.SetBool("IsRunning", false);
     }
 
-    public override void ExitState()
+    public override void ExitState(MoveStateManager context)
     {
-
-    }
-
-    public override void SwitchToState()
-    {
-
+        //Nothing for idle, this animation is the default
     }
 }

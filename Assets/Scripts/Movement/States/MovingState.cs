@@ -8,14 +8,12 @@ public abstract class MovingState
     protected PlayerMovement player;
 
     protected Animator animator;
-    protected Rigidbody playerBody { get; set; }
-    protected float CurrentSpeed { get; set; }
+    protected Rigidbody playerBody;
+    protected float CurrentSpeed;
     public MovingState NextState { get; set; }
     public MovingState PrevState { get; set; }
 
-    public abstract void DoUpdateAction();
-    public abstract void SwitchToState();
-
-    public abstract void EnterState();
-    public abstract void ExitState();
+    public abstract void DoUpdateAction(MoveStateManager context);
+    public abstract void EnterState(MoveStateManager context);
+    public abstract void ExitState(MoveStateManager context);
 }

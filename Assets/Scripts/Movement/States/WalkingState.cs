@@ -4,29 +4,35 @@ using UnityEngine;
 
 public class WalkingState : MovingState
 {
-    public WalkingState(PlayerMovement passedPlayer, Animator passedAnim)
+    public WalkingState(MoveStateManager context)
     {
-        player = passedPlayer;
-        playerBody = player.myBody;
-        animator = passedAnim;
-    }
-    public override void DoUpdateAction()
-    {
-
+        context.StartedSprint += OnSprint;
+        context.StoppedWalking += OnStoppedWalking;
     }
 
-    public override void EnterState()
+    private void OnStoppedWalking(object sender, MoveStateManager e)
     {
-        throw new System.NotImplementedException();
+        e.switctStates(e.idleState);
     }
 
-    public override void ExitState()
+    private void OnSprint(object sender, MoveStateManager e)
     {
-        throw new System.NotImplementedException();
+        e.switctStates(e.runnningState);
     }
 
-    public override void SwitchToState()
+    public override void DoUpdateAction(MoveStateManager context)
     {
-        throw new System.NotImplementedException();
+        //TODO: Walking rigidbody
+        context.Currentspeed = context.BaseSpeed;        
+    }
+
+    public override void EnterState(MoveStateManager context)
+    {
+        context.MyAnimator.SetBool("IsWalking", true);
+    }
+
+    public override void ExitState(MoveStateManager context)
+    {
+        context.MyAnimator.SetBool("IsWalking", false);
     }
 }
