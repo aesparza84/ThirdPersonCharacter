@@ -6,6 +6,7 @@ public abstract class MovingState
 {
     //In each instance, we define the functionality differently
     protected PlayerMovement player;
+    protected bool active;
 
     protected Animator animator;
     protected Rigidbody playerBody;

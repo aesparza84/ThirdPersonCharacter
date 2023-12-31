@@ -21,11 +21,13 @@ public class RunningState : MovingState
 
     public override void EnterState(MoveStateManager context)
     {
+        active = true;
         context.MyAnimator.SetBool("IsRunning", true);
     }
 
     public override void ExitState(MoveStateManager context)
     {
+        active = false;
         context.MyAnimator.SetBool("IsRunning", false);
     }
 }

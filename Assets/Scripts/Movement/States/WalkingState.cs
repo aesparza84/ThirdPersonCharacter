@@ -8,16 +8,33 @@ public class WalkingState : MovingState
     {
         context.StartedSprint += OnSprint;
         context.StoppedWalking += OnStoppedWalking;
+        context.StartedCrouch += OnCrouch;
+    }
+
+    private void OnCrouch(object sender, MoveStateManager e)
+    {
+        if(active)
+        {
+            e.switctStates(e.crouchWalkState);
+        }
     }
 
     private void OnStoppedWalking(object sender, MoveStateManager e)
     {
-        e.switctStates(e.idleState);
+        if(active) 
+        {
+            e.switctStates(e.idleState);
+
+        }
     }
 
     private void OnSprint(object sender, MoveStateManager e)
     {
-        e.switctStates(e.runnningState);
+        if(active)
+        {
+            e.switctStates(e.runnningState);
+
+        }
     }
 
     public override void DoUpdateAction(MoveStateManager context)
@@ -27,11 +44,12 @@ public class WalkingState : MovingState
 
     public override void EnterState(MoveStateManager context)
     {
+        active = true;
         context.MyAnimator.SetBool("IsWalking", true);
     }
 
     public override void ExitState(MoveStateManager context)
     {
-        context.MyAnimator.SetBool("IsWalking", false);
+        active = false;
     }
 }

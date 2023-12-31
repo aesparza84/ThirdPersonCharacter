@@ -30,6 +30,7 @@ public class MoveStateManager : MonoBehaviour
     public float BaseSpeed;
     public float Currentspeed;
     public float SprintSpeed;
+    public float CrouchSpeed;
 
     [SerializeField] private Vector3 moveVector;
 
@@ -42,13 +43,18 @@ public class MoveStateManager : MonoBehaviour
 
     public WalkingState walkingState;
     public RunningState runnningState;
+    public CrouchWalkState crouchWalkState;
     public IdleState idleState;
-    //public CrouchState crouchState;
+    public CrouchState crouchState;
+
+    public bool crouched;
 
     public event EventHandler<MoveStateManager> StartedSprint;
     public event EventHandler<MoveStateManager> StoppedSprint;
     public event EventHandler<MoveStateManager> StartedWalking;
     public event EventHandler<MoveStateManager> StoppedWalking;
+    public event EventHandler<MoveStateManager> StartedCrouch;
+    public event EventHandler<MoveStateManager> StoppedCrouch;
 
     private void Awake()
     {
@@ -78,23 +84,40 @@ public class MoveStateManager : MonoBehaviour
 
         walkingState = new WalkingState(this);
         runnningState = new RunningState(this);
+        crouchWalkState = new CrouchWalkState(this);
         idleState = new IdleState(this);
-        //crouchState = new CrouchState(); 
+        crouchState = new CrouchState(this); 
     }
     void Start()
     {
         moveVector = Vector3.zero;
         Currentspeed = 0;
         SprintSpeed = BaseSpeed * 2.3f; //A random number I chose
+        CrouchSpeed = BaseSpeed * 0.4f; //A random number I chose
+        crouched = false;
 
         PlayerInputs.input.Player.MovementWASD.performed += OnMovementPerformed; 
         PlayerInputs.input.Player.MovementWASD.canceled += OnMovementCancelled; 
 
         PlayerInputs.input.Player.Sprint.performed += OnSprintPerformed; 
-        PlayerInputs.input.Player.Sprint.canceled += OnSprintCancelled; 
+        PlayerInputs.input.Player.Sprint.canceled += OnSprintCancelled;
+
+        PlayerInputs.input.Player.Crouch.performed += OnCrouchPerformed;
 
         currentState = idleState;
         currentState.EnterState(this);
+    }
+
+    private void OnCrouchPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        if (!crouched)
+        {
+            StartedCrouch.Invoke(this, this);            
+        }
+        else
+        {
+            StoppedCrouch.Invoke(this, this);
+        }
     }
 
     #region Inputs

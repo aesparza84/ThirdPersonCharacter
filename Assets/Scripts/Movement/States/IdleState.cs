@@ -7,11 +7,23 @@ public class IdleState : MovingState
     public IdleState(MoveStateManager context)
     {
         context.StartedWalking += OnWalk;
+        context.StartedCrouch += OnCrouch;
+    }
+
+    private void OnCrouch(object sender, MoveStateManager e)
+    {
+        if (active)
+        {
+            e.switctStates(e.crouchState);
+        }
     }
 
     private void OnWalk(object sender, MoveStateManager e)
     {
-        e.switctStates(e.walkingState);
+        if (active)
+        {
+            e.switctStates(e.walkingState);
+        }
     }
 
     public override void DoUpdateAction(MoveStateManager context)
@@ -21,14 +33,18 @@ public class IdleState : MovingState
 
     public override void EnterState(MoveStateManager context)
     {
+        active = true;
         context.Currentspeed = 0;
 
-        //animator.SetBool("IsWalking", false);
-        //animator.SetBool("IsRunning", false);
+        context.MyAnimator.SetBool("IsWalking", false);
+        context.MyAnimator.SetBool("IsRunning", false);
+        context.MyAnimator.SetBool("IsCrouching", false);
+
     }
 
     public override void ExitState(MoveStateManager context)
     {
+        active = false;
         //Nothing for idle, this animation is the default
     }
 }
