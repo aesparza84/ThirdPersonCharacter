@@ -4,30 +4,83 @@ using UnityEngine;
 
 public class CoverRaycast : MonoBehaviour
 {
-    [Header("Player Input")]
-    [SerializeField] private InputManager playerInput;
+    [Header("Cover Check Position")]
+    [SerializeField] private Transform CoverStart;
+    private Vector3 rayStart;
+    private Vector3 rayDirection;
+
+    [Header("Forward Reference")]
+    [SerializeField] private Transform playerBody;
+
+    [SerializeField] private float rayDistance;
+
+    [SerializeField] private LayerMask coverMask;
+
+    public Vector3 CoverPoint;
 
     private void Awake()
     {
-        //Find and set ref to InputManager if null
-        if (playerInput == null && TryGetComponent<InputManager>(out InputManager t))
+        if (CoverStart == null)
         {
-            playerInput = t;
+            Debug.LogWarning("CoverCast Pos not set");
+        }
+        else
+        {
+            rayStart = CoverStart.position;
+        }
+
+        if (playerBody == null)
+        {
+            Debug.LogWarning("Cover cam ref not set");
+        }
+        else
+        {
+            rayDirection = playerBody.forward;
         }
     }
 
     void Start()
     {
-        playerInput.input.Player.Cover.performed += OnCoverPressed;
+        //if (CoverStart)
+        //{
+        //    rayStart = CoverStart.position;
+        //}
+
+        //if (cam)
+        //{
+        //    rayDirection = cam.camViewDirection;
+        //}
     }
 
-    private void OnCoverPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void Update()
     {
-        //TODO: add cover logic ex: raycasting and allat'
+        setRaypos();
+        Debug.DrawRay(rayStart, rayDirection * rayDistance, Color.cyan);
     }
 
-    void Update()
+    private void setRaypos()
     {
-        
+        rayStart = CoverStart.position;
+        rayDirection = playerBody.forward;
+
+    }
+    public bool LookForCover()
+    {
+        CoverPoint = Vector3.zero;
+        RaycastHit coverCheck;
+        if (Physics.Raycast(rayStart, rayDirection, out RaycastHit hit, rayDistance, coverMask))
+        {
+            coverCheck = hit;
+            CoverPoint = coverCheck.point;
+
+            Debug.Log("Hit Normal: " +coverCheck.normal);
+            return true;
+        }
+        return false;
+    }
+
+    public Vector3 GetPoint()
+    {
+        return CoverPoint;
     }
 }

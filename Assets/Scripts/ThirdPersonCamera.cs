@@ -37,6 +37,6 @@ public class ThirdPersonCamera : MonoBehaviour
 
         //myBody.transform.forward = camViewDirection;
 
-        Debug.DrawRay(gameObject.transform.position, camViewDirection* 10, Color.green);
+        //Debug.DrawRay(gameObject.transform.position, camViewDirection* 10, Color.green);
     }
 }

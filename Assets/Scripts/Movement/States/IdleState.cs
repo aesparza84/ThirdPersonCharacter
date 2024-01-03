@@ -8,6 +8,16 @@ public class IdleState : MovingState
     {
         context.StartedWalking += OnWalk;
         context.StartedCrouch += OnCrouch;
+        context.StartedCover += OnCover;
+    }
+
+    private void OnCover(object sender, MoveStateManager e)
+    {
+        if (active && e.coverRayCast.LookForCover())
+        {
+            e.PlayerBody.MovePosition(e.coverRayCast.CoverPoint);
+            e.switctStates(e.coverState);
+        }
     }
 
     private void OnCrouch(object sender, MoveStateManager e)

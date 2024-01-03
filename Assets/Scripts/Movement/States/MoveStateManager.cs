@@ -20,6 +20,9 @@ public class MoveStateManager : MonoBehaviour
     [SerializeField] private ThirdPersonCamera followCam;
     private Transform direction;
 
+    [Header("Cover Raycaster")]
+    public CoverRaycast coverRayCast;
+
     [Header("Animator")]
     public Animator MyAnimator; //Ref to the attatched Animator component
 
@@ -31,6 +34,7 @@ public class MoveStateManager : MonoBehaviour
     public float Currentspeed;
     public float SprintSpeed;
     public float CrouchSpeed;
+    public float CoverSpeed;
 
     [SerializeField] private Vector3 moveVector;
 
@@ -46,8 +50,10 @@ public class MoveStateManager : MonoBehaviour
     public CrouchWalkState crouchWalkState;
     public IdleState idleState;
     public CrouchState crouchState;
+    public CoverState coverState;
 
     public bool crouched;
+    public bool inCover;
 
     public event EventHandler<MoveStateManager> StartedSprint;
     public event EventHandler<MoveStateManager> StoppedSprint;
@@ -55,6 +61,8 @@ public class MoveStateManager : MonoBehaviour
     public event EventHandler<MoveStateManager> StoppedWalking;
     public event EventHandler<MoveStateManager> StartedCrouch;
     public event EventHandler<MoveStateManager> StoppedCrouch;
+    public event EventHandler<MoveStateManager> StartedCover;
+    public event EventHandler<MoveStateManager> StoppedCover;
 
     private void Awake()
     {
@@ -77,6 +85,11 @@ public class MoveStateManager : MonoBehaviour
             followCam = c;
         }
 
+        if(coverRayCast == null && TryGetComponent<CoverRaycast>(out CoverRaycast v))
+        {
+            coverRayCast = v; 
+        }
+
         if (playerTransform == null)
         {
             playerTransform = gameObject.transform;
@@ -87,6 +100,7 @@ public class MoveStateManager : MonoBehaviour
         crouchWalkState = new CrouchWalkState(this);
         idleState = new IdleState(this);
         crouchState = new CrouchState(this); 
+        coverState = new CoverState(this);
     }
     void Start()
     {
@@ -95,6 +109,7 @@ public class MoveStateManager : MonoBehaviour
         SprintSpeed = BaseSpeed * 2.3f; //A random number I chose
         CrouchSpeed = BaseSpeed * 0.85f; //A random number I chose
         crouched = false;
+        inCover = false;
 
         PlayerInputs.input.Player.MovementWASD.performed += OnMovementPerformed; 
         PlayerInputs.input.Player.MovementWASD.canceled += OnMovementCancelled; 
@@ -103,11 +118,28 @@ public class MoveStateManager : MonoBehaviour
         PlayerInputs.input.Player.Sprint.canceled += OnSprintCancelled;
 
         PlayerInputs.input.Player.Crouch.performed += OnCrouchPerformed;
+        PlayerInputs.input.Player.Cover.performed += OnCoverPressed;
 
         currentState = idleState;
         currentState.EnterState(this);
     }
 
+    private void OnCoverPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        if (!inCover)
+        {
+            StartedCover.Invoke(this, this);
+        }
+        else
+        {
+            StoppedCover.Invoke(this, this);
+        }
+    }
+
+    public void CheckForCover()
+    {
+        coverRayCast.LookForCover();
+    }
     private void OnCrouchPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         if (!crouched)
@@ -162,6 +194,8 @@ public class MoveStateManager : MonoBehaviour
         inputZeroCheck = (HorizontalInput * 2) + (VerticalInput * 1.7f);
         SetPlayersForward();
         currentState.DoUpdateAction(this);
+
+        Debug.DrawRay(gameObject.transform.position, moveVector, Color.red);
     }
 
     private void SetPlayersForward()
