@@ -8,6 +8,7 @@ public class CrouchState : MovingState
     {
         context.StoppedCrouch += OnStoppedCrouch;
         context.StartedWalking += OnStartWalk;
+        UsesFixedUpdt = false;
     }
 
     private void OnStartWalk(object sender, MoveStateManager e)
@@ -43,5 +44,10 @@ public class CrouchState : MovingState
     public override void ExitState(MoveStateManager context)
     {
         active = false;
+    }
+
+    public override void DoFixedUpate(MoveStateManager context)
+    {
+        throw new System.NotImplementedException();
     }
 }

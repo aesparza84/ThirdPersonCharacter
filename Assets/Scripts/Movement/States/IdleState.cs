@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class IdleState : MovingState
 {
+
     public IdleState(MoveStateManager context)
     {
         context.StartedWalking += OnWalk;
         context.StartedCrouch += OnCrouch;
         context.StartedCover += OnCover;
+        UsesFixedUpdt = false;
     }
 
     private void OnCover(object sender, MoveStateManager e)
     {
         if (active && e.coverRayCast.LookForCover())
         {
-            e.PlayerBody.MovePosition(e.coverRayCast.CoverPoint);
+            //e.PlayerBody.MovePosition(e.coverRayCast.CoverPoint);
             e.switctStates(e.coverState);
         }
     }
@@ -56,5 +58,10 @@ public class IdleState : MovingState
     {
         active = false;
         //Nothing for idle, this animation is the default
+    }
+
+    public override void DoFixedUpate(MoveStateManager context)
+    {
+        throw new System.NotImplementedException();
     }
 }

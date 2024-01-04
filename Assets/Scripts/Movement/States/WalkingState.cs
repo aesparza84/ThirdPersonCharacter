@@ -9,6 +9,7 @@ public class WalkingState : MovingState
         context.StartedSprint += OnSprint;
         context.StoppedWalking += OnStoppedWalking;
         context.StartedCrouch += OnCrouch;
+        UsesFixedUpdt = false;
     }
 
     private void OnCrouch(object sender, MoveStateManager e)
@@ -55,5 +56,10 @@ public class WalkingState : MovingState
     public override void ExitState(MoveStateManager context)
     {
         active = false;
+    }
+
+    public override void DoFixedUpate(MoveStateManager context)
+    {
+        throw new System.NotImplementedException();
     }
 }

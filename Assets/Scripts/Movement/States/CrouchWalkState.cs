@@ -9,6 +9,7 @@ public class CrouchWalkState : MovingState
         context.StoppedWalking += OnStopWalk;
         context.StoppedCrouch += OnStopCrouch;
         context.StartedSprint += OnSprintFromCrouch;
+        UsesFixedUpdt = false;
     }
 
     private void OnSprintFromCrouch(object sender, MoveStateManager e)
@@ -62,5 +63,10 @@ public class CrouchWalkState : MovingState
     {
         context.crouched = false;
         context.MyAnimator.SetBool("IsCrouching", false);
+    }
+
+    public override void DoFixedUpate(MoveStateManager context)
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -9,16 +9,21 @@ public class MoveStateManager : MonoBehaviour
     /// <summary>
     /// This is the context. This will pass data to the seperate
     /// instances of 'MovingState' so that it can handle it differently.
+    /// 
+    /// All the seperate 'states' will access and manipulate all fields here seperately,
+    /// which is why a lot of these must be public.
+    /// 
     /// </summary>
     /// 
 
     [Header("Player Components")]
     public Rigidbody PlayerBody;
     [SerializeField] private Transform playerTransform;
+    public Collider playerCollider;
 
     [Header("Camera")]
     [SerializeField] private ThirdPersonCamera followCam;
-    private Transform direction;
+    public Transform direction;
 
     [Header("Cover Raycaster")]
     public CoverRaycast coverRayCast;
@@ -36,7 +41,8 @@ public class MoveStateManager : MonoBehaviour
     public float CrouchSpeed;
     public float CoverSpeed;
 
-    [SerializeField] private Vector3 moveVector;
+    //[SerializeField] private Vector3 moveVector;
+    public Vector3 moveVector;
 
     public float HorizontalInput;
     public float VerticalInput;
@@ -73,6 +79,10 @@ public class MoveStateManager : MonoBehaviour
         if (PlayerBody == null && TryGetComponent<Rigidbody>(out Rigidbody t))
         {
             PlayerBody = t;
+        }
+        if (playerCollider == null && TryGetComponent<Collider>(out Collider d))
+        {
+            playerCollider = d;
         }
 
         if (MyAnimator == null && TryGetComponent<Animator>(out Animator a))
@@ -135,11 +145,6 @@ public class MoveStateManager : MonoBehaviour
             StoppedCover.Invoke(this, this);
         }
     }
-
-    public void CheckForCover()
-    {
-        coverRayCast.LookForCover();
-    }
     private void OnCrouchPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         if (!crouched)
@@ -191,7 +196,7 @@ public class MoveStateManager : MonoBehaviour
     {
         Debug.Log(currentState);
 
-        inputZeroCheck = (HorizontalInput * 2) + (VerticalInput * 1.7f);
+        inputZeroCheck = (HorizontalInput * 2) + (VerticalInput * 1.7f); //My way of checking if the previous input is 0
         SetPlayersForward();
         currentState.DoUpdateAction(this);
 
@@ -203,14 +208,20 @@ public class MoveStateManager : MonoBehaviour
         direction = followCam.forwaredRotation;
         if (moveVector != Vector3.zero)
         {
-            //playerTransform.forward = Vector3.Slerp(playerTransform.forward, direction.forward.normalized, Time.deltaTime); Aiming style
             playerTransform.forward = Vector3.Slerp(playerTransform.forward, moveVector.normalized, Time.deltaTime * 10);
         }
     }
 
     private void FixedUpdate()
     {
-        movement();
+        if (currentState.UsesFixedUpdt)
+        {
+            currentState.DoFixedUpate(this);
+        }
+        else
+        {
+            movement();
+        }
     }
 
     private void movement()
@@ -219,7 +230,7 @@ public class MoveStateManager : MonoBehaviour
         {
             moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);
         }
-        PlayerBody.velocity = moveVector * Currentspeed;
+        PlayerBody.velocity = moveVector.normalized * Currentspeed; //normalized to ensure equal length vector for directions
     }
 
     public void switctStates(MovingState passedState)

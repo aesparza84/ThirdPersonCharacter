@@ -18,6 +18,8 @@ public class CoverRaycast : MonoBehaviour
 
     public Vector3 CoverPoint;
 
+    public bool NormalOnX, NormalOnZ;
+
     private void Awake()
     {
         if (CoverStart == null)
@@ -41,6 +43,8 @@ public class CoverRaycast : MonoBehaviour
 
     void Start()
     {
+        NormalOnX = false; 
+        NormalOnZ = false;
         //if (CoverStart)
         //{
         //    rayStart = CoverStart.position;
@@ -72,6 +76,16 @@ public class CoverRaycast : MonoBehaviour
         {
             coverCheck = hit;
             CoverPoint = coverCheck.point;
+
+            //Checking Perpendicular/ normal
+            if (Mathf.Abs(coverCheck.normal.x) == 1)
+            {
+                NormalOnX = true;
+            }
+            if (Mathf.Abs(coverCheck.normal.z) == 1)
+            {
+                NormalOnZ = true;
+            }
 
             Debug.Log("Hit Normal: " +coverCheck.normal);
             return true;

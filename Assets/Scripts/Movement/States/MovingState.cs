@@ -7,6 +7,7 @@ public abstract class MovingState
     //In each instance, we define the functionality differently
     protected PlayerMovement player;
     protected bool active;
+    public bool UsesFixedUpdt;
 
     protected Animator animator;
     protected Rigidbody playerBody;
@@ -15,6 +16,8 @@ public abstract class MovingState
     public MovingState PrevState { get; set; }
 
     public abstract void DoUpdateAction(MoveStateManager context);
+
+    public abstract void DoFixedUpate(MoveStateManager context);
     public abstract void EnterState(MoveStateManager context);
     public abstract void ExitState(MoveStateManager context);
 }

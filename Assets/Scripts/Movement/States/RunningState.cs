@@ -7,6 +7,7 @@ public class RunningState : MovingState
     public RunningState(MoveStateManager context)
     {
         context.StoppedSprint += OnSprintStop;
+        UsesFixedUpdt = false;
     }
 
     private void OnSprintStop(object sender, MoveStateManager e)
@@ -36,5 +37,10 @@ public class RunningState : MovingState
     {
         active = false;
         context.MyAnimator.SetBool("IsRunning", false);
+    }
+
+    public override void DoFixedUpate(MoveStateManager context)
+    {
+        throw new System.NotImplementedException();
     }
 }
