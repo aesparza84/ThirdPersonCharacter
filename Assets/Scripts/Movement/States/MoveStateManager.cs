@@ -214,7 +214,11 @@ public class MoveStateManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (currentState.UsesFixedUpdt)
+        //If the current state changes movment completely,
+        //we use the current state's-FixedUpdate rigidbody movement
+        //instead of the default
+
+        if (currentState.UsesFixedUpdt) 
         {
             currentState.DoFixedUpate(this);
         }

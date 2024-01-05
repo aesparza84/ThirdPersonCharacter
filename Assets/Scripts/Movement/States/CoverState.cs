@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class CoverState : MovingState
 {
-    private RigidbodyConstraints prevConstraints; //Default Player-rigidbody constraints
-    private RigidbodyConstraints lockOnX, lockOnZ;
 
-    private Vector3 cancelledAxis;
+    private Vector3 coverNormal;
     public CoverState(MoveStateManager context)
     {
-        lockOnX = RigidbodyConstraints.FreezePositionX;
-        lockOnZ = RigidbodyConstraints.FreezePositionZ;
         context.StoppedCover += OnLeaveCover;
 
         UsesFixedUpdt = true;
@@ -50,7 +46,10 @@ public class CoverState : MovingState
     {
         context.moveVector = context.direction.right * context.HorizontalInput + 
                              context.direction.up * context.VerticalInput;
-        context.moveVector = Vector3.Project(context.moveVector, cancelledAxis);
+
+        context.moveVector = Vector3.Project(context.moveVector, coverNormal);
+        //context.moveVector = Vector3.Project(cancelledAxis, context.moveVector);
+
         context.PlayerBody.velocity = context.moveVector.normalized * context.Currentspeed;
     }
 
@@ -65,22 +64,26 @@ public class CoverState : MovingState
         context.inCover = true;
         context.Currentspeed = context.CoverSpeed;
 
-        prevConstraints = context.PlayerBody.constraints;
-
         //Check the cover ray cast normal hit
         //Restrict RigidBody to perpdenicular axis
-        if (context.coverRayCast.NormalOnX)
-        {
-            Debug.Log("Stopping X movement");
-            cancelledAxis = Vector3.right;
-        }
-        else if (context.coverRayCast.NormalOnZ)
-        {
-            Debug.Log("Stopping Z movement");
-            cancelledAxis = Vector3.up;
-        }
 
-        
+        coverNormal = context.coverRayCast.GetPoint().normal;
+        Debug.Log("Cncelled normal: "+coverNormal);
+
+        #region Old vector projecting
+        //if (context.coverRayCast.NormalOnX)
+        //{
+        //    Debug.Log("Stopping X movement");
+        //    cancelledAxis = Vector3.right;
+        //}
+        //else if (context.coverRayCast.NormalOnZ)
+        //{
+        //    Debug.Log("Stopping Z movement");
+        //    cancelledAxis = Vector3.up;
+        //}
+        #endregion
+
+
     }
     private void MoveToCover(MoveStateManager context)
     {
@@ -92,7 +95,5 @@ public class CoverState : MovingState
     {
         context.coverRayCast.NormalOnX = false;
         context.coverRayCast.NormalOnZ = false;
-        context.PlayerBody.constraints = prevConstraints;
-
     }
 }

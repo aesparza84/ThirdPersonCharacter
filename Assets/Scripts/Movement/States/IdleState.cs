@@ -62,6 +62,6 @@ public class IdleState : MovingState
 
     public override void DoFixedUpate(MoveStateManager context)
     {
-        throw new System.NotImplementedException();
+
     }
 }

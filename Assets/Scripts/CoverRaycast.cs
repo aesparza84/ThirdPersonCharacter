@@ -8,6 +8,8 @@ public class CoverRaycast : MonoBehaviour
     [SerializeField] private Transform CoverStart;
     private Vector3 rayStart;
     private Vector3 rayDirection;
+    private RaycastHit coverCheck;
+
 
     [Header("Forward Reference")]
     [SerializeField] private Transform playerBody;
@@ -71,7 +73,6 @@ public class CoverRaycast : MonoBehaviour
     public bool LookForCover()
     {
         CoverPoint = Vector3.zero;
-        RaycastHit coverCheck;
         if (Physics.Raycast(rayStart, rayDirection, out RaycastHit hit, rayDistance, coverMask))
         {
             coverCheck = hit;
@@ -87,14 +88,14 @@ public class CoverRaycast : MonoBehaviour
                 NormalOnZ = true;
             }
 
-            Debug.Log("Hit Normal: " +coverCheck.normal);
+            //Debug.Log("Hit Normal: " +coverCheck.normal);
             return true;
         }
         return false;
     }
 
-    public Vector3 GetPoint()
+    public RaycastHit GetPoint()
     {
-        return CoverPoint;
+        return coverCheck;
     }
 }
