@@ -20,6 +20,7 @@ public class MoveStateManager : MonoBehaviour
     public Rigidbody PlayerBody;
     [SerializeField] private Transform playerTransform;
     public Collider playerCollider;
+    public Transform physicalBodyTransform;
 
     [Header("Camera")]
     [SerializeField] private ThirdPersonCamera followCam;

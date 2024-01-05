@@ -30,8 +30,9 @@ public class CoverState : MovingState
         ///
 
         context.PlayerBody.transform.forward = -context.coverRayCast.GetPoint().normal;
+        context.physicalBodyTransform.up = -context.coverRayCast.GetPoint().normal;
 
-        RaycastHit hit;
+        //RaycastHit hit;
 
         Vector3 rayPosLeft = new Vector3(context.transform.position.x + -context.playerCollider.bounds.extents.x,
                                          context.transform.position.y + context.playerCollider.bounds.extents.y);
@@ -58,7 +59,7 @@ public class CoverState : MovingState
         context.moveVector = context.direction.right * context.HorizontalInput + 
                              context.direction.up * context.VerticalInput;
 
-        //This works by setting the rigidbody forward to face wall in ENTER-state
+        //This works by setting the rigidbody forward to face wall in Updateaction
         //Thats why we move along the rigidbodies transfom.Right
         crossVector = context.PlayerBody.transform.right;
         context.moveVector = Vector3.Project(context.moveVector.normalized, crossVector);
@@ -75,6 +76,7 @@ public class CoverState : MovingState
     {
         //We enter the 'covered' state
         active = true;
+        context.MyAnimator.SetBool("IsCover", true);
 
         MoveToCover(context);
 
@@ -110,6 +112,8 @@ public class CoverState : MovingState
 
     public override void ExitState(MoveStateManager context)
     {
+        context.MyAnimator.SetBool("IsCover", false);
+        context.physicalBodyTransform.position = context.PlayerBody.transform.forward;
         context.coverRayCast.NormalOnX = false;
         context.coverRayCast.NormalOnZ = false;
     }

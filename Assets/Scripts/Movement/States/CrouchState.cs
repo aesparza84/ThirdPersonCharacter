@@ -8,7 +8,17 @@ public class CrouchState : MovingState
     {
         context.StoppedCrouch += OnStoppedCrouch;
         context.StartedWalking += OnStartWalk;
+        context.StartedCover += OnConver;
         UsesFixedUpdt = false;
+    }
+
+    private void OnConver(object sender, MoveStateManager e)
+    {
+        if (active && e.coverRayCast.LookForCover())
+        {
+            //e.PlayerBody.MovePosition(e.coverRayCast.CoverPoint);
+            e.switctStates(e.coverState);
+        }
     }
 
     private void OnStartWalk(object sender, MoveStateManager e)

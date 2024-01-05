@@ -875,6 +875,11 @@ PrefabInstance:
       propertyPath: playerCollider
       value: 
       objectReference: {fileID: 297236478433846342}
+    - target: {fileID: 1920079980957383041, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
+        type: 3}
+      propertyPath: physicalBodyTransform
+      value: 
+      objectReference: {fileID: 349434067240105656}
     - target: {fileID: 2718237035424672198, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
         type: 3}
       propertyPath: m_Mass
@@ -1007,6 +1012,12 @@ PrefabInstance:
 --- !u!136 &297236478433846342 stripped
 CapsuleCollider:
   m_CorrespondingSourceObject: {fileID: 5548079121966997919, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
+    type: 3}
+  m_PrefabInstance: {fileID: 5251552933053253081}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &349434067240105656 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5492196917490807649, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
     type: 3}
   m_PrefabInstance: {fileID: 5251552933053253081}
   m_PrefabAsset: {fileID: 0}

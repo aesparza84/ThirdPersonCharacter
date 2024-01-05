@@ -7,7 +7,17 @@ public class RunningState : MovingState
     public RunningState(MoveStateManager context)
     {
         context.StoppedSprint += OnSprintStop;
+        context.StartedCover += OnCover;
         UsesFixedUpdt = false;
+    }
+
+    private void OnCover(object sender, MoveStateManager e)
+    {
+        if (active && e.coverRayCast.LookForCover())
+        {
+            //e.PlayerBody.MovePosition(e.coverRayCast.CoverPoint);
+            e.switctStates(e.coverState);
+        }
     }
 
     private void OnSprintStop(object sender, MoveStateManager e)

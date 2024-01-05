@@ -9,7 +9,17 @@ public class WalkingState : MovingState
         context.StartedSprint += OnSprint;
         context.StoppedWalking += OnStoppedWalking;
         context.StartedCrouch += OnCrouch;
+        context.StartedCover += OnCover;
         UsesFixedUpdt = false;
+    }
+
+    private void OnCover(object sender, MoveStateManager e)
+    {
+        if (active && e.coverRayCast.LookForCover())
+        {
+            //e.PlayerBody.MovePosition(e.coverRayCast.CoverPoint);
+            e.switctStates(e.coverState);
+        }
     }
 
     private void OnCrouch(object sender, MoveStateManager e)
