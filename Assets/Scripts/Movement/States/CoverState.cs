@@ -30,7 +30,7 @@ public class CoverState : MovingState
         ///
 
         context.PlayerBody.transform.forward = -context.coverRayCast.GetPoint().normal;
-        context.physicalBodyTransform.up = -context.coverRayCast.GetPoint().normal;
+        context.physicalBodyTransform.forward = context.coverRayCast.GetPoint().normal;
 
         //RaycastHit hit;
 
@@ -113,7 +113,7 @@ public class CoverState : MovingState
     public override void ExitState(MoveStateManager context)
     {
         context.MyAnimator.SetBool("IsCover", false);
-        context.physicalBodyTransform.position = context.PlayerBody.transform.forward;
+        context.physicalBodyTransform.forward = context.gameObject.transform.forward;
         context.coverRayCast.NormalOnX = false;
         context.coverRayCast.NormalOnZ = false;
     }

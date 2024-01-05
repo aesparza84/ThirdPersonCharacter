@@ -879,7 +879,7 @@ PrefabInstance:
         type: 3}
       propertyPath: physicalBodyTransform
       value: 
-      objectReference: {fileID: 349434067240105656}
+      objectReference: {fileID: 4636341471870388371}
     - target: {fileID: 2718237035424672198, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
         type: 3}
       propertyPath: m_Mass
@@ -1015,15 +1015,15 @@ CapsuleCollider:
     type: 3}
   m_PrefabInstance: {fileID: 5251552933053253081}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &349434067240105656 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5492196917490807649, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
-    type: 3}
-  m_PrefabInstance: {fileID: 5251552933053253081}
-  m_PrefabAsset: {fileID: 0}
 --- !u!95 &3353363030192831580 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 7379370611230833029, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
+    type: 3}
+  m_PrefabInstance: {fileID: 5251552933053253081}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4636341471870388371 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 627930611968101706, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
     type: 3}
   m_PrefabInstance: {fileID: 5251552933053253081}
   m_PrefabAsset: {fileID: 0}
