@@ -5,7 +5,7 @@ using UnityEngine;
 public class CoverState : MovingState
 {
 
-    private Vector3 coverNormal;
+    private Vector3 coverNormal, crossVector;
     public CoverState(MoveStateManager context)
     {
         context.StoppedCover += OnLeaveCover;
@@ -29,6 +29,7 @@ public class CoverState : MovingState
         ///to detect if we passed a wall's edge
         ///
 
+        context.PlayerBody.transform.forward = -context.coverRayCast.GetPoint().normal;
 
         RaycastHit hit;
 
@@ -40,6 +41,16 @@ public class CoverState : MovingState
         
         Debug.DrawRay(rayPosLeft, context.gameObject.transform.forward, Color.magenta);
         Debug.DrawRay(rayPosRight, context.gameObject.transform.forward, Color.magenta);
+
+        //Drawing the normal
+        Debug.DrawRay(context.playerCollider.transform.position,
+            (context.playerCollider.transform.position - context.coverRayCast.CoverPoint).normalized * 3,
+            Color.green);
+
+        //Drawing the Cross vector, parallel to the wall we are on covered
+        Debug.DrawRay(context.playerCollider.transform.position,
+            (context.playerCollider.transform.position - context.coverRayCast.CoverPoint).normalized * 3,
+            Color.green);
     }
 
     public override void DoFixedUpate(MoveStateManager context)
@@ -47,9 +58,16 @@ public class CoverState : MovingState
         context.moveVector = context.direction.right * context.HorizontalInput + 
                              context.direction.up * context.VerticalInput;
 
-        context.moveVector = Vector3.Project(context.moveVector, coverNormal);
-        //context.moveVector = Vector3.Project(cancelledAxis, context.moveVector);
+        //This works by setting the rigidbody forward to face wall in ENTER-state
+        //Thats why we move along the rigidbodies transfom.Right
+        crossVector = context.PlayerBody.transform.right;
+        context.moveVector = Vector3.Project(context.moveVector.normalized, crossVector);
 
+        #region Using Projection and Cross to limit movemont on axis  (Doesn't work)
+        //crossVector = Vector3.Cross(context.moveVector.normalized, coverNormal.normalized);
+        //context.moveVector = Vector3.Cross(context.moveVector.normalized, coverNormal.normalized);
+        //context.moveVector = Vector3.Project(cancelledAxis, context.moveVector);
+        #endregion
         context.PlayerBody.velocity = context.moveVector.normalized * context.Currentspeed;
     }
 
@@ -82,7 +100,6 @@ public class CoverState : MovingState
         //    cancelledAxis = Vector3.up;
         //}
         #endregion
-
 
     }
     private void MoveToCover(MoveStateManager context)
