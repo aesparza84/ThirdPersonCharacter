@@ -7,6 +7,8 @@ public abstract class MovingState
     //In each instance, we define the functionality differently
     protected PlayerMovement player;
     protected bool active;
+    protected MoveStateManager managerContext; //A reference to the data we want to manipulate
+
     public bool UsesFixedUpdt;
 
     protected Animator animator;

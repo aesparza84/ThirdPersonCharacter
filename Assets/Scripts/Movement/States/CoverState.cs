@@ -29,6 +29,17 @@ public class CoverState : MovingState
         ///to detect if we passed a wall's edge
         ///
 
+        if (context.HorizontalInput > 0)
+        {
+            //coverwalk right anim
+
+        }
+        if (context.HorizontalInput < 0)
+        {
+            //Coverwalk left anim
+            context.MyAnimator.SetBool("CoverWalkLeft", true);
+        }
+
         context.PlayerBody.transform.forward = -context.coverRayCast.GetPoint().normal;
         context.physicalBodyTransform.forward = context.coverRayCast.GetPoint().normal;
 
@@ -52,6 +63,8 @@ public class CoverState : MovingState
         Debug.DrawRay(context.playerCollider.transform.position,
             (context.playerCollider.transform.position - context.coverRayCast.CoverPoint).normalized * 3,
             Color.green);
+
+        
     }
 
     public override void DoFixedUpate(MoveStateManager context)

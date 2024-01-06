@@ -6,6 +6,8 @@ public class RunningState : MovingState
 {
     public RunningState(MoveStateManager context)
     {
+        managerContext = context;
+
         context.StoppedSprint += OnSprintStop;
         context.StartedCover += OnCover;
         UsesFixedUpdt = false;
@@ -51,6 +53,6 @@ public class RunningState : MovingState
 
     public override void DoFixedUpate(MoveStateManager context)
     {
-        throw new System.NotImplementedException();
+
     }
 }
