@@ -8,9 +8,13 @@ public class CoverState : MovingState
     private Vector3 coverNormal, crossVector;
     private Vector3 playerPos;
     private Transform playerTransform;
+
     private Vector3 colliderPosLHS, colliderPosRHS, startingLHS, startingRHS;
 
+    private bool hitLeft, hitRight;
+
     private float colliderWidth, colliderHeight, colliderZ;
+    private float colliderOffest;
 
     public CoverState(MoveStateManager context)
     {
@@ -19,6 +23,8 @@ public class CoverState : MovingState
         colliderWidth = context.playerCollider.bounds.extents.x;
         colliderHeight = context.playerCollider.bounds.extents.y;
         colliderZ = context.playerCollider.bounds.extents.z;
+
+        colliderOffest = 0.2f;
 
         playerTransform = context.gameObject.transform;
 
@@ -47,13 +53,25 @@ public class CoverState : MovingState
         ///Loacl positon + (collider extnents); local position is relative to transform i want to use
         ///
 
-        //RaycastHit hit;
-
-        colliderPosLHS = new Vector3(-colliderWidth, colliderHeight, 0);
-        colliderPosRHS = new Vector3(colliderWidth, colliderHeight, 0);
 
         startingLHS = context.transform.TransformPoint(colliderPosLHS);
         startingRHS = context.transform.TransformPoint(colliderPosRHS);
+
+        hitLeft = Physics.Raycast(startingLHS, context.gameObject.transform.forward, 1);
+        hitRight = Physics.Raycast(startingRHS, context.gameObject.transform.forward, 1);
+
+        if (!hitLeft)
+        {
+            context.HorizontalInput = Mathf.Clamp(context.HorizontalInput, 0, 1);
+        }
+        if (!hitRight)
+        {
+            context.HorizontalInput = Mathf.Clamp(context.HorizontalInput, -1, 0);
+
+        }
+
+        Debug.Log("HitLeft: "+hitLeft);
+        Debug.Log("HitRight: "+hitRight);
 
         Debug.DrawRay(startingLHS, context.gameObject.transform.forward, Color.green);
         Debug.DrawRay(startingRHS, context.gameObject.transform.forward, Color.magenta);
@@ -108,7 +126,9 @@ public class CoverState : MovingState
         context.MyAnimator.SetBool("IsCover", true);
 
         MoveToCover(context);
-       
+
+        colliderPosLHS = new Vector3(-colliderWidth + colliderOffest, colliderHeight * 0.5f , 0);
+        colliderPosRHS = new Vector3(colliderWidth - colliderOffest, colliderHeight * 0.5f, 0);
 
         context.inCover = true;
         context.Currentspeed = context.CoverSpeed;
