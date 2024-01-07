@@ -60,6 +60,7 @@ public class CrouchWalkState : MovingState
     {
         active = true;
         context.crouched = true;
+        context.ToggleColliders(false,true);
         context.MyAnimator.SetBool("IsWalking", true);
         context.MyAnimator.SetBool("IsCrouching", true); //We can get here from 'Walking'
     }
@@ -72,11 +73,12 @@ public class CrouchWalkState : MovingState
     private void leaveCrouch(MoveStateManager context)
     {
         context.crouched = false;
+        context.ToggleColliders(true, false);
         context.MyAnimator.SetBool("IsCrouching", false);
     }
 
     public override void DoFixedUpate(MoveStateManager context)
     {
-        throw new System.NotImplementedException();
+
     }
 }

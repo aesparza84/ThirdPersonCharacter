@@ -19,7 +19,8 @@ public class MoveStateManager : MonoBehaviour
     [Header("Player Components")]
     public Rigidbody PlayerBody;
     [SerializeField] private Transform playerTransform;
-    public Collider playerCollider;
+    public Collider StandingCollider;
+    public Collider CrouchingCollider;
     public Transform physicalBodyTransform;
 
     [Header("Camera")]
@@ -81,9 +82,9 @@ public class MoveStateManager : MonoBehaviour
         {
             PlayerBody = t;
         }
-        if (playerCollider == null && TryGetComponent<Collider>(out Collider d))
+        if (StandingCollider == null || StandingCollider==null)
         {
-            playerCollider = d;
+            Debug.LogWarning("Collider reference missing");
         }
 
         if (MyAnimator == null && TryGetComponent<Animator>(out Animator a))
@@ -243,5 +244,11 @@ public class MoveStateManager : MonoBehaviour
         currentState.ExitState(this);
         currentState = passedState;
         currentState.EnterState(this);
+    }
+
+    public void ToggleColliders(bool enableStand, bool enableCrouch) 
+    {
+        StandingCollider.enabled = enableStand;
+        CrouchingCollider.enabled = enableCrouch;
     }
 }

@@ -16,13 +16,17 @@ public class CoverState : MovingState
     private float colliderWidth, colliderHeight, colliderZ;
     private float colliderOffest;
 
+    private bool coverCrouch;
+
     public CoverState(MoveStateManager context)
     {
         context.StoppedCover += OnLeaveCover;
+        context.StartedCrouch += OnCrouch;
+        coverCrouch= false;
 
-        colliderWidth = context.playerCollider.bounds.extents.x;
-        colliderHeight = context.playerCollider.bounds.extents.y;
-        colliderZ = context.playerCollider.bounds.extents.z;
+        colliderWidth = context.StandingCollider.bounds.extents.x;
+        colliderHeight = context.StandingCollider.bounds.extents.y;
+        colliderZ = context.StandingCollider.bounds.extents.z;
 
         colliderOffest = 0.2f;
 
@@ -31,13 +35,26 @@ public class CoverState : MovingState
         UsesFixedUpdt = true;
     }
 
+    private void OnCrouch(object sender, MoveStateManager e)
+    {
+
+    }
+
     private void OnLeaveCover(object sender, MoveStateManager e)
     {
         if (active)
         {
             Debug.Log("Left Cover");
             e.inCover = false;
-            e.switctStates(e.idleState);
+
+            if (coverCrouch)
+            {
+                e.switctStates(e.crouchState);
+            }
+            else
+            {
+                e.switctStates(e.idleState);
+            }
         }
     }
 
@@ -59,19 +76,12 @@ public class CoverState : MovingState
 
         hitLeft = Physics.Raycast(startingLHS, context.gameObject.transform.forward, 1);
         hitRight = Physics.Raycast(startingRHS, context.gameObject.transform.forward, 1);
+        StopOnEdge(context);
 
-        if (!hitLeft)
-        {
-            context.HorizontalInput = Mathf.Clamp(context.HorizontalInput, 0, 1);
-        }
-        if (!hitRight)
-        {
-            context.HorizontalInput = Mathf.Clamp(context.HorizontalInput, -1, 0);
-
-        }
-
-        Debug.Log("HitLeft: "+hitLeft);
-        Debug.Log("HitRight: "+hitRight);
+        #region Debugging
+        /*
+        Debug.Log("HitLeft: " + hitLeft);
+        Debug.Log("HitRight: " + hitRight);
 
         Debug.DrawRay(startingLHS, context.gameObject.transform.forward, Color.green);
         Debug.DrawRay(startingRHS, context.gameObject.transform.forward, Color.magenta);
@@ -85,15 +95,27 @@ public class CoverState : MovingState
         Debug.DrawRay(context.playerCollider.transform.position,
             (context.playerCollider.transform.position - context.coverRayCast.CoverPoint).normalized * 3,
             Color.blue);
+        */
+        #endregion
+    }
 
-
+    private void StopOnEdge(MoveStateManager context)
+    {
+        if (!hitLeft)
+        {
+            context.HorizontalInput = Mathf.Clamp(context.HorizontalInput, 0, 1);
+        }
+        if (!hitRight)
+        {
+            context.HorizontalInput = Mathf.Clamp(context.HorizontalInput, -1, 0);
+        }
     }
 
     private void SetForwards(MoveStateManager context)
     {
         context.PlayerBody.transform.forward = -context.coverRayCast.GetPoint().normal;
         context.physicalBodyTransform.forward = context.coverRayCast.GetPoint().normal;
-        context.playerCollider.gameObject.transform.forward = -context.coverRayCast.GetPoint().normal;
+        context.StandingCollider.gameObject.transform.forward = -context.coverRayCast.GetPoint().normal;
 
         playerTransform.forward = -context.coverRayCast.GetPoint().normal;
     }
@@ -125,6 +147,12 @@ public class CoverState : MovingState
         active = true;
         context.MyAnimator.SetBool("IsCover", true);
 
+        coverCrouch = context.crouched;
+        if (coverCrouch)
+        {
+            context.MyAnimator.SetBool("IsCrouching", true);
+        }
+
         MoveToCover(context);
 
         colliderPosLHS = new Vector3(-colliderWidth + colliderOffest, colliderHeight * 0.5f , 0);
@@ -155,14 +183,32 @@ public class CoverState : MovingState
     }
     private void MoveToCover(MoveStateManager context)
     {
-        context.PlayerBody.MovePosition(context.coverRayCast.CoverPoint);
+        context.StartCoroutine(getToCover(context.PlayerBody, 
+                                          context.PlayerBody.position,
+                                          context.coverRayCast.CoverPoint,
+                                          1.3f));
+        
+        //context.PlayerBody.MovePosition(context.coverRayCast.CoverPoint);
+    }
+
+    private IEnumerator getToCover(Rigidbody playerBody, Vector3 playerPos, Vector3 finalPos, float lerpSpeed)
+    {        
+        float t = 0;
+        Vector3 currentPos = playerPos;
+
+        while(t < 1)
+        {
+            playerPos = Vector3.Lerp(currentPos, finalPos, t);
+            t += Time.deltaTime * lerpSpeed;
+            playerBody.MovePosition(playerPos);
+            
+            yield return null;            
+        }
     }
 
     public override void ExitState(MoveStateManager context)
     {
         context.MyAnimator.SetBool("IsCover", false);
         context.physicalBodyTransform.forward = context.gameObject.transform.forward;
-        context.coverRayCast.NormalOnX = false;
-        context.coverRayCast.NormalOnZ = false;
     }
 }

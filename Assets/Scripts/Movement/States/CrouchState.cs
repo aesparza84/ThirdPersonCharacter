@@ -34,6 +34,7 @@ public class CrouchState : MovingState
         if (active)
         {
             e.crouched = false;
+            e.ToggleColliders(true, false);
             e.MyAnimator.SetBool("IsCrouching", false);
             e.switctStates(e.idleState);
         }
@@ -49,15 +50,17 @@ public class CrouchState : MovingState
         active = true;
         context.crouched = true;
         context.MyAnimator.SetBool("IsCrouching", true);
+        context.ToggleColliders(false, true);
     }
 
     public override void ExitState(MoveStateManager context)
     {
+        context.ToggleColliders(true, false);
         active = false;
     }
 
     public override void DoFixedUpate(MoveStateManager context)
     {
-        throw new System.NotImplementedException();
+
     }
 }

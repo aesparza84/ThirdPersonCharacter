@@ -25,7 +25,7 @@ public class WalkingState : MovingState
     private void OnCrouch(object sender, MoveStateManager e)
     {
         if(active)
-        {
+        {            
             e.switctStates(e.crouchWalkState);
         }
     }

@@ -47,6 +47,7 @@ public class IdleState : MovingState
     {
         active = true;
         context.Currentspeed = 0;
+        context.ToggleColliders(true, false);
 
         context.MyAnimator.SetBool("IsWalking", false);
         context.MyAnimator.SetBool("IsRunning", false);
