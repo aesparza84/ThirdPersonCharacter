@@ -6,9 +6,21 @@ public class CoverState : MovingState
 {
 
     private Vector3 coverNormal, crossVector;
+    private Vector3 playerPos;
+    private Transform playerTransform;
+    private Vector3 colliderPosLHS, colliderPosRHS, startingLHS, startingRHS;
+
+    private float colliderWidth, colliderHeight, colliderZ;
+
     public CoverState(MoveStateManager context)
     {
         context.StoppedCover += OnLeaveCover;
+
+        colliderWidth = context.playerCollider.bounds.extents.x;
+        colliderHeight = context.playerCollider.bounds.extents.y;
+        colliderZ = context.playerCollider.bounds.extents.z;
+
+        playerTransform = context.gameObject.transform;
 
         UsesFixedUpdt = true;
     }
@@ -30,21 +42,32 @@ public class CoverState : MovingState
         ///
 
         context.MyAnimator.SetInteger("CoverHorizontal", (int)context.HorizontalInput);
-
-
-        context.PlayerBody.transform.forward = -context.coverRayCast.GetPoint().normal;
-        context.physicalBodyTransform.forward = context.coverRayCast.GetPoint().normal;
+        SetForwards(context);
 
         //RaycastHit hit;
 
-        Vector3 rayPosLeft = new Vector3(context.transform.position.x + -context.playerCollider.bounds.extents.x,
-                                         context.transform.position.y + context.playerCollider.bounds.extents.y);
+        ///Player positon + (collider extnents); player position is alwys being updated
 
-        Vector3 rayPosRight = new Vector3(context.transform.position.x + context.playerCollider.bounds.extents.x,
-                                          context.transform.position.y + context.playerCollider.bounds.extents.y);
-        
-        Debug.DrawRay(rayPosLeft, context.gameObject.transform.forward, Color.magenta);
-        Debug.DrawRay(rayPosRight, context.gameObject.transform.forward, Color.magenta);
+        playerPos = playerTransform.position;
+        //playerPos = context.playerCollider.gameObject.transform.position;
+        //Debug.DrawRay(playerPos, Vector3.up * 5, Color.magenta);
+
+        colliderPosLHS = new Vector3(playerPos.x + -context.playerCollider.bounds.extents.x,
+                                         playerPos.y + context.playerCollider.bounds.extents.y,
+                                        playerPos.z + -context.playerCollider.bounds.extents.z);
+
+        colliderPosRHS = new Vector3(playerPos.x + context.playerCollider.bounds.extents.x,
+                                          playerPos.y + context.playerCollider.bounds.extents.y,
+                                        playerPos.z + context.playerCollider.bounds.extents.z);
+
+        colliderPosLHS = new Vector3(-colliderWidth, colliderHeight, 0);
+        colliderPosRHS = new Vector3(colliderWidth, colliderHeight, 0);
+
+        startingLHS = context.transform.TransformPoint(colliderPosLHS);
+        startingRHS = context.transform.TransformPoint(colliderPosRHS);
+
+        Debug.DrawRay(startingLHS, context.gameObject.transform.forward, Color.green);
+        Debug.DrawRay(startingRHS, context.gameObject.transform.forward, Color.magenta);
 
         //Drawing the normal
         Debug.DrawRay(context.playerCollider.transform.position,
@@ -54,9 +77,18 @@ public class CoverState : MovingState
         //Drawing the Cross vector, parallel to the wall we are on covered
         Debug.DrawRay(context.playerCollider.transform.position,
             (context.playerCollider.transform.position - context.coverRayCast.CoverPoint).normalized * 3,
-            Color.green);
+            Color.blue);
 
-        
+
+    }
+
+    private void SetForwards(MoveStateManager context)
+    {
+        context.PlayerBody.transform.forward = -context.coverRayCast.GetPoint().normal;
+        context.physicalBodyTransform.forward = context.coverRayCast.GetPoint().normal;
+        context.playerCollider.gameObject.transform.forward = -context.coverRayCast.GetPoint().normal;
+
+        playerTransform.forward = -context.coverRayCast.GetPoint().normal;
     }
 
     public override void DoFixedUpate(MoveStateManager context)
@@ -66,6 +98,9 @@ public class CoverState : MovingState
 
         //This works by setting the rigidbody forward to face wall in Updateaction
         //Thats why we move along the rigidbodies transfom.Right
+
+        playerTransform = context.gameObject.transform;
+
         crossVector = context.PlayerBody.transform.right;
         context.moveVector = Vector3.Project(context.moveVector.normalized, crossVector);
 
@@ -84,7 +119,7 @@ public class CoverState : MovingState
         context.MyAnimator.SetBool("IsCover", true);
 
         MoveToCover(context);
-
+       
 
         context.inCover = true;
         context.Currentspeed = context.CoverSpeed;
@@ -112,7 +147,6 @@ public class CoverState : MovingState
     private void MoveToCover(MoveStateManager context)
     {
         context.PlayerBody.MovePosition(context.coverRayCast.CoverPoint);
-        Debug.Log("Move to " + context.coverRayCast.CoverPoint);
     }
 
     public override void ExitState(MoveStateManager context)
