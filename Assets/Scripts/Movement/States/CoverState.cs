@@ -44,21 +44,10 @@ public class CoverState : MovingState
         context.MyAnimator.SetInteger("CoverHorizontal", (int)context.HorizontalInput);
         SetForwards(context);
 
+        ///Loacl positon + (collider extnents); local position is relative to transform i want to use
+        ///
+
         //RaycastHit hit;
-
-        ///Player positon + (collider extnents); player position is alwys being updated
-
-        playerPos = playerTransform.position;
-        //playerPos = context.playerCollider.gameObject.transform.position;
-        //Debug.DrawRay(playerPos, Vector3.up * 5, Color.magenta);
-
-        colliderPosLHS = new Vector3(playerPos.x + -context.playerCollider.bounds.extents.x,
-                                         playerPos.y + context.playerCollider.bounds.extents.y,
-                                        playerPos.z + -context.playerCollider.bounds.extents.z);
-
-        colliderPosRHS = new Vector3(playerPos.x + context.playerCollider.bounds.extents.x,
-                                          playerPos.y + context.playerCollider.bounds.extents.y,
-                                        playerPos.z + context.playerCollider.bounds.extents.z);
 
         colliderPosLHS = new Vector3(-colliderWidth, colliderHeight, 0);
         colliderPosRHS = new Vector3(colliderWidth, colliderHeight, 0);
