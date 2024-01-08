@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CoverState : MovingState
 {
-
     private Vector3 coverNormal, crossVector;
     private Vector3 playerPos;
     private Transform playerTransform;

@@ -8,6 +8,7 @@ public abstract class MovingState
     protected PlayerMovement player;
     protected bool active;
     protected float speed;
+    protected float inputX, inputY;
     protected MoveStateManager managerContext; //A reference to the data we want to manipulate
 
     public bool UsesFixedUpdt;

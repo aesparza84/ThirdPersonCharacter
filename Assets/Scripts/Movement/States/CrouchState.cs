@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class CrouchState : MovingState
 {
@@ -42,13 +43,33 @@ public class CrouchState : MovingState
 
     public override void DoUpdateAction(MoveStateManager context)
     {
+        if (speed > 0)
+        {
+            context.inputZeroCheck = 0;
+            speed -= Time.deltaTime * 4.0f;
+        }
+        else if (speed < 0.0f)
+        {
+            speed = 0.0f;
+            inputX = 0;
+            inputY = 0;
+        }
+        context.MyAnimator.SetFloat("Speed", speed);
 
+        context.HorizontalInput = inputX;
+        context.VerticalInput = inputY;
+        context.Currentspeed = speed;        
     }
 
     public override void EnterState(MoveStateManager context)
     {
         active = true;
         context.crouched = true;
+        speed = context.Currentspeed;
+
+        inputX = context.HorizontalInput;
+        inputY = context.VerticalInput;
+
         context.MyAnimator.SetBool("IsCrouching", true);
         context.ToggleColliders(false, true);
     }

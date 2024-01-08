@@ -18,7 +18,7 @@ public class RunningState : MovingState
     {
         if (active)
         {
-            e.switctStates(e.walkingState);
+            e.switctStates(e.idleState);
         }
     }
 
@@ -52,13 +52,6 @@ public class RunningState : MovingState
 
         context.Currentspeed = speed;
         context.MyAnimator.SetFloat("Speed", speed);
-
-        if (context.inputZeroCheck == 0)
-        {
-            context.switctStates(context.idleState);
-        }
-
-
     }
 
     public override void EnterState(MoveStateManager context)

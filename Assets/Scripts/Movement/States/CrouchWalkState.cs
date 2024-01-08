@@ -53,13 +53,26 @@ public class CrouchWalkState : MovingState
 
     public override void DoUpdateAction(MoveStateManager context)
     {
-        context.Currentspeed = context.CrouchSpeed; 
+        if (speed < context.CrouchSpeed)
+        {
+            speed += Time.deltaTime * 2.0f;
+            speed = Mathf.Clamp(speed, 0, context.CrouchSpeed);
+        }
+        else if (speed > context.CrouchSpeed)
+        {
+            speed -= Time.deltaTime * 2.0f;
+            speed = Mathf.Clamp(speed, context.CrouchSpeed, 10);
+        }
+
+        context.Currentspeed = speed;
+        context.MyAnimator.SetFloat("Speed", speed);
     }
 
     public override void EnterState(MoveStateManager context)
     {
         active = true;
         context.crouched = true;
+        speed = context.Currentspeed;
         context.ToggleColliders(false,true);
         context.MyAnimator.SetBool("IsWalking", true);
         context.MyAnimator.SetBool("IsCrouching", true); //We can get here from 'Walking'
