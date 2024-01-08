@@ -62,6 +62,7 @@ public class MoveStateManager : MonoBehaviour
 
     public bool crouched;
     public bool inCover;
+    private bool aimMode;
 
     public event EventHandler<MoveStateManager> StartedSprint;
     public event EventHandler<MoveStateManager> StoppedSprint;
@@ -132,8 +133,21 @@ public class MoveStateManager : MonoBehaviour
         PlayerInputs.input.Player.Crouch.performed += OnCrouchPerformed;
         PlayerInputs.input.Player.Cover.performed += OnCoverPressed;
 
+        PlayerInputs.input.Player.Aim.performed += OnAim;
+        PlayerInputs.input.Player.Aim.canceled += OnAimStopped;
+
         currentState = idleState;
         currentState.EnterState(this);
+    }
+
+    private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        aimMode = false;
+    }
+
+    private void OnAim(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        aimMode = true;
     }
 
     private void OnCoverPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -208,9 +222,17 @@ public class MoveStateManager : MonoBehaviour
     private void SetPlayersForward()
     {
         direction = followCam.forwaredRotation;
-        if (moveVector != Vector3.zero)
+        if (aimMode)
         {
-            playerTransform.forward = Vector3.Slerp(playerTransform.forward, moveVector.normalized, Time.deltaTime * 10);
+            //This faces player to camera forward, AIM CAMERA
+            playerTransform.forward = direction.forward;
+        }
+        else
+        {
+            if (moveVector != Vector3.zero)
+            {
+                playerTransform.forward = Vector3.Slerp(playerTransform.forward, moveVector.normalized, Time.deltaTime * 10);
+            }
         }
     }
 
