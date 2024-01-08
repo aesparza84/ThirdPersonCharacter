@@ -22,6 +22,8 @@ public class CoverState : MovingState
     {
         context.StoppedCover += OnLeaveCover;
         context.StartedCrouch += OnCrouch;
+        context.StoppedCrouch += OnStopCrouch;
+
         coverCrouch= false;
 
         colliderWidth = context.StandingCollider.bounds.extents.x;
@@ -35,16 +37,34 @@ public class CoverState : MovingState
         UsesFixedUpdt = true;
     }
 
+    private void OnStopCrouch(object sender, MoveStateManager e)
+    {
+        if (active)
+        {
+            e.crouched = false;
+            e.MyAnimator.SetBool("IsCrouching", false);
+            e.ToggleColliders(true, false);
+        }
+    }
+
     private void OnCrouch(object sender, MoveStateManager e)
     {
-
+        if (active)
+        {
+            if (!coverCrouch)
+            {
+                e.crouched = true;
+                e.MyAnimator.SetBool("IsCrouching", true);
+                e.ToggleColliders(false, true);
+            }
+        }
+        
     }
 
     private void OnLeaveCover(object sender, MoveStateManager e)
     {
         if (active)
         {
-            Debug.Log("Left Cover");
             e.inCover = false;
 
             if (coverCrouch)
@@ -67,6 +87,12 @@ public class CoverState : MovingState
         context.MyAnimator.SetInteger("CoverHorizontal", (int)context.HorizontalInput);
         SetForwards(context);
 
+        if (coverCrouch != context.crouched)
+        {
+            coverCrouch = context.crouched;
+        }
+
+        Debug.Log(coverCrouch);
         ///Loacl positon + (collider extnents); local position is relative to transform i want to use
         ///
 

@@ -523,7 +523,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 735966277}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.011693394, y: -0.0023757494, z: -0.000027782547, w: 0.99992883}
+  m_LocalRotation: {x: -0.011693394, y: -0.002375747, z: -0.000027782517, w: 0.99992883}
   m_LocalPosition: {x: 6.637764, y: 2.5000002, z: -4.7408094}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1061,12 +1061,12 @@ PrefabInstance:
     - target: {fileID: 3982034562773168938, guid: 14772c1463ca92d4cbba469e8fd46e6f,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0023757487
+      value: -0.0023757475
       objectReference: {fileID: 0}
     - target: {fileID: 3982034562773168938, guid: 14772c1463ca92d4cbba469e8fd46e6f,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00002778253
+      value: -0.000027782515
       objectReference: {fileID: 0}
     - target: {fileID: 4799258627298410893, guid: 14772c1463ca92d4cbba469e8fd46e6f,
         type: 3}
@@ -1081,7 +1081,7 @@ PrefabInstance:
     - target: {fileID: 5842900262074533470, guid: 14772c1463ca92d4cbba469e8fd46e6f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.00000047683716
       objectReference: {fileID: 0}
     - target: {fileID: 5842900262074533470, guid: 14772c1463ca92d4cbba469e8fd46e6f,
         type: 3}
@@ -1091,17 +1091,17 @@ PrefabInstance:
     - target: {fileID: 5842900262074533470, guid: 14772c1463ca92d4cbba469e8fd46e6f,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.017140945
+      value: 0.017140925
       objectReference: {fileID: 0}
     - target: {fileID: 5842900262074533470, guid: 14772c1463ca92d4cbba469e8fd46e6f,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0023755443
+      value: -0.0023755787
       objectReference: {fileID: 0}
     - target: {fileID: 5842900262074533470, guid: 14772c1463ca92d4cbba469e8fd46e6f,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000040725175
+      value: 0.00004072572
       objectReference: {fileID: 0}
     - target: {fileID: 6085709125257108268, guid: 14772c1463ca92d4cbba469e8fd46e6f,
         type: 3}
