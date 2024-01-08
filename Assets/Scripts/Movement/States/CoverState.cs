@@ -17,6 +17,8 @@ public class CoverState : MovingState
 
     private bool coverCrouch;
 
+    private float prevHorizontal;
+
     public CoverState(MoveStateManager context)
     {
         context.StoppedCover += OnLeaveCover;
@@ -83,15 +85,14 @@ public class CoverState : MovingState
         ///to detect if we passed a wall's edge
         ///
 
-        context.MyAnimator.SetInteger("CoverHorizontal", (int)context.HorizontalInput);
+        SpeedAndLeaningDirection(context);
+
         SetForwards(context);
 
         if (coverCrouch != context.crouched)
         {
             coverCrouch = context.crouched;
         }
-
-        Debug.Log(coverCrouch);
         ///Loacl positon + (collider extnents); local position is relative to transform i want to use
         ///
 
@@ -122,6 +123,48 @@ public class CoverState : MovingState
             Color.blue);
         */
         #endregion
+    }
+
+    private void SpeedAndLeaningDirection(MoveStateManager context)
+    {
+        //Runs if we are giving input
+        if (context.HorizontalInput != 0 && speed < context.CoverSpeed)
+        {
+            speed += Time.deltaTime * 1.5f;
+            speed = Mathf.Clamp(speed, 0, context.CoverSpeed);
+        }
+
+        if (context.HorizontalInput > 0)
+        {
+            prevHorizontal += Time.deltaTime * 1.5f;
+            prevHorizontal = Mathf.Clamp(prevHorizontal, 0, 1);
+        }
+        else if (context.HorizontalInput < 0)
+        {
+            prevHorizontal -= Time.deltaTime * 1.5f;
+            prevHorizontal = Mathf.Clamp(prevHorizontal, -1, 0);
+        }
+
+        //Runs if we are not fully stopped
+        if (context.HorizontalInput == 0 && speed > 0)
+        {
+            speed -= Time.deltaTime * 1.5f;
+            speed = Mathf.Clamp(speed, 0, context.CoverSpeed);
+
+            if (prevHorizontal > 0)
+            {
+                prevHorizontal -= Time.deltaTime * 1.5f;
+                prevHorizontal = Mathf.Clamp(prevHorizontal, 0, 1);
+            }
+            else if (prevHorizontal < 0)
+            {
+                prevHorizontal += Time.deltaTime * 1.5f;
+                prevHorizontal = Mathf.Clamp(prevHorizontal, -1, 0);
+            }
+        }
+
+        context.MyAnimator.SetFloat("Horizontal", prevHorizontal);
+        context.Currentspeed = speed;
     }
 
     private void StopOnEdge(MoveStateManager context)
@@ -171,8 +214,10 @@ public class CoverState : MovingState
         //We enter the 'covered' state
         active = true;
         context.MyAnimator.SetBool("IsCover", true);
+        context.MyAnimator.SetFloat("Speed", 0);
 
         coverCrouch = context.crouched;
+
         if (coverCrouch)
         {
             context.MyAnimator.SetBool("IsCrouching", true);
@@ -184,13 +229,13 @@ public class CoverState : MovingState
         colliderPosRHS = new Vector3(colliderWidth - colliderOffest, colliderHeight * 0.5f, 0);
 
         context.inCover = true;
-        context.Currentspeed = context.CoverSpeed;
+        speed = 0; //context.Currentspeed = context.CoverSpeed;
 
         //Check the cover ray cast normal hit
         //Restrict RigidBody to perpdenicular axis
 
         coverNormal = context.coverRayCast.GetPoint().normal;
-        Debug.Log("Cncelled normal: "+coverNormal);
+        //Debug.Log("Cncelled normal: "+coverNormal);
 
         #region Old vector projecting
         //if (context.coverRayCast.NormalOnX)
