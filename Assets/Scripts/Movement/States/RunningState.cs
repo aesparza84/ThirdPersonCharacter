@@ -9,8 +9,17 @@ public class RunningState : MovingState
         managerContext = context;
 
         context.StoppedSprint += OnSprintStop;
+        context.StoppedWalking += OnNoInput;
         context.StartedCover += OnCover;
         UsesFixedUpdt = false;
+    }
+
+    private void OnNoInput(object sender, MoveStateManager e)
+    {
+        if (active)
+        {
+            e.switctStates(e.walkingState);
+        }
     }
 
     private void OnCover(object sender, MoveStateManager e)
@@ -32,16 +41,30 @@ public class RunningState : MovingState
 
     public override void DoUpdateAction(MoveStateManager context)
     {
-        context.Currentspeed = context.SprintSpeed;
+        if (speed < context.SprintSpeed)
+        {
+            speed += Time.deltaTime * 5.0f;
+        }
+        else if (speed > context.SprintSpeed)
+        {
+            speed = context.SprintSpeed;
+        }
+
+        context.Currentspeed = speed;
+        context.MyAnimator.SetFloat("Speed", speed);
+
         if (context.inputZeroCheck == 0)
         {
             context.switctStates(context.idleState);
         }
+
+
     }
 
     public override void EnterState(MoveStateManager context)
     {
         active = true;
+        speed = context.Currentspeed;
         context.MyAnimator.SetBool("IsRunning", true);
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IdleState : MovingState
 {
-
+    float inputX, inputY;
     public IdleState(MoveStateManager context)
     {
         context.StartedWalking += OnWalk;
@@ -39,19 +39,42 @@ public class IdleState : MovingState
     }
 
     public override void DoUpdateAction(MoveStateManager context)
-    {
-        //Nothing for idle
+    {       
+        if (speed > 0)
+        {
+            speed -= Time.deltaTime * 5.0f;
+        }
+        else if (speed < 0.0f)
+        {
+            speed = 0.0f;
+        }
+
+        context.MyAnimator.SetFloat("Speed", speed);
+
+        if (speed == 0)
+        {
+            inputX = 0;
+            inputY = 0;
+        }
+
+        context.HorizontalInput = inputX;
+        context.VerticalInput = inputY;
+        context.Currentspeed = speed;
     }
 
     public override void EnterState(MoveStateManager context)
     {
         active = true;
-        context.Currentspeed = 0;
+        speed = context.Currentspeed;
         context.ToggleColliders(true, false);
+
+        inputX = context.HorizontalInput;
+        inputY = context.VerticalInput;
 
         context.MyAnimator.SetBool("IsWalking", false);
         context.MyAnimator.SetBool("IsRunning", false);
         context.MyAnimator.SetBool("IsCrouching", false);
+
 
     }
 

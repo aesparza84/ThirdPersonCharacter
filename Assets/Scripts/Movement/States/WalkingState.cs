@@ -50,7 +50,21 @@ public class WalkingState : MovingState
 
     public override void DoUpdateAction(MoveStateManager context)
     {
-        context.Currentspeed = context.BaseSpeed;
+        if (speed < context.BaseSpeed)
+        {
+            speed += Time.deltaTime * 5.0f;
+            speed = Mathf.Clamp(speed, 0, context.BaseSpeed);
+        }
+        else if (speed > context.BaseSpeed)
+        {
+            speed -= Time.deltaTime * 5.0f;
+            speed = Mathf.Clamp(speed, context.BaseSpeed, 10);
+        }
+
+
+        context.Currentspeed = speed;
+        context.MyAnimator.SetFloat("Speed", context.Currentspeed);
+
         if (context.inputZeroCheck == 0)
         {
             context.switctStates(context.idleState);
@@ -61,6 +75,8 @@ public class WalkingState : MovingState
     {
         active = true;
         context.MyAnimator.SetBool("IsWalking", true);
+
+        speed = context.Currentspeed;
     }
 
     public override void ExitState(MoveStateManager context)
@@ -70,6 +86,6 @@ public class WalkingState : MovingState
 
     public override void DoFixedUpate(MoveStateManager context)
     {
-        throw new System.NotImplementedException();
+
     }
 }
