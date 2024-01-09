@@ -6,20 +6,27 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [Header("The Players Cameras")]
-    [SerializeField] private CinemachineFreeLook ThirdPersonCam;
-    [SerializeField] private CinemachineVirtualCamera AimRightCam;
-    //[SerializeField] private CinemachineVirtualCamera AimLeftCam;
+    [SerializeField] private CinemachineVirtualCameraBase thirdPersonCam;
+    [SerializeField] private CinemachineVirtualCameraBase aimCamera;
+    //[SerializeField] private CinemachineVirtualCameraBase AimLeftCam;
+
+    private CinemachineVirtualCameraBase CurrentCamera;
+
+    public Transform ForwardRotation;
+    public Vector3 camViewDirection; //Facing towards player
 
     [Header("Reference to Player Input")]
     [SerializeField] private InputManager playerInputs;
 
+
+
     private void Awake()
     {
-        if (ThirdPersonCam == null)
+        if (thirdPersonCam == null)
         {
             Debug.LogWarning("No ThirdPersonCam detected");
         }
-        if (AimRightCam == null)
+        if (aimCamera == null)
         {
             Debug.LogWarning("No AimRightCam detected");
         }
@@ -31,8 +38,9 @@ public class CameraController : MonoBehaviour
     }
     void Start()
     {
-        ThirdPersonCam.Priority = 10;
-        AimRightCam.Priority = 0;
+        aimCamera.gameObject.SetActive(false);
+        CurrentCamera = thirdPersonCam;
+
 
         playerInputs.input.Player.Aim.performed += OnAimPerformed;
         playerInputs.input.Player.Aim.canceled += OnAimStopped; 
@@ -40,18 +48,27 @@ public class CameraController : MonoBehaviour
 
     private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        ThirdPersonCam.Priority = 10;
-        AimRightCam.Priority = 0;
+        thirdPersonCam.gameObject.SetActive(true);
+        aimCamera.gameObject.SetActive(false);
+
+        CurrentCamera = thirdPersonCam;
     }
 
     private void OnAimPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        ThirdPersonCam.Priority = 0;
-        AimRightCam.Priority = 10;
+        thirdPersonCam.gameObject.SetActive(false);
+        aimCamera.gameObject.SetActive(true);
+
+        CurrentCamera = aimCamera;
     }
 
     void Update()
     {
-        
+        camViewDirection = (gameObject.transform.position - new Vector3(CurrentCamera.transform.position.x,
+                         gameObject.transform.position.y, CurrentCamera.transform.position.z)).normalized;
+
+        ForwardRotation.forward = camViewDirection;
+
+        Debug.DrawRay(CurrentCamera.transform.position, camViewDirection * 10, Color.magenta);
     }
 }

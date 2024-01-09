@@ -24,7 +24,8 @@ public class MoveStateManager : MonoBehaviour
     public Transform physicalBodyTransform;
 
     [Header("Camera")]
-    [SerializeField] private ThirdPersonCamera followCam;
+    [SerializeField] private CameraController camController;
+    //[SerializeField] private ThirdPersonCamera followCam;
     public Transform direction;
 
     [Header("Cover Raycaster")]
@@ -93,10 +94,15 @@ public class MoveStateManager : MonoBehaviour
             MyAnimator = a;
         }
 
-        if (followCam == null && TryGetComponent<ThirdPersonCamera>(out ThirdPersonCamera c))
+        if (camController == null && TryGetComponent<CameraController>(out CameraController s))
         {
-            followCam = c;
+            camController = s;
         }
+
+        //if (followCam == null && TryGetComponent<ThirdPersonCamera>(out ThirdPersonCamera c))
+        //{
+        //    followCam = c;
+        //}
 
         if(coverRayCast == null && TryGetComponent<CoverRaycast>(out CoverRaycast v))
         {
@@ -221,7 +227,8 @@ public class MoveStateManager : MonoBehaviour
 
     private void SetPlayersForward()
     {
-        direction = followCam.forwaredRotation;
+        //direction = followCam.forwaredRotation;
+        direction = camController.ForwardRotation;
         if (aimMode)
         {
             //This faces player to camera forward, AIM CAMERA
