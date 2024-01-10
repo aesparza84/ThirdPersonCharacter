@@ -253,9 +253,10 @@ public class CoverState : MovingState
     }
     private void MoveToCover(MoveStateManager context)
     {
+        Vector3 newPos = context.coverRayCast.GetCoverPoint().point;
         context.StartCoroutine(getToCover(context.PlayerBody, 
                                           context.PlayerBody.position,
-                                          context.coverRayCast.CoverPoint,
+                                          newPos,
                                           1.3f));
         
         //context.PlayerBody.MovePosition(context.coverRayCast.CoverPoint);

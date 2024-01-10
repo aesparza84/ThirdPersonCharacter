@@ -64,7 +64,11 @@ public class CoverRaycast : MonoBehaviour
         Debug.DrawRay(rayStart, rayDirection * rayDistance, Color.cyan);
 
         drawVaultRays();
-        Debug.Log("Can Vault: "+ CanVault());
+
+        #region Debugging
+        //Debug.Log("Can Vault: "+ CheckClimbOrVault(1));
+        //Debug.Log("Can Climb: "+ CheckClimbOrVault(1.7f));
+        #endregion
     }
 
     private void drawVaultRays()
@@ -103,6 +107,8 @@ public class CoverRaycast : MonoBehaviour
         return false;
     }
 
+    #region Individual vault/climb check
+    /*
     public bool CanVault()
     {
         vaultPoint = Vector3.zero;
@@ -123,12 +129,71 @@ public class CoverRaycast : MonoBehaviour
 
         return false;
     }
+
+    public bool CanClimb()
+    {
+        vaultPoint = Vector3.zero;
+        if (Physics.Raycast(rayStart, gameObject.transform.forward, out RaycastHit hit, 1.7f, coverMask))
+        {
+            Vector3 insidePoint = hit.point + gameObject.transform.forward.normalized * playerRadius;
+            Vector3 topPoint = new Vector3(insidePoint.x, insidePoint.y + playerHeight*1.4f, insidePoint.z);
+
+            if (Physics.Raycast(topPoint, Vector3.down, out RaycastHit newPoint, playerHeight * 1.4f, coverMask))
+            {
+                vaultPoint = newPoint.point;
+
+                debugTransform.position = vaultPoint;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+    */
+    #endregion
+
+    /// <summary>
+    /// Pararmeter multiplies the players height to check whether we can 
+    /// vault of climb the object in front of us.
+    /// 
+    /// Vault: we would set param to 1 since we dont want to vault anything
+    /// taller than us.
+    /// 
+    /// Climb: we would set this to be (roughly) 1.5 -> 1.7 times the player height
+    /// to check if we need to climb on top of the object of reasonable height.
+    /// 
+    /// We can prioritize vault since both will be true when vault is true.
+    /// 
+    /// </summary>
+    /// <param name="heightCheck"></param>
+    /// <returns></returns>
+    public bool CheckClimbOrVault(float heightCheck)
+    {
+        vaultPoint = Vector3.zero;
+        if (Physics.Raycast(rayStart, gameObject.transform.forward, out RaycastHit hit, 1.7f, coverMask))
+        {
+            Vector3 insidePoint = hit.point + gameObject.transform.forward.normalized * playerRadius;
+            Vector3 topPoint = new Vector3(insidePoint.x, insidePoint.y + playerHeight * heightCheck, insidePoint.z);
+
+            if (Physics.Raycast(topPoint, Vector3.down, out RaycastHit newPoint, playerHeight * heightCheck, coverMask))
+            {
+                vaultPoint = newPoint.point;
+
+                debugTransform.position = vaultPoint;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
     public RaycastHit GetCoverPoint()
     {
         return coverCheck;
     }
 
-    public Vector3 GetVaultPoint()
+    public Vector3 GetNewPos()
     {
         return vaultPoint;
     }

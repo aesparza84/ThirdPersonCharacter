@@ -223,7 +223,7 @@ public class MoveStateManager : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(currentState);
+        //Debug.Log(currentState);
 
         inputZeroCheck = (HorizontalInput * 2) + (VerticalInput * 1.7f); //My way of checking if the previous input is 0
         SetPlayersForward();
@@ -239,7 +239,7 @@ public class MoveStateManager : MonoBehaviour
         if (aimMode)
         {
             //This faces player to camera forward, AIM CAMERA
-            //playerTransform.forward = direction.forward;
+            playerTransform.forward = direction.forward;
         }
         else
         {
