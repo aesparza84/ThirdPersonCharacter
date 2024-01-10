@@ -24,6 +24,8 @@ public class CoverRaycast : MonoBehaviour
     [SerializeField] private Collider playerCollider;
     [SerializeField] private float playerRadius;
     [SerializeField] private float playerHeight;
+
+    public Transform debugTransform;
     private void Awake()
     {
         if (CoverStart == null)
@@ -62,21 +64,23 @@ public class CoverRaycast : MonoBehaviour
         Debug.DrawRay(rayStart, rayDirection * rayDistance, Color.cyan);
 
         drawVaultRays();
+        Debug.Log("Can Vault: "+ CanVault());
     }
 
     private void drawVaultRays()
     {
-        Vector3 point = Vector3.zero;
-
-        Debug.DrawRay(rayStart, gameObject.transform.forward.normalized * 1.0f, Color.red);
+        Debug.DrawRay(rayStart, gameObject.transform.forward.normalized * 1.7f, Color.red);
 
         if (Physics.Raycast(rayStart, gameObject.transform.forward, out RaycastHit hit, 1.0f, coverMask))
         {
             Vector3 insidePoint = hit.point + gameObject.transform.forward.normalized * playerRadius;
             Vector3 topPoint = new Vector3(insidePoint.x, insidePoint.y + playerHeight, insidePoint.z);
 
-            Debug.DrawRay(insidePoint, gameObject.transform.forward.normalized * playerRadius, Color.green);
+            Debug.DrawRay(new Vector3(hit.point.x, hit.point.y + 1, hit.point.z), -gameObject.transform.forward.normalized, Color.red);
+
+            Debug.DrawRay(hit.point, gameObject.transform.forward.normalized * playerRadius, Color.green);
             Debug.DrawRay(topPoint, Vector3.down.normalized * playerHeight, Color.cyan);
+            
         }
     }
 
@@ -84,7 +88,6 @@ public class CoverRaycast : MonoBehaviour
     {
         rayStart = CoverStart.position;
         rayDirection = playerBody.forward;
-
     }
     public bool LookForCover()
     {
@@ -103,14 +106,17 @@ public class CoverRaycast : MonoBehaviour
     public bool CanVault()
     {
         vaultPoint = Vector3.zero;
-        if (Physics.Raycast(rayStart, gameObject.transform.forward, out RaycastHit hit, 1.0f, coverMask))
+        if (Physics.Raycast(rayStart, gameObject.transform.forward, out RaycastHit hit, 1.7f, coverMask))
         {
             Vector3 insidePoint = hit.point + gameObject.transform.forward.normalized * playerRadius;
             Vector3 topPoint = new Vector3(insidePoint.x, insidePoint.y + playerHeight, insidePoint.z);
 
-            if (Physics.Raycast(topPoint, Vector3.down, out RaycastHit newPoint, playerHeight))
+            if (Physics.Raycast(topPoint, Vector3.down, out RaycastHit newPoint, playerHeight, coverMask))
             {
                 vaultPoint = newPoint.point;
+
+                debugTransform.position = vaultPoint;
+
                 return true;
             }
         }
