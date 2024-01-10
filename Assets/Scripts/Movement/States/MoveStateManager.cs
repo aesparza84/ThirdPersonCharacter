@@ -232,7 +232,7 @@ public class MoveStateManager : MonoBehaviour
         if (aimMode)
         {
             //This faces player to camera forward, AIM CAMERA
-            playerTransform.forward = direction.forward;
+            //playerTransform.forward = direction.forward;
         }
         else
         {

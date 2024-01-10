@@ -89,6 +89,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseAIm"",
+                    ""type"": ""Value"",
+                    ""id"": ""82ab3d72-9842-4fb5-89ab-b2801e85db02"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -278,6 +287,17 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c1721fd3-fbac-4207-824e-250ad646d4c7"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseAIm"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -293,6 +313,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Player_Cover = m_Player.FindAction("Cover", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
+        m_Player_MouseAIm = m_Player.FindAction("MouseAIm", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -361,6 +382,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Cover;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Aim;
+    private readonly InputAction m_Player_MouseAIm;
     public struct PlayerActions
     {
         private @PlayerInputs m_Wrapper;
@@ -372,6 +394,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @Cover => m_Wrapper.m_Player_Cover;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Aim => m_Wrapper.m_Player_Aim;
+        public InputAction @MouseAIm => m_Wrapper.m_Player_MouseAIm;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -402,6 +425,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Aim.started += instance.OnAim;
             @Aim.performed += instance.OnAim;
             @Aim.canceled += instance.OnAim;
+            @MouseAIm.started += instance.OnMouseAIm;
+            @MouseAIm.performed += instance.OnMouseAIm;
+            @MouseAIm.canceled += instance.OnMouseAIm;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -427,6 +453,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Aim.started -= instance.OnAim;
             @Aim.performed -= instance.OnAim;
             @Aim.canceled -= instance.OnAim;
+            @MouseAIm.started -= instance.OnMouseAIm;
+            @MouseAIm.performed -= instance.OnMouseAIm;
+            @MouseAIm.canceled -= instance.OnMouseAIm;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -453,5 +482,6 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnCover(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
+        void OnMouseAIm(InputAction.CallbackContext context);
     }
 }
