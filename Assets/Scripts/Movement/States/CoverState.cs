@@ -181,11 +181,11 @@ public class CoverState : MovingState
 
     private void SetForwards(MoveStateManager context)
     {
-        context.PlayerBody.transform.forward = -context.coverRayCast.GetPoint().normal;
-        context.physicalBodyTransform.forward = context.coverRayCast.GetPoint().normal;
-        context.StandingCollider.gameObject.transform.forward = -context.coverRayCast.GetPoint().normal;
+        context.PlayerBody.transform.forward = -context.coverRayCast.GetCoverPoint().normal;
+        context.physicalBodyTransform.forward = context.coverRayCast.GetCoverPoint().normal;
+        context.StandingCollider.gameObject.transform.forward = -context.coverRayCast.GetCoverPoint().normal;
 
-        playerTransform.forward = -context.coverRayCast.GetPoint().normal;
+        playerTransform.forward = -context.coverRayCast.GetCoverPoint().normal;
     }
 
     public override void DoFixedUpate(MoveStateManager context)
@@ -234,7 +234,7 @@ public class CoverState : MovingState
         //Check the cover ray cast normal hit
         //Restrict RigidBody to perpdenicular axis
 
-        coverNormal = context.coverRayCast.GetPoint().normal;
+        coverNormal = context.coverRayCast.GetCoverPoint().normal;
         //Debug.Log("Cncelled normal: "+coverNormal);
 
         #region Old vector projecting

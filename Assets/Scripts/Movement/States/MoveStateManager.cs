@@ -142,8 +142,15 @@ public class MoveStateManager : MonoBehaviour
         PlayerInputs.input.Player.Aim.performed += OnAim;
         PlayerInputs.input.Player.Aim.canceled += OnAimStopped;
 
+        PlayerInputs.input.Player.JumpVault.performed += OnJumpVault;
+
         currentState = idleState;
         currentState.EnterState(this);
+    }
+
+    private void OnJumpVault(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        //PlayerBody.MovePosition(coverRayCast.ClimbPoint());
     }
 
     private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)

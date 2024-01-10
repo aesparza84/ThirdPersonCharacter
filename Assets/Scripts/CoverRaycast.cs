@@ -19,9 +19,11 @@ public class CoverRaycast : MonoBehaviour
     [SerializeField] private LayerMask coverMask;
 
     public Vector3 CoverPoint;
+    private Vector3 vaultPoint;
 
-    public bool NormalOnX, NormalOnZ;
-
+    [SerializeField] private Collider playerCollider;
+    [SerializeField] private float playerRadius;
+    [SerializeField] private float playerHeight;
     private void Awake()
     {
         if (CoverStart == null)
@@ -41,27 +43,41 @@ public class CoverRaycast : MonoBehaviour
         {
             rayDirection = playerBody.forward;
         }
+
+        if (playerCollider == null)
+        {
+            Debug.LogWarning("Collider ref not set");
+        }
     }
 
     void Start()
     {
-        NormalOnX = false; 
-        NormalOnZ = false;
-        //if (CoverStart)
-        //{
-        //    rayStart = CoverStart.position;
-        //}
-
-        //if (cam)
-        //{
-        //    rayDirection = cam.camViewDirection;
-        //}
+        playerRadius = playerCollider.bounds.extents.x;
+        playerHeight = playerCollider.bounds.extents.y * 1.5f;
     }
 
     private void Update()
     {
         setRaypos();
         Debug.DrawRay(rayStart, rayDirection * rayDistance, Color.cyan);
+
+        drawVaultRays();
+    }
+
+    private void drawVaultRays()
+    {
+        Vector3 point = Vector3.zero;
+
+        Debug.DrawRay(rayStart, gameObject.transform.forward.normalized * 1.0f, Color.red);
+
+        if (Physics.Raycast(rayStart, gameObject.transform.forward, out RaycastHit hit, 1.0f, coverMask))
+        {
+            Vector3 insidePoint = hit.point + gameObject.transform.forward.normalized * playerRadius;
+            Vector3 topPoint = new Vector3(insidePoint.x, insidePoint.y + playerHeight, insidePoint.z);
+
+            Debug.DrawRay(insidePoint, gameObject.transform.forward.normalized * playerRadius, Color.green);
+            Debug.DrawRay(topPoint, Vector3.down.normalized * playerHeight, Color.cyan);
+        }
     }
 
     private void setRaypos()
@@ -78,24 +94,37 @@ public class CoverRaycast : MonoBehaviour
             coverCheck = hit;
             CoverPoint = coverCheck.point;
 
-            //Checking Perpendicular/ normal
-            if (Mathf.Abs(coverCheck.normal.x) == 1)
-            {
-                NormalOnX = true;
-            }
-            if (Mathf.Abs(coverCheck.normal.z) == 1)
-            {
-                NormalOnZ = true;
-            }
-
             //Debug.Log("Hit Normal: " +coverCheck.normal);
             return true;
         }
         return false;
     }
 
-    public RaycastHit GetPoint()
+    public bool CanVault()
+    {
+        vaultPoint = Vector3.zero;
+        if (Physics.Raycast(rayStart, gameObject.transform.forward, out RaycastHit hit, 1.0f, coverMask))
+        {
+            Vector3 insidePoint = hit.point + gameObject.transform.forward.normalized * playerRadius;
+            Vector3 topPoint = new Vector3(insidePoint.x, insidePoint.y + playerHeight, insidePoint.z);
+
+            if (Physics.Raycast(topPoint, Vector3.down, out RaycastHit newPoint, playerHeight))
+            {
+                vaultPoint = newPoint.point;
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public RaycastHit GetCoverPoint()
     {
         return coverCheck;
     }
+
+    public Vector3 GetVaultPoint()
+    {
+        return vaultPoint;
+    }
+
 }

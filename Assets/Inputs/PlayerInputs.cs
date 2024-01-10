@@ -46,7 +46,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Jump"",
+                    ""name"": ""JumpVault"",
                     ""type"": ""Button"",
                     ""id"": ""68669e2a-19a4-4fa6-bd48-6137768fbd89"",
                     ""expectedControlType"": ""Button"",
@@ -160,10 +160,10 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""444ee9d1-3dda-4130-bf4a-0375db3fbf1d"",
                     ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Jump"",
+                    ""action"": ""JumpVault"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -171,10 +171,10 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""f506a6e5-979d-4992-97b8-25cb4474ec91"",
                     ""path"": ""<Gamepad>/buttonSouth"",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Jump"",
+                    ""action"": ""JumpVault"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -308,7 +308,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_MovementWASD = m_Player.FindAction("Movement (WASD)", throwIfNotFound: true);
         m_Player_MovementGamepad = m_Player.FindAction("Movement (Gamepad)", throwIfNotFound: true);
-        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_JumpVault = m_Player.FindAction("JumpVault", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_Cover = m_Player.FindAction("Cover", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
@@ -377,7 +377,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_MovementWASD;
     private readonly InputAction m_Player_MovementGamepad;
-    private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_JumpVault;
     private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_Cover;
     private readonly InputAction m_Player_Sprint;
@@ -389,7 +389,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public PlayerActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @MovementWASD => m_Wrapper.m_Player_MovementWASD;
         public InputAction @MovementGamepad => m_Wrapper.m_Player_MovementGamepad;
-        public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @JumpVault => m_Wrapper.m_Player_JumpVault;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
         public InputAction @Cover => m_Wrapper.m_Player_Cover;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
@@ -410,9 +410,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @MovementGamepad.started += instance.OnMovementGamepad;
             @MovementGamepad.performed += instance.OnMovementGamepad;
             @MovementGamepad.canceled += instance.OnMovementGamepad;
-            @Jump.started += instance.OnJump;
-            @Jump.performed += instance.OnJump;
-            @Jump.canceled += instance.OnJump;
+            @JumpVault.started += instance.OnJumpVault;
+            @JumpVault.performed += instance.OnJumpVault;
+            @JumpVault.canceled += instance.OnJumpVault;
             @Crouch.started += instance.OnCrouch;
             @Crouch.performed += instance.OnCrouch;
             @Crouch.canceled += instance.OnCrouch;
@@ -438,9 +438,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @MovementGamepad.started -= instance.OnMovementGamepad;
             @MovementGamepad.performed -= instance.OnMovementGamepad;
             @MovementGamepad.canceled -= instance.OnMovementGamepad;
-            @Jump.started -= instance.OnJump;
-            @Jump.performed -= instance.OnJump;
-            @Jump.canceled -= instance.OnJump;
+            @JumpVault.started -= instance.OnJumpVault;
+            @JumpVault.performed -= instance.OnJumpVault;
+            @JumpVault.canceled -= instance.OnJumpVault;
             @Crouch.started -= instance.OnCrouch;
             @Crouch.performed -= instance.OnCrouch;
             @Crouch.canceled -= instance.OnCrouch;
@@ -477,7 +477,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     {
         void OnMovementWASD(InputAction.CallbackContext context);
         void OnMovementGamepad(InputAction.CallbackContext context);
-        void OnJump(InputAction.CallbackContext context);
+        void OnJumpVault(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnCover(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
