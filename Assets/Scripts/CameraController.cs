@@ -145,24 +145,24 @@ public class CameraController : MonoBehaviour
     //Since we are using fixedUpdate movement, Camera must be the same
     private void FixedUpdate()
     {
-        aimPoint = Vector3.zero;
-
         screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
-        Ray ray = mainCam.ScreenPointToRay(screenCenter);
-
-        aimPoint = ray.direction * 100f;
+        aimPoint = Vector3.zero;
 
         camViewDirection = (gameObject.transform.position - new Vector3(CurrentCamera.transform.position.x,
                          gameObject.transform.position.y, CurrentCamera.transform.position.z)).normalized;
 
 
-
-
         MouseSensitivity = defaultMouseSensitivity;
         if (aimMode)
         {
-            camViewDirection = (new Vector3(aimPoint.x, 0, aimPoint.z) - new Vector3(gameObject.transform.position.x,
-                         0, gameObject.transform.position.z)).normalized;
+            Ray ray = mainCam.ScreenPointToRay(screenCenter);
+
+            Debug.DrawRay(CurrentCamera.transform.position, ray.direction * 10f, Color.magenta);
+
+            aimPoint = mainCam.ScreenToWorldPoint(screenCenter) + ray.direction * 10f;
+
+            camViewDirection = (new Vector3(aimPoint.x, 0, aimPoint.z) - new Vector3(CurrentCamera.transform.position.x,
+                         0, CurrentCamera.transform.position.z)).normalized;
 
             debubTransform.position = aimPoint;
 
@@ -173,7 +173,7 @@ public class CameraController : MonoBehaviour
 
         ForwardRotation.forward = camViewDirection;
 
-        Debug.DrawRay(CurrentCamera.transform.position, camViewDirection * 10, Color.magenta);
+        //Debug.DrawRay(CurrentCamera.transform.position, camViewDirection * 10, Color.magenta);
     }
 
     private void rotateVirtualCam()

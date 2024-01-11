@@ -79,8 +79,12 @@ public class CoverRaycast : MonoBehaviour
         {
             CanClimb = CheckClimbable(climbMax, hit);
             CanVault = CheckVaultable(vaultMax, hit);
-            drawClimbRays(climbMax, hit);
-            drawVaultRays(vaultMax, hit);
+
+            if (debugTransform != null)
+            {
+                drawClimbRays(climbMax, hit);
+                drawVaultRays(vaultMax, hit);
+            }            
         }
         else
         {
