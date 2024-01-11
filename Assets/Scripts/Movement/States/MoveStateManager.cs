@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Windows;
 
 public class MoveStateManager : MonoBehaviour
 {
@@ -22,6 +21,8 @@ public class MoveStateManager : MonoBehaviour
     public Collider StandingCollider;
     public Collider CrouchingCollider;
     public Transform physicalBodyTransform;
+    [SerializeField] private Transform groundCheckTransform;
+    [SerializeField] private LayerMask groundMask;
 
     [Header("Camera")]
     [SerializeField] private CameraController camController;
@@ -43,13 +44,18 @@ public class MoveStateManager : MonoBehaviour
     public float SprintSpeed;
     public float CrouchSpeed;
     public float CoverSpeed;
-
     //[SerializeField] private Vector3 moveVector;
     public Vector3 moveVector;
+    private Vector3 gravityVector;
 
     public float HorizontalInput;
     public float VerticalInput;
     public float inputZeroCheck;
+
+    private float gravity;
+    [SerializeField] private float gravityMultiplier;
+    [SerializeField] private float maxGravityAmount;
+    private float velocityOnY;
 
 
     [SerializeField] private MovingState currentState;
@@ -60,10 +66,12 @@ public class MoveStateManager : MonoBehaviour
     public IdleState idleState;
     public CrouchState crouchState;
     public CoverState coverState;
+    public ClimbingState climbState;
 
     public bool crouched;
     public bool inCover;
     private bool aimMode;
+    private bool isMoving;
 
     public event EventHandler<MoveStateManager> StartedSprint;
     public event EventHandler<MoveStateManager> StoppedSprint;
@@ -73,6 +81,7 @@ public class MoveStateManager : MonoBehaviour
     public event EventHandler<MoveStateManager> StoppedCrouch;
     public event EventHandler<MoveStateManager> StartedCover;
     public event EventHandler<MoveStateManager> StoppedCover;
+    public event EventHandler<MoveStateManager> OnClimb;
 
     private void Awake()
     {
@@ -99,10 +108,10 @@ public class MoveStateManager : MonoBehaviour
             camController = s;
         }
 
-        //if (followCam == null && TryGetComponent<ThirdPersonCamera>(out ThirdPersonCamera c))
-        //{
-        //    followCam = c;
-        //}
+        if (groundCheckTransform == null)
+        {
+            Debug.LogWarning("No groundcheck set");
+        }
 
         if(coverRayCast == null && TryGetComponent<CoverRaycast>(out CoverRaycast v))
         {
@@ -120,6 +129,10 @@ public class MoveStateManager : MonoBehaviour
         idleState = new IdleState(this);
         crouchState = new CrouchState(this); 
         coverState = new CoverState(this);
+        climbState = new ClimbingState(this);
+
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
     }
     void Start()
     {
@@ -129,6 +142,9 @@ public class MoveStateManager : MonoBehaviour
         CrouchSpeed = BaseSpeed * 0.85f; //A random number I chose
         crouched = false;
         inCover = false;
+
+        gravity = -9.81f;
+        gravityVector = Vector3.zero;
 
         PlayerInputs.input.Player.MovementWASD.performed += OnMovementPerformed; 
         PlayerInputs.input.Player.MovementWASD.canceled += OnMovementCancelled; 
@@ -150,7 +166,28 @@ public class MoveStateManager : MonoBehaviour
 
     private void OnJumpVault(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        //PlayerBody.MovePosition(coverRayCast.ClimbPoint());
+        if (isMoving && CanVault())
+        {
+            Vector3 newpos = coverRayCast.GetVaultPoint();
+            PlayerBody.MovePosition(newpos);
+            Debug.Log("Vaulted");
+        }
+        else if (CanClimb())
+        {
+            switctStates(climbState);
+        }
+        //Vector3 newPos = Vector3.zero;
+        //if (Input.GetKey(KeyCode.W) && CanVault())
+        //{
+        //    newPos = coverRayCast.GetVaultPoint();
+        //    PlayerBody.MovePosition(newPos);
+        //}
+        //else if (CanClimb())
+        //{
+        //    newPos = coverRayCast.GetClimbPoint();
+        //    PlayerBody.MovePosition( newPos );
+        //    MyAnimator.Play("ClimbingWall");
+        //}
     }
 
     private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -200,6 +237,7 @@ public class MoveStateManager : MonoBehaviour
     private void OnMovementCancelled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         StoppedWalking.Invoke(this, this);  
+        isMoving = false;
         SetInputs(0,0);
     }
 
@@ -210,7 +248,7 @@ public class MoveStateManager : MonoBehaviour
         {
             StartedWalking.Invoke(this, this);
         }
-
+        isMoving = true;
         SetInputs(obj.ReadValue<Vector2>().x, obj.ReadValue<Vector2>().y);
     }
 
@@ -245,7 +283,9 @@ public class MoveStateManager : MonoBehaviour
         {
             if (moveVector != Vector3.zero)
             {
-                playerTransform.forward = Vector3.Slerp(playerTransform.forward, moveVector.normalized, Time.deltaTime * 10);
+                playerTransform.forward = Vector3.Slerp(playerTransform.forward,
+                    new Vector3(moveVector.x,0,moveVector.z).normalized, 
+                    Time.deltaTime * 10);
             }
         }
     }
@@ -264,6 +304,12 @@ public class MoveStateManager : MonoBehaviour
         {
             movement();
         }
+
+        Debug.Log(grounded());
+        if (!grounded())
+        {
+            applyGravity();
+        }
     }
 
     private void movement()
@@ -272,7 +318,25 @@ public class MoveStateManager : MonoBehaviour
         {
             moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);
         }
+
         PlayerBody.velocity = moveVector.normalized * Currentspeed; //normalized to ensure equal length vector for directions
+    }
+
+    private void applyGravity()
+    {
+        moveVector.y += gravity * gravityMultiplier;
+        if (gravity < -maxGravityAmount)
+        {
+            gravity = -maxGravityAmount;
+            gravityVector.y = gravity;
+        }
+
+        PlayerBody.AddForce(0,gravity,0);
+    }
+
+    private bool grounded()
+    {
+        return Physics.CheckSphere(groundCheckTransform.position, 0.5f, groundMask);
     }
 
     public void switctStates(MovingState passedState)
@@ -287,4 +351,7 @@ public class MoveStateManager : MonoBehaviour
         StandingCollider.enabled = enableStand;
         CrouchingCollider.enabled = enableCrouch;
     }
+
+    public bool CanClimb() { return coverRayCast.CanClimb; }
+    public bool CanVault() { return coverRayCast.CanVault; }
 }

@@ -314,9 +314,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.032837383
-  m_Height: 0.095369875
+  m_Height: 0.113361105
   m_Direction: 1
-  m_Center: {x: 0.0006498576, y: 0.065222055, z: -0.0006876325}
+  m_Center: {x: 0.0006498576, y: 0.05622647, z: -0.0006876325}
 --- !u!1 &4253644142208405887
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,9 +848,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.032837383
-  m_Height: 0.14250466
+  m_Height: 0.16044927
   m_Direction: 1
-  m_Center: {x: 0.0006498576, y: 0.08878939, z: -0.0006876325}
+  m_Center: {x: 0.0006498576, y: 0.07981709, z: -0.0006876325}
 --- !u!1 &8440727684084156645
 GameObject:
   m_ObjectHideFlags: 0
@@ -1520,14 +1520,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoverStart: {fileID: 3411813342777415310}
+  climbMax: 0
+  vaultMax: 0
   playerBody: {fileID: 3411813342777415310}
   rayDistance: 5
   coverMask:
     serializedVersion: 2
     m_Bits: 64
   CoverPoint: {x: 0, y: 0, z: 0}
-  NormalOnX: 0
-  NormalOnZ: 0
+  CanClimb: 0
+  CanVault: 0
+  playerCollider: {fileID: 0}
+  playerRadius: 0
+  playerHeight: 0
+  debugTransform: {fileID: 0}
 --- !u!114 &4495557007763181936
 MonoBehaviour:
   m_ObjectHideFlags: 0
