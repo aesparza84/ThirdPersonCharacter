@@ -131,7 +131,7 @@ public class MoveStateManager : MonoBehaviour
         coverState = new CoverState(this);
         climbState = new ClimbingState(this);
 
-        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
     void Start()

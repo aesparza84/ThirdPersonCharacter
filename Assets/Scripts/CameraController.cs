@@ -157,12 +157,12 @@ public class CameraController : MonoBehaviour
         {
             Ray ray = mainCam.ScreenPointToRay(screenCenter);
 
-            Debug.DrawRay(CurrentCamera.transform.position, ray.direction * 10f, Color.magenta);
+            Debug.DrawRay(CurrentCamera.transform.position, ray.direction * 50f, Color.magenta);
 
-            aimPoint = mainCam.ScreenToWorldPoint(screenCenter) + ray.direction * 10f;
+            aimPoint = mainCam.ScreenToWorldPoint(screenCenter) + ray.direction * 50f;
 
-            camViewDirection = (new Vector3(aimPoint.x, 0, aimPoint.z) - new Vector3(CurrentCamera.transform.position.x,
-                         0, CurrentCamera.transform.position.z)).normalized;
+            camViewDirection = (new Vector3(aimPoint.x, 0, aimPoint.z) - new Vector3(gameObject.transform.position.x,
+                         0, gameObject.transform.position.z)).normalized;
 
             debubTransform.position = aimPoint;
 
@@ -181,5 +181,10 @@ public class CameraController : MonoBehaviour
         xInput = Mathf.Clamp(xInput, -30, 70);
         Quaternion rotation = Quaternion.Euler(-xInput, yInput, 0f);
         followTarget.rotation = rotation;
+    }
+
+    public Vector3 GetAimPoint()
+    {
+        return aimPoint;
     }
 }
