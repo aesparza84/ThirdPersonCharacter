@@ -82,6 +82,11 @@ public class CoverRaycast : MonoBehaviour
             drawClimbRays(climbMax, hit);
             drawVaultRays(vaultMax, hit);
         }
+        else
+        {
+            CanClimb = false;
+            CanVault = false;
+        }
 
         #region Debugging
         //Debug.Log("Can Climb: "+ CheckClimbable(climbMax));
@@ -214,6 +219,7 @@ public class CoverRaycast : MonoBehaviour
     /// <returns></returns>
     private bool CheckClimbable(float heightCheck, RaycastHit hit)
     {
+        climbPoint = Vector3.zero;
         Vector3 insidePoint = hit.point + gameObject.transform.forward.normalized * playerRadius;
         Vector3 topPoint = new Vector3(insidePoint.x, insidePoint.y + playerHeight * heightCheck, insidePoint.z);
 
@@ -228,6 +234,8 @@ public class CoverRaycast : MonoBehaviour
 
     private bool CheckVaultable(float maxSlideLength, RaycastHit hit)
     {
+        vaultPoint = Vector3.zero;
+
         //Shoot ray from player Collider: Middle 
         //Shoot ray Vector3.down to see if it clears object of length
         Vector3 middle = new Vector3(rayStart.x, rayStart.y + playerCollider.bounds.extents.y, rayStart.z);

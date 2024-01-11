@@ -46,7 +46,7 @@ public class MoveStateManager : MonoBehaviour
     public float CoverSpeed;
     //[SerializeField] private Vector3 moveVector;
     public Vector3 moveVector;
-    private Vector3 gravityVector;
+    [SerializeField] private Vector3 gravityVector;
 
     public float HorizontalInput;
     public float VerticalInput;
@@ -176,18 +176,6 @@ public class MoveStateManager : MonoBehaviour
         {
             switctStates(climbState);
         }
-        //Vector3 newPos = Vector3.zero;
-        //if (Input.GetKey(KeyCode.W) && CanVault())
-        //{
-        //    newPos = coverRayCast.GetVaultPoint();
-        //    PlayerBody.MovePosition(newPos);
-        //}
-        //else if (CanClimb())
-        //{
-        //    newPos = coverRayCast.GetClimbPoint();
-        //    PlayerBody.MovePosition( newPos );
-        //    MyAnimator.Play("ClimbingWall");
-        //}
     }
 
     private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -305,10 +293,13 @@ public class MoveStateManager : MonoBehaviour
             movement();
         }
 
-        Debug.Log(grounded());
         if (!grounded())
         {
             applyGravity();
+        }
+        else
+        {
+            gravityVector.y = 0;
         }
     }
 
@@ -324,19 +315,18 @@ public class MoveStateManager : MonoBehaviour
 
     private void applyGravity()
     {
-        moveVector.y += gravity * gravityMultiplier;
-        if (gravity < -maxGravityAmount)
+        gravityVector.y += gravity * gravityMultiplier;
+        if (gravityVector.y < -maxGravityAmount)
         {
-            gravity = -maxGravityAmount;
             gravityVector.y = gravity;
         }
 
-        PlayerBody.AddForce(0,gravity,0);
+        PlayerBody.velocity += gravityVector;
     }
 
     private bool grounded()
     {
-        return Physics.CheckSphere(groundCheckTransform.position, 0.5f, groundMask);
+        return Physics.CheckSphere(groundCheckTransform.position, 0.3f, groundMask);
     }
 
     public void switctStates(MovingState passedState)

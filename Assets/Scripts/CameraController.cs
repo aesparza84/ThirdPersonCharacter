@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private CinemachineVirtualCameraBase thirdPersonCam;
     [SerializeField] private CinemachineVirtualCameraBase aimCamera;
     //[SerializeField] private CinemachineVirtualCameraBase AimLeftCam;
+    private Camera mainCam;
 
     private CinemachineVirtualCameraBase CurrentCamera;
 
@@ -24,7 +25,12 @@ public class CameraController : MonoBehaviour
     private float xInput;
     private float yInput;
 
+    private Vector2 screenCenter;
+    private Vector3 aimPoint;
+
     bool aimMode;
+
+    [SerializeField] private Transform debubTransform;
 
     [Header("Reference to Player Input")]
     [SerializeField] private InputManager playerInputs;
@@ -53,6 +59,8 @@ public class CameraController : MonoBehaviour
     }
     void Start()
     {
+        mainCam = Camera.main;
+
         aimCamera.gameObject.SetActive(false);
         CurrentCamera = thirdPersonCam;
 
@@ -94,19 +102,76 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        //aimPoint = Vector3.zero;
+
+        //screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        //Ray ray = mainCam.ScreenPointToRay(screenCenter);
+
+        //aimPoint = ray.direction * 50f;
+
+        ////if (Physics.Raycast(ray, out RaycastHit hit, 50))
+        ////{
+        ////    aimPoint = hit.point;
+        ////    if (debubTransform != null)
+        ////    {
+        ////        debubTransform.position = hit.point;
+        ////    }
+        ////}
+
+        //camViewDirection = (gameObject.transform.position - new Vector3(CurrentCamera.transform.position.x,
+        //                 gameObject.transform.position.y, CurrentCamera.transform.position.z)).normalized;
+
+        
+
+
+        //MouseSensitivity = defaultMouseSensitivity;
+        //if (aimMode)
+        //{
+        //    camViewDirection = (new Vector3(aimPoint.x, 0, aimPoint.z) - new Vector3(gameObject.transform.position.x,
+        //                 0, gameObject.transform.position.z)).normalized;
+
+        //    debubTransform.position = aimPoint;
+
+        //    MouseSensitivity /= 2;
+        //}
+
+        //rotateVirtualCam();
+
+        //ForwardRotation.forward = camViewDirection;
+
+        //Debug.DrawRay(CurrentCamera.transform.position, camViewDirection * 10, Color.magenta);
+    }
+
+    //Since we are using fixedUpdate movement, Camera must be the same
+    private void FixedUpdate()
+    {
+        aimPoint = Vector3.zero;
+
+        screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        Ray ray = mainCam.ScreenPointToRay(screenCenter);
+
+        aimPoint = ray.direction * 100f;
+
         camViewDirection = (gameObject.transform.position - new Vector3(CurrentCamera.transform.position.x,
                          gameObject.transform.position.y, CurrentCamera.transform.position.z)).normalized;
 
-        ForwardRotation.forward = camViewDirection;
+
+
 
         MouseSensitivity = defaultMouseSensitivity;
         if (aimMode)
         {
+            camViewDirection = (new Vector3(aimPoint.x, 0, aimPoint.z) - new Vector3(gameObject.transform.position.x,
+                         0, gameObject.transform.position.z)).normalized;
+
+            debubTransform.position = aimPoint;
+
             MouseSensitivity /= 2;
         }
-        rotateVirtualCam();
-       
 
+        rotateVirtualCam();
+
+        ForwardRotation.forward = camViewDirection;
 
         Debug.DrawRay(CurrentCamera.transform.position, camViewDirection * 10, Color.magenta);
     }
