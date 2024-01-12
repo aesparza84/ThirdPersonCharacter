@@ -1050,6 +1050,11 @@ PrefabInstance:
       objectReference: {fileID: 1153743874469885632}
     - target: {fileID: 1920079980957383041, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
         type: 3}
+      propertyPath: groundDrag
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1920079980957383041, guid: 838c7a9e64b30aa4b87dfa5f12507a56,
+        type: 3}
       propertyPath: playerCollider
       value: 
       objectReference: {fileID: 297236478433846342, guid: 14772c1463ca92d4cbba469e8fd46e6f,

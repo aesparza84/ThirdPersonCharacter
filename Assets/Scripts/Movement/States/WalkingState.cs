@@ -50,17 +50,18 @@ public class WalkingState : MovingState
 
     public override void DoUpdateAction(MoveStateManager context)
     {
-        if (speed < context.BaseSpeed)
-        {
-            speed += Time.deltaTime * 5.0f;
-            speed = Mathf.Clamp(speed, 0, context.BaseSpeed);
-        }
-        else if (speed > context.BaseSpeed)
-        {
-            speed -= Time.deltaTime * 5.0f;
-            speed = Mathf.Clamp(speed, context.BaseSpeed, 10);
-        }
+        //if (speed < context.BaseSpeed)
+        //{
+        //    speed += Time.deltaTime * 5.0f;
+        //    speed = Mathf.Clamp(speed, 0, context.BaseSpeed);
+        //}
+        //else if (speed > context.BaseSpeed)
+        //{
+        //    speed -= Time.deltaTime * 5.0f;
+        //    speed = Mathf.Clamp(speed, context.BaseSpeed, 10);
+        //}
 
+        speed = context.BaseSpeed;
 
         context.Currentspeed = speed;
         context.MyAnimator.SetFloat("Speed", context.Currentspeed);

@@ -1044,6 +1044,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: NewestPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 7840590033472730820, guid: c35c54c9f3449cf4b81a7cad7cccebaa,
+        type: 3}
+      propertyPath: BaseSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7840590033472730820, guid: c35c54c9f3449cf4b81a7cad7cccebaa,
+        type: 3}
+      propertyPath: groundDrag
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1199,7 +1209,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1105969146}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bc2ce66eac4d44e910a8ff1a01da05, type: 3}
   m_Name: 
@@ -1208,6 +1218,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 7746241450393289543, guid: ea27b0573b9081742a2506e9a3e90848,
     type: 3}
   PlayerInputs: {fileID: 1105969152}
+  camController: {fileID: 0}
 --- !u!1 &1394057935
 GameObject:
   m_ObjectHideFlags: 0
@@ -1616,7 +1627,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1851462714
 MonoBehaviour:
   m_ObjectHideFlags: 0

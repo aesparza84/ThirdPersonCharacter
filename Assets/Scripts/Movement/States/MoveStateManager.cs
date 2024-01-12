@@ -26,8 +26,8 @@ public class MoveStateManager : MonoBehaviour
 
     [Header("Camera")]
     [SerializeField] private CameraController camController;
-    //[SerializeField] private ThirdPersonCamera followCam;
     public Transform direction;
+    public Vector3 camForward;
 
     [Header("Cover Raycaster")]
     public CoverRaycast coverRayCast;
@@ -44,8 +44,9 @@ public class MoveStateManager : MonoBehaviour
     public float SprintSpeed;
     public float CrouchSpeed;
     public float CoverSpeed;
-    //[SerializeField] private Vector3 moveVector;
+    [SerializeField] private float groundDrag;
     public Vector3 moveVector;
+    private Vector3 rbVelocity;
     [SerializeField] private Vector3 gravityVector;
 
     public float HorizontalInput;
@@ -143,6 +144,8 @@ public class MoveStateManager : MonoBehaviour
         crouched = false;
         inCover = false;
 
+        camForward = Vector3.zero;
+
         gravity = -9.81f;
         gravityVector = Vector3.zero;
 
@@ -166,6 +169,7 @@ public class MoveStateManager : MonoBehaviour
 
     private void OnJumpVault(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
+        //TODOL Make these into states
         if (isMoving && CanVault())
         {
             Vector3 newpos = coverRayCast.GetVaultPoint();
@@ -227,6 +231,8 @@ public class MoveStateManager : MonoBehaviour
         StoppedWalking.Invoke(this, this);  
         isMoving = false;
         SetInputs(0,0);
+
+
     }
 
     private void OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -238,6 +244,7 @@ public class MoveStateManager : MonoBehaviour
         }
         isMoving = true;
         SetInputs(obj.ReadValue<Vector2>().x, obj.ReadValue<Vector2>().y);
+
     }
 
     private void SetInputs(float x, float y)
@@ -251,6 +258,9 @@ public class MoveStateManager : MonoBehaviour
     {
         //Debug.Log(currentState);
 
+        direction = camController.ForwardRotation;
+        camForward = camController.ForwardRotation.forward;
+
         inputZeroCheck = (HorizontalInput * 2) + (VerticalInput * 1.7f); //My way of checking if the previous input is 0
         SetPlayersForward();
         currentState.DoUpdateAction(this);
@@ -261,11 +271,11 @@ public class MoveStateManager : MonoBehaviour
     private void SetPlayersForward()
     {
         //direction = followCam.forwaredRotation;
-        direction = camController.ForwardRotation;
         if (aimMode)
         {
             //This faces player to camera forward, AIM CAMERA
-            playerTransform.forward = direction.forward;
+            //playerTransform.forward = direction.forward;
+            playerTransform.forward = camForward;
         }
         else
         {
@@ -283,6 +293,8 @@ public class MoveStateManager : MonoBehaviour
         //If the current state changes movment completely,
         //we use the current state's-FixedUpdate rigidbody movement
         //instead of the default
+
+        rbVelocity = PlayerBody.velocity;
 
         if (currentState.UsesFixedUpdt) 
         {
@@ -305,11 +317,13 @@ public class MoveStateManager : MonoBehaviour
 
     private void movement()
     {
-        if (direction)
-        {
-            moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);
-        }
-
+        //if (direction)
+        //{
+            
+        //}
+        //moveVector = (direction.right * HorizontalInput) + (direction.forward * VerticalInput);
+        moveVector = (camController.ForwardRotation.right * HorizontalInput) + (camController.ForwardRotation.forward * VerticalInput);
+        
         PlayerBody.velocity = moveVector.normalized * Currentspeed; //normalized to ensure equal length vector for directions
     }
 
