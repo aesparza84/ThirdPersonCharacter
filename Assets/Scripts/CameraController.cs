@@ -164,7 +164,10 @@ public class CameraController : MonoBehaviour
             camViewDirection = (new Vector3(aimPoint.x, 0, aimPoint.z) - new Vector3(gameObject.transform.position.x,
                          0, gameObject.transform.position.z)).normalized;
 
-            debubTransform.position = aimPoint;
+            if (debubTransform != null)
+            {
+                debubTransform.position = aimPoint;
+            }
 
             MouseSensitivity /= 2;
         }
