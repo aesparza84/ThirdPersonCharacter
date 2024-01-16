@@ -8,7 +8,6 @@ public class PlayerCover : PlayerState
 
     private Vector3 colliderPosLHS, colliderPosRHS, startingLHS, startingRHS;
     private Vector3 crossVector;
-    private Vector3 coverNormal;
 
     private bool hitLeft, hitRight;
 
@@ -21,20 +20,21 @@ public class PlayerCover : PlayerState
 
     public PlayerCover(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory) : base(passedContext, passedFactory)
     {
-        colliderWidth = _context.StandingCollider.bounds.extents.x;
-        colliderHeight = _context.StandingCollider.bounds.extents.y;
-        colliderZ = _context.StandingCollider.bounds.extents.z;
-
-        colliderOffest = 0.2f;
-
-        playerTransform = _context.gameObject.transform;
+        
     }
 
     public override void CheckSwitchConditions()
     {
         if (_context.CoverPressed)
         {
-            SwitchToState(_factory.Idle());
+            if (_context.CrouchedCover)
+            {
+                SwitchToState(_factory.Crouch());
+            }
+            else
+            {
+                SwitchToState(_factory.Idle());
+            }
         }
     }
 
@@ -45,19 +45,23 @@ public class PlayerCover : PlayerState
 
     public override void EnterState()
     {
-        _context.CoverPressed = false; 
+        colliderOffest = 0.2f;
+
+        playerTransform = _context.gameObject.transform;
+        //-------//
+        _context.CoverPressed = false;
+
+        _context.ToggleColliders(!_context.CrouchedCover, _context.CrouchedCover);
+        _context.MyAnimator.SetBool("IsCrouching", _context.CrouchedCover);
 
         MoveToCover();
-        colliderPosLHS = new Vector3(-colliderWidth + colliderOffest, colliderHeight * 0.5f, 0);
-        colliderPosRHS = new Vector3(colliderWidth - colliderOffest, colliderHeight * 0.5f, 0);
+        colliderPosLHS = new Vector3(-_context.ColliderWidth + colliderOffest, _context.ColliderHeight * 0.5f, 0);
+        colliderPosRHS = new Vector3(_context.ColliderWidth - colliderOffest, _context.ColliderHeight * 0.5f, 0);
 
-        //_context.inCover = true;
-        speed = 0; //context.Currentspeed = context.CoverSpeed;
+        speed = 0; 
 
         //Check the cover ray cast normal hit
-        //Restrict RigidBody to perpdenicular axis
-
-        coverNormal = _context.CoverRayCast.GetCoverPoint().normal;
+        //Restrict RigidBody to perpdenicular axis       
 
         ToggleAnimationBool(true);
     }
@@ -66,6 +70,7 @@ public class PlayerCover : PlayerState
     {
         _context.PhyscialBodyTransfom.forward = _context.PlayerBody.transform.forward;
         _context.CoverPressed = false;
+        _context.CrouchedCover = false;
         ToggleAnimationBool(false);
     }
 
@@ -104,6 +109,12 @@ public class PlayerCover : PlayerState
             _context.Currentspeed = 0;
         }
 
+        if (_context.CrouchPressed)
+        {
+            _context.CrouchPressed = false;
+            ToggleCover();
+        }
+
         ///Shoot out RayCasts at Players-Collider's width (extents?)
         ///to detect if we passed a wall's edge
         ///
@@ -127,23 +138,23 @@ public class PlayerCover : PlayerState
         hitRight = Physics.Raycast(startingRHS, _context.gameObject.transform.forward, 1);
         StopOnEdge();
 
-        /*
-       Debug.Log("HitLeft: " + hitLeft);
-       Debug.Log("HitRight: " + hitRight);
+        #region Debugging
+        //Debug.Log("HitLeft: " + hitLeft);
+        //Debug.Log("HitRight: " + hitRight);
 
-       Debug.DrawRay(startingLHS, _context.gameObject.transform.forward, Color.green);
-       Debug.DrawRay(startingRHS, _context.gameObject.transform.forward, Color.magenta);
+        Debug.DrawRay(startingLHS, _context.gameObject.transform.forward, Color.green);
+        Debug.DrawRay(startingRHS, _context.gameObject.transform.forward, Color.magenta);
 
-       //Drawing the normal
-       Debug.DrawRay(_context.StandingCollider.transform.position,
-           (_context.StandingCollider.transform.position - _context.CoverRayCast.CoverPoint).normalized * 3,
-           Color.green);
+        //Drawing the normal
+        //Debug.DrawRay(_context.StandingCollider.transform.position,
+        //    (_context.StandingCollider.transform.position - _context.CoverRayCast.CoverPoint).normalized * 3,
+        //    Color.green);
 
-       //Drawing the Cross vector, parallel to the wall we are on covered
-       Debug.DrawRay(_context.StandingCollider.transform.position,
-           (_context.StandingCollider.transform.position - _context.CoverRayCast.CoverPoint).normalized * 3,
-           Color.blue);
-       */
+        ////Drawing the Cross vector, parallel to the wall we are on covered
+        //Debug.DrawRay(_context.StandingCollider.transform.position,
+        //    (_context.StandingCollider.transform.position - _context.CoverRayCast.CoverPoint).normalized * 3,
+        //    Color.blue);
+        #endregion
     }
 
     protected override void ToggleAnimationBool(bool toggle)
@@ -191,6 +202,13 @@ public class PlayerCover : PlayerState
     private void SetForwards()
     {
         _context.PlayerBody.transform.forward = -_context.CoverRayCast.GetCoverPoint().normal;
+    }
+
+    private void ToggleCover()
+    {
+        _context.CrouchedCover = !_context.CrouchedCover;
+        _context.ToggleColliders(!_context.CrouchedCover, _context.CrouchedCover);
+        _context.MyAnimator.SetBool("IsCrouching", _context.CrouchedCover);
     }
     private void SpeedAndLeaningDirection()
     {

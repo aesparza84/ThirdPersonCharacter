@@ -1456,6 +1456,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 20.44
       objectReference: {fileID: 0}
+    - target: {fileID: 5269278441017632878, guid: c35c54c9f3449cf4b81a7cad7cccebaa,
+        type: 3}
+      propertyPath: debugTransform
+      value: 
+      objectReference: {fileID: 1005979225}
     - target: {fileID: 5793060186602455290, guid: c35c54c9f3449cf4b81a7cad7cccebaa,
         type: 3}
       propertyPath: m_Height

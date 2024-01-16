@@ -25,9 +25,14 @@ public class PlayerCrouch : PlayerState
         }
         else if (_context.CoverPressed && _context.CoverRayCast.LookForCover())
         {
+            _context.CrouchedCover = true;
             SwitchToState(_factory.Cover());
         }
         else if (_context.JumpedVaultPressed && _context.IsMoving && _context.CanVault())
+        {
+            SwitchToState(_factory.Vault());
+        }
+        else if (_context.IsMoving && _context.JumpedVaultPressed && _context.CanVault())
         {
             SwitchToState(_factory.Vault());
         }
@@ -41,14 +46,14 @@ public class PlayerCrouch : PlayerState
     public override void EnterState()
     {
         _context.CrouchPressed = false;
-        _context.Currentspeed = _context.CrouchSpeed;
+        speed = _context.Currentspeed;
 
         ToggleAnimationBool(true);
     }
 
     public override void ExitState()
     {
-        //_context.CrouchPressed = false;
+        _context.CrouchPressed = false;
         ToggleAnimationBool(false);
     }
 
@@ -61,6 +66,25 @@ public class PlayerCrouch : PlayerState
     {
         Debug.Log("Crouching");
         CheckSwitchConditions();
+
+        if (_context.IsMoving && speed < _context.CrouchSpeed)
+        {
+            speed += Time.deltaTime * 10.0f;
+            speed = Mathf.Clamp(speed, 0, _context.CrouchSpeed);
+        }
+        else if (speed > _context.CrouchSpeed)
+        {
+            speed -= Time.deltaTime * 10.0f;
+            speed = Mathf.Clamp(speed, _context.CrouchSpeed, 10);
+        }
+        else if (!_context.IsMoving)
+        {
+            speed -= Time.deltaTime * 10.0f;
+            speed = Mathf.Clamp(speed, 0, 10);
+        }
+
+        _context.Currentspeed = speed;
+        _context.MyAnimator.SetFloat("Speed", speed);
     }
 
     protected override void ToggleAnimationBool(bool toggle)

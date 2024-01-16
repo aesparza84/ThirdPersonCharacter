@@ -34,6 +34,11 @@ public class PlayerMoveManager : MonoBehaviour
     [SerializeField] private Transform groundCheckTransform;
     [SerializeField] private LayerMask groundMask;
 
+    private float colliderWidth;
+    private float colliderHeight;
+    public float ColliderWidth { get { return colliderWidth; } }
+    public float ColliderHeight { get { return colliderHeight; } }
+
     [Header("Camera")]
     [SerializeField] private CameraController camController;
     private Transform direction;
@@ -101,8 +106,9 @@ public class PlayerMoveManager : MonoBehaviour
     public PlayerState CurrentState { get { return currentState; } set { currentState = value; } }  
 
 
-    private bool crouchPressed;
+    [SerializeField]private bool crouchPressed;
     private bool coverPressed;
+    [SerializeField]private bool crouchedCover;
     private bool aimMode;
     private bool isMoving;
     private bool runPressed;
@@ -110,6 +116,7 @@ public class PlayerMoveManager : MonoBehaviour
     private bool jumpedVaultPressed;
     public bool IsMoving { get { return isMoving; } }
     public bool CrouchPressed { get { return crouchPressed; } set { crouchPressed = value; } }
+    public bool CrouchedCover { get { return crouchedCover; } set { crouchedCover = value; } }
     public bool RunPressed { get { return runPressed; } }
     public bool CoverPressed { get { return coverPressed; }  set { coverPressed = value; } }
     public bool IsGrounded { get { return isGrounded; } }
@@ -190,8 +197,13 @@ public class PlayerMoveManager : MonoBehaviour
         runPressed = false;
         isMoving = false;
         jumpedVaultPressed = false;
+        crouchedCover = false;
 
-
+        if (StandingCollider != null)
+        {
+            colliderWidth = StandingCollider.bounds.extents.x;
+            colliderHeight = StandingCollider.bounds.extents.y;
+        }
 
         camForward = Vector3.zero;
 

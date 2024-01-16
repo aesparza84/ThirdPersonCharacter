@@ -22,6 +22,11 @@ public class PlayerIdle : PlayerState
         }
         else if (_context.CoverPressed && _context.CoverRayCast.LookForCover())
         {
+            //This checks if we should be lowered when going into cover
+            if (_context.CanVault()) 
+            {
+                _context.CrouchedCover = true;
+            }
             SwitchToState(_factory.Cover());
         }
     }
