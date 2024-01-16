@@ -6,7 +6,10 @@ public class PlayerGrounded : PlayerState
 {
     public PlayerGrounded(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory) : base(passedContext, passedFactory)
     {
-        ChooseSubState();
+        parentState = true;
+
+        //This is called whenever we come BACK into the grounded state from the Fall state
+        ChooseSubState(); 
     }
 
     public override void CheckSwitchConditions()
@@ -19,9 +22,17 @@ public class PlayerGrounded : PlayerState
 
     public override void ChooseSubState()
     {
-        if (_context.IsMoving)
+        if (_context.IsMoving && _context.RunPressed)
+        {
+            SwitchSubState(_factory.Run());
+        }
+        else if (_context.IsMoving)
         {
             SwitchSubState(_factory.Walk());
+        }
+        else
+        {
+            SwitchSubState(_factory.Idle());
         }
     }
 
@@ -38,6 +49,10 @@ public class PlayerGrounded : PlayerState
     public override void FixedUpdate()
     {
         Debug.Log("You should always see this: Grounded");
+
+        //In grounded state we're always checking and moving with inputs
+        movement();
+
         if (currentSubState != null)
         {
             currentSubState.FixedUpdate();
@@ -51,6 +66,15 @@ public class PlayerGrounded : PlayerState
             currentSubState.Update();
         }
         CheckSwitchConditions();
-        ChooseSubState();
+
+        //Debug.Log("Current SUbstate-- "+currentSubState);
+    }
+
+    private void movement()
+    {
+        _context.MoveVector = (_context.CamController.ForwardRotation.right * _context.HorizontalIput) + 
+                              (_context.CamController.ForwardRotation.forward * _context.VerticalIput);
+
+        _context.PlayerBody.velocity = _context.MoveVector.normalized * _context.Currentspeed;
     }
 }

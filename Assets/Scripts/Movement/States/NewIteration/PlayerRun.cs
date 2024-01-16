@@ -13,11 +13,11 @@ public class PlayerRun : PlayerState
     {
         if (!_context.IsMoving)
         {
-            SwitchSubState(_factory.Idle());
+            SwitchToState(_factory.Idle());
         }
         else if (!_context.RunPressed)
         {
-            SwitchSubState(_factory.Walk());
+            SwitchToState(_factory.Walk());
         }
     }
 
@@ -28,7 +28,7 @@ public class PlayerRun : PlayerState
 
     public override void EnterState()
     {
-        Debug.Log("Now In Run State");
+        _context.Currentspeed = _context.SprintSpeed;
     }
 
     public override void ExitState()

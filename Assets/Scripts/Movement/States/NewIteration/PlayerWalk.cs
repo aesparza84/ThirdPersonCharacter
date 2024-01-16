@@ -13,11 +13,15 @@ public class PlayerWalk : PlayerState
     {
         if (!_context.IsMoving)
         {
-            SwitchSubState(_factory.Idle());
+            SwitchToState(_factory.Idle());
         }
         else if (_context.RunPressed)
         {
-            SwitchSubState(_factory.Run());
+            SwitchToState(_factory.Run());
+        }
+        else if (_context.CrouchPressed)
+        {
+            SwitchToState(_factory.Crouch());
         }
     }
 
@@ -28,7 +32,7 @@ public class PlayerWalk : PlayerState
 
     public override void EnterState()
     {
-        Debug.Log("Now In Walk State");
+        _context.Currentspeed = _context.BaseSpeed;
     }
 
     public override void ExitState()

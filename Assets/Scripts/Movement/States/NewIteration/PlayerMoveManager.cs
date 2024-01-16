@@ -39,6 +39,9 @@ public class PlayerMoveManager : MonoBehaviour
     private Transform direction;
     private Vector3 camForward;
 
+    public CameraController CamController { get { return camController; } }
+    public Vector3 CamForward { get { return camForward; } }
+
     [Header("Cover Raycaster")]
     [SerializeField] private CoverRaycast coverRayCast;
 
@@ -75,6 +78,8 @@ public class PlayerMoveManager : MonoBehaviour
     private float horizontalInput;
     private float verticalInput;
     private float inputZeroCheck;
+    public float HorizontalIput { get { return horizontalInput; } }
+    public float VerticalIput { get { return verticalInput; } }
 
     private float gravity;
     public float Gravity { get { return gravity; } set { gravity = value; } }
@@ -101,7 +106,7 @@ public class PlayerMoveManager : MonoBehaviour
     private bool runPressed;
     private bool isGrounded;
     public bool IsMoving { get { return isMoving; } }
-    public bool CrouchPressed { get { return crouchPressed; } }
+    public bool CrouchPressed { get { return crouchPressed; } set { crouchPressed = value; } }
     public bool RunPressed { get { return runPressed; } }
     public bool CoverPressed { get { return coverPressed; } }
     public bool IsGrounded { get { return isGrounded; } }
@@ -176,6 +181,8 @@ public class PlayerMoveManager : MonoBehaviour
         runPressed = false;
         isMoving = false;
 
+
+
         camForward = Vector3.zero;
 
         gravity = -9.81f;
@@ -187,7 +194,8 @@ public class PlayerMoveManager : MonoBehaviour
         playerInputs.input.Player.Sprint.performed += OnSprintPerformed;
         playerInputs.input.Player.Sprint.canceled += OnSprintCancelled;
 
-        playerInputs.input.Player.Crouch.performed += OnCrouchPerformed;
+        playerInputs.input.Player.Crouch.performed += OnCrouchPressed;
+
         playerInputs.input.Player.Cover.performed += OnCoverPressed;
 
         playerInputs.input.Player.Aim.performed += OnAim;
@@ -215,9 +223,12 @@ public class PlayerMoveManager : MonoBehaviour
     {
         coverPressed = true;
     }
-    private void OnCrouchPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void OnCrouchPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        crouchPressed = true;
+        if (!crouchPressed)
+        {
+            crouchPressed = true;
+        }
     }
 
     #region Inputs

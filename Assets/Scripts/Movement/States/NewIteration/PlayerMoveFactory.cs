@@ -37,4 +37,8 @@ public class PlayerMoveFactory
     {
         return new PlayerRun(_context, this);
     }
+    public PlayerCrouch Crouch()
+    {
+        return new PlayerCrouch(_context, this);
+    }
 }

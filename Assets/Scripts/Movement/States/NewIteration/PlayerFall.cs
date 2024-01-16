@@ -6,7 +6,7 @@ public class PlayerFall : PlayerState
 {
     public PlayerFall(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory) : base(passedContext, passedFactory)
     {
-
+        parentState = true;
     }
 
     public override void CheckSwitchConditions()

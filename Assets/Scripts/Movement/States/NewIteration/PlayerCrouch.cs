@@ -2,38 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerIdle : PlayerState
+public class PlayerCrouch : PlayerState
 {
-    public PlayerIdle(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory) : base(passedContext, passedFactory)
+    public PlayerCrouch(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory) : base(passedContext, passedFactory)
     {
 
     }
 
     public override void CheckSwitchConditions()
     {
-        if (_context.IsMoving)
+        if (_context.RunPressed && _context.IsMoving)
+        {
+            SwitchToState(_factory.Run());
+        }
+        else if (_context.CrouchPressed && _context.IsMoving)
         {
             SwitchToState(_factory.Walk());
         }
         else if (_context.CrouchPressed)
         {
-            SwitchToState(_factory.Crouch());
+            SwitchToState(_factory.Idle());
         }
     }
 
     public override void ChooseSubState()
     {
-        //No substate for Idle
+
     }
 
     public override void EnterState()
     {
-
+        _context.CrouchPressed = false;
+        _context.Currentspeed = _context.CrouchSpeed;
     }
 
     public override void ExitState()
     {
-
+        _context.CrouchPressed = false;
     }
 
     public override void FixedUpdate()
@@ -43,7 +48,7 @@ public class PlayerIdle : PlayerState
 
     public override void Update()
     {
-        Debug.Log("Idling");
+        Debug.Log("Crouching");
         CheckSwitchConditions();
     }
 }
