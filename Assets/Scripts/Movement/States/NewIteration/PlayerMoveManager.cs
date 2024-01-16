@@ -107,12 +107,16 @@ public class PlayerMoveManager : MonoBehaviour
     private bool isMoving;
     private bool runPressed;
     private bool isGrounded;
+    private bool jumpedVaultPressed;
     public bool IsMoving { get { return isMoving; } }
     public bool CrouchPressed { get { return crouchPressed; } set { crouchPressed = value; } }
     public bool RunPressed { get { return runPressed; } }
     public bool CoverPressed { get { return coverPressed; }  set { coverPressed = value; } }
     public bool IsGrounded { get { return isGrounded; } }
     public bool AimMode { get { return aimMode; } }
+    public bool JumpedVaultPressed { get { return jumpedVaultPressed; } set { jumpedVaultPressed = value; } }
+
+    private float jumpVaultResetTimer;
 
     //public event EventHandler<MoveStateManager> StartedSprint;
     //public event EventHandler<MoveStateManager> StoppedSprint;
@@ -185,6 +189,7 @@ public class PlayerMoveManager : MonoBehaviour
         coverPressed = false;
         runPressed = false;
         isMoving = false;
+        jumpedVaultPressed = false;
 
 
 
@@ -211,7 +216,11 @@ public class PlayerMoveManager : MonoBehaviour
 
     private void OnJumpVault(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        
+        if (!jumpedVaultPressed)
+        {
+            jumpedVaultPressed = true;
+            jumpVaultResetTimer = 0.1f;
+        }
     }
 
     private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -278,6 +287,16 @@ public class PlayerMoveManager : MonoBehaviour
         camForward = camController.ForwardRotation.forward;
 
         isGrounded = checkGrounded();
+
+        if (jumpedVaultPressed)
+        {
+            jumpVaultResetTimer -= Time.deltaTime;
+            if (jumpVaultResetTimer < 0)
+            {
+                jumpVaultResetTimer = 0.0f;
+                jumpedVaultPressed = false;
+            }
+        }
 
         currentState.Update();
 

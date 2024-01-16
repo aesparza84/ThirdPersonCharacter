@@ -27,6 +27,10 @@ public class PlayerWalk : PlayerState
         {
             SwitchToState(_factory.Cover());
         }
+        else if (_context.JumpedVaultPressed && _context.CanVault())
+        {
+            SwitchToState(_factory.Vault());
+        }
     }
 
     public override void ChooseSubState()
@@ -36,7 +40,8 @@ public class PlayerWalk : PlayerState
 
     public override void EnterState()
     {
-        _context.Currentspeed = _context.BaseSpeed;
+        speed = _context.Currentspeed;
+        //_context.Currentspeed = _context.BaseSpeed;
         ToggleAnimationBool(true);
     }
 
@@ -54,6 +59,22 @@ public class PlayerWalk : PlayerState
     {
         Debug.Log("Walking");
         CheckSwitchConditions();
+
+        if (speed < _context.BaseSpeed)
+        {
+            speed += Time.deltaTime * 10.0f;
+            speed = Mathf.Clamp(speed, 0, _context.BaseSpeed);
+        }
+        else if (speed > _context.BaseSpeed)
+        {
+            speed -= Time.deltaTime * 10.0f;
+            speed = Mathf.Clamp(speed, _context.BaseSpeed, 10);
+        }
+
+        //speed = _context.BaseSpeed;
+
+        _context.Currentspeed = speed;
+        _context.MyAnimator.SetFloat("Speed", _context.Currentspeed);
     }
 
     protected override void ToggleAnimationBool(bool toggle)

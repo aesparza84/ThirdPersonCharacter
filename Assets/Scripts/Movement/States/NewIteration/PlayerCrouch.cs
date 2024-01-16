@@ -27,6 +27,10 @@ public class PlayerCrouch : PlayerState
         {
             SwitchToState(_factory.Cover());
         }
+        else if (_context.JumpedVaultPressed && _context.IsMoving && _context.CanVault())
+        {
+            SwitchToState(_factory.Vault());
+        }
     }
 
     public override void ChooseSubState()
@@ -44,7 +48,7 @@ public class PlayerCrouch : PlayerState
 
     public override void ExitState()
     {
-        _context.CrouchPressed = false;
+        //_context.CrouchPressed = false;
         ToggleAnimationBool(false);
     }
 

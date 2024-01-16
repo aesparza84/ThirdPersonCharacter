@@ -45,4 +45,8 @@ public class PlayerMoveFactory
     {
         return new PlayerCover(_context, this);
     }
+    public PlayerVault Vault()
+    {
+        return new PlayerVault(_context, this);
+    }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerFall : PlayerState
@@ -57,6 +58,9 @@ public class PlayerFall : PlayerState
 
     private void applyGravity()
     {
-        _context.PlayerBody.velocity += Vector3.down * _context.GravityMultiplier;
+        _context.Gravity -= 1 * _context.GravityMultiplier;
+        _context.Gravity = Mathf.Clamp(_context.Gravity, _context.MaxGravityAmount, 0);
+
+        _context.PlayerBody.AddForce(Vector3.down * _context.Gravity, ForceMode.Force);
     }
 }

@@ -80,14 +80,6 @@ public class PlayerGrounded : PlayerState
 
     }
 
-    private void movement()
-    {
-        _context.MoveVector = (_context.CamController.ForwardRotation.right * _context.HorizontalIput) + 
-                              (_context.CamController.ForwardRotation.forward * _context.VerticalIput);
-
-        _context.PlayerBody.velocity = _context.MoveVector.normalized * _context.Currentspeed;
-    }
-
     private void setMoveVector()
     {
         _context.MoveVector = (_context.CamController.ForwardRotation.right * _context.HorizontalIput) +
