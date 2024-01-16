@@ -19,6 +19,10 @@ public class PlayerIdle : PlayerState
         {
             SwitchToState(_factory.Crouch());
         }
+        else if (_context.CoverPressed && _context.CoverRayCast.LookForCover())
+        {
+            SwitchToState(_factory.Cover());
+        }
     }
 
     public override void ChooseSubState()
@@ -28,7 +32,7 @@ public class PlayerIdle : PlayerState
 
     public override void EnterState()
     {
-
+        ToggleAnimationBool(false);
     }
 
     public override void ExitState()
@@ -45,5 +49,11 @@ public class PlayerIdle : PlayerState
     {
         Debug.Log("Idling");
         CheckSwitchConditions();
+    }
+
+    protected override void ToggleAnimationBool(bool toggle)
+    {
+        _context.MyAnimator.SetBool("IsWalking", toggle);
+        _context.MyAnimator.SetBool("IsRunning", toggle);
     }
 }

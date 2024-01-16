@@ -19,6 +19,10 @@ public class PlayerRun : PlayerState
         {
             SwitchToState(_factory.Walk());
         }
+        else if (_context.CoverPressed && _context.CoverRayCast.LookForCover())
+        {
+            SwitchToState(_factory.Cover());
+        }
     }
 
     public override void ChooseSubState()
@@ -29,10 +33,12 @@ public class PlayerRun : PlayerState
     public override void EnterState()
     {
         _context.Currentspeed = _context.SprintSpeed;
+        ToggleAnimationBool(true);
     }
 
     public override void ExitState()
     {
+        ToggleAnimationBool(false);
 
     }
 
@@ -45,5 +51,10 @@ public class PlayerRun : PlayerState
     {
         Debug.Log("Running");
         CheckSwitchConditions();
+    }
+
+    protected override void ToggleAnimationBool(bool toggle)
+    {
+        _context.MyAnimator.SetBool("IsRunning", toggle);
     }
 }

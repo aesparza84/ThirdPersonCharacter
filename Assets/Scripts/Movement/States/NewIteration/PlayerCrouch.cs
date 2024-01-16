@@ -23,6 +23,10 @@ public class PlayerCrouch : PlayerState
         {
             SwitchToState(_factory.Idle());
         }
+        else if (_context.CoverPressed && _context.CoverRayCast.LookForCover())
+        {
+            SwitchToState(_factory.Cover());
+        }
     }
 
     public override void ChooseSubState()
@@ -34,11 +38,14 @@ public class PlayerCrouch : PlayerState
     {
         _context.CrouchPressed = false;
         _context.Currentspeed = _context.CrouchSpeed;
+
+        ToggleAnimationBool(true);
     }
 
     public override void ExitState()
     {
         _context.CrouchPressed = false;
+        ToggleAnimationBool(false);
     }
 
     public override void FixedUpdate()
@@ -50,5 +57,10 @@ public class PlayerCrouch : PlayerState
     {
         Debug.Log("Crouching");
         CheckSwitchConditions();
+    }
+
+    protected override void ToggleAnimationBool(bool toggle)
+    {
+        _context.MyAnimator.SetBool("IsCrouching", toggle);
     }
 }

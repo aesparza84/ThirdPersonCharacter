@@ -8,7 +8,10 @@ public abstract class PlayerState
     protected PlayerMoveFactory _factory;
     protected PlayerState currentSubState;
     protected PlayerState currentParentState;
+
     protected bool parentState;
+
+    protected float speed;
     public PlayerState(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory)
     {
         parentState = false;
@@ -21,13 +24,15 @@ public abstract class PlayerState
     public abstract void EnterState();
     public abstract void ExitState();
     public abstract void ChooseSubState();
+    protected abstract void ToggleAnimationBool(bool toggle);
     protected void SwitchToState(PlayerState nextState)
     {
         ExitState();
         nextState.EnterState();
         if (!parentState)
         {
-            currentParentState.SwitchSubState(nextState);
+            _context.CurrentState.currentSubState = nextState;
+            //currentParentState.SwitchSubState(nextState);
         }
         else 
         {         
@@ -55,4 +60,6 @@ public abstract class PlayerState
     {
         currentSubState.FixedUpdate();  
     }
+
+
 }

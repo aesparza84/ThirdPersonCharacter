@@ -44,9 +44,11 @@ public class PlayerMoveManager : MonoBehaviour
 
     [Header("Cover Raycaster")]
     [SerializeField] private CoverRaycast coverRayCast;
+    public CoverRaycast CoverRayCast { get { return coverRayCast; } }
 
     [Header("Animator")]
     [SerializeField] private Animator myAnimator; //Ref to the attatched Animator component
+    public Animator MyAnimator { get { return myAnimator; } }
 
     [Header("Player control inputs")]
     [SerializeField] private InputManager playerInputs; //Reference to the InputManager component
@@ -75,10 +77,10 @@ public class PlayerMoveManager : MonoBehaviour
     [SerializeField] private Vector3 gravityVector;
     public Vector3 GravityVector { get { return gravityVector; } set { gravityVector = value; } }
 
-    private float horizontalInput;
-    private float verticalInput;
+    [SerializeField] private float horizontalInput;
+    [SerializeField] private float verticalInput;
     private float inputZeroCheck;
-    public float HorizontalIput { get { return horizontalInput; } }
+    public float HorizontalIput { get { return horizontalInput; } set { horizontalInput = value; } }
     public float VerticalIput { get { return verticalInput; } }
 
     private float gravity;
@@ -108,8 +110,9 @@ public class PlayerMoveManager : MonoBehaviour
     public bool IsMoving { get { return isMoving; } }
     public bool CrouchPressed { get { return crouchPressed; } set { crouchPressed = value; } }
     public bool RunPressed { get { return runPressed; } }
-    public bool CoverPressed { get { return coverPressed; } }
+    public bool CoverPressed { get { return coverPressed; }  set { coverPressed = value; } }
     public bool IsGrounded { get { return isGrounded; } }
+    public bool AimMode { get { return aimMode; } }
 
     //public event EventHandler<MoveStateManager> StartedSprint;
     //public event EventHandler<MoveStateManager> StoppedSprint;
@@ -120,6 +123,8 @@ public class PlayerMoveManager : MonoBehaviour
     //public event EventHandler<MoveStateManager> StartedCover;
     //public event EventHandler<MoveStateManager> StoppedCover;
     //public event EventHandler<MoveStateManager> OnClimb;
+
+
 
     private void Awake()
     {
@@ -221,7 +226,10 @@ public class PlayerMoveManager : MonoBehaviour
 
     private void OnCoverPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        coverPressed = true;
+        if (!coverPressed)
+        {
+            coverPressed = true;
+        }
     }
     private void OnCrouchPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
@@ -273,7 +281,7 @@ public class PlayerMoveManager : MonoBehaviour
 
         currentState.Update();
 
-        SetPlayersForward();
+        //SetPlayersForward();
 
         Debug.DrawRay(gameObject.transform.position, moveVector, Color.red);
     }

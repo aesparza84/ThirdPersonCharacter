@@ -41,4 +41,8 @@ public class PlayerMoveFactory
     {
         return new PlayerCrouch(_context, this);
     }
+    public PlayerCover Cover()
+    {
+        return new PlayerCover(_context, this);
+    }
 }

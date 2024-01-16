@@ -23,6 +23,10 @@ public class PlayerWalk : PlayerState
         {
             SwitchToState(_factory.Crouch());
         }
+        else if (_context.CoverPressed && _context.CoverRayCast.LookForCover())
+        {
+            SwitchToState(_factory.Cover());
+        }
     }
 
     public override void ChooseSubState()
@@ -33,11 +37,12 @@ public class PlayerWalk : PlayerState
     public override void EnterState()
     {
         _context.Currentspeed = _context.BaseSpeed;
+        ToggleAnimationBool(true);
     }
 
     public override void ExitState()
     {
-
+        ToggleAnimationBool(false);
     }
 
     public override void FixedUpdate()
@@ -49,5 +54,11 @@ public class PlayerWalk : PlayerState
     {
         Debug.Log("Walking");
         CheckSwitchConditions();
+    }
+
+    protected override void ToggleAnimationBool(bool toggle)
+    {
+        _context.MyAnimator.SetBool("IsWalking", toggle);
+
     }
 }

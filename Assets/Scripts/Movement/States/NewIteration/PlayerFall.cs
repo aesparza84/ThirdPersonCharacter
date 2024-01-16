@@ -50,6 +50,11 @@ public class PlayerFall : PlayerState
         CheckSwitchConditions();
     }
 
+    protected override void ToggleAnimationBool(bool toggle)
+    {
+
+    }
+
     private void applyGravity()
     {
         _context.PlayerBody.velocity += Vector3.down * _context.GravityMultiplier;
