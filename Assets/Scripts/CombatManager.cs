@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    [SerializeField] private Transform shootPoint;
-    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private Transform weaponTransform;
+    [SerializeField] private Transform camCenterPoint;
+    [SerializeField] private GameObject weaponPrefab;
+    private SimpleGun weapon;
 
     [SerializeField] private InputManager PlayerInputs;
 
@@ -19,17 +21,20 @@ public class CombatManager : MonoBehaviour
         PlayerInputs = GetComponent<InputManager>();
         camController = GetComponent<CameraController>();
         PlayerInputs.input.Player.Shoot.performed += OnShoot;
+
+        GameObject gun = Instantiate(weaponPrefab, weaponTransform);
+        weapon = gun.GetComponent<SimpleGun>();
     }
 
     private void OnShoot(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        GameObject temop = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation);
+        weapon.ShootWeapon();
     }
 
     // Update is called once per frame
     void Update()
     {
-        aimDirection = camController.GetAimPoint() - shootPoint.position;
-        shootPoint.forward = aimDirection;
+        aimDirection = camController.GetAimPoint() - camCenterPoint.position;
+        camCenterPoint.forward = aimDirection;
     }
 }
