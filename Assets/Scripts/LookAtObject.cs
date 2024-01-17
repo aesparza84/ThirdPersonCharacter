@@ -30,16 +30,12 @@ public class LookAtObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Important"))
-        {
-            changeAimTargert(other.gameObject.transform.position);
-        }
+        seeIfLookAt(other.gameObject);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("Important"))
-        changeAimTargert(other.gameObject.transform.position);
+        seeIfLookAt(other.gameObject);
     }
 
     private void changeAimTargert(Vector3 newPosition)
@@ -52,6 +48,14 @@ public class LookAtObject : MonoBehaviour
         setWeight(1);        
     }
 
+    private void seeIfLookAt(GameObject obj)
+    {
+        if (obj.TryGetComponent<ILookAtMe>(out ILookAtMe look))
+        {
+            changeAimTargert(look.GetPosition());
+        }
+    }
+
     private void setWeight(int newWeight)
     {
         headRig.weight = Mathf.Lerp(headRig.weight, newWeight, Time.deltaTime * aimSpeed);
@@ -59,7 +63,7 @@ public class LookAtObject : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Important"))
+        if (other.TryGetComponent<ILookAtMe>(out ILookAtMe t))
         {            
             doneLooking = true;
         }
