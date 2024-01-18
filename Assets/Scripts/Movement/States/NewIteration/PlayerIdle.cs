@@ -38,6 +38,7 @@ public class PlayerIdle : PlayerState
 
     public override void EnterState()
     {
+        _context.ToggleColliders(true, false);
         speed = _context.Currentspeed;
         ToggleAnimationBool(false);
     }

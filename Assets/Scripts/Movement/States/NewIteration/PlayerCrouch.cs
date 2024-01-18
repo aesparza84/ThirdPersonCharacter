@@ -46,6 +46,8 @@ public class PlayerCrouch : PlayerState
     public override void EnterState()
     {
         _context.CrouchPressed = false;
+        _context.Crouched = true;
+        _context.ToggleColliders(!_context.Crouched, _context.Crouched);
         speed = _context.Currentspeed;
 
         ToggleAnimationBool(true);
@@ -54,6 +56,7 @@ public class PlayerCrouch : PlayerState
     public override void ExitState()
     {
         _context.CrouchPressed = false;
+        _context.Crouched = false;
         ToggleAnimationBool(false);
     }
 

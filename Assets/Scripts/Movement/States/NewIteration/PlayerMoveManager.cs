@@ -109,6 +109,7 @@ public class PlayerMoveManager : MonoBehaviour
     [SerializeField]private bool crouchPressed;
     private bool coverPressed;
     [SerializeField]private bool crouchedCover;
+    private bool crouched;
     private bool aimMode;
     private bool isMoving;
     private bool runPressed;
@@ -117,6 +118,7 @@ public class PlayerMoveManager : MonoBehaviour
     public bool IsMoving { get { return isMoving; } }
     public bool CrouchPressed { get { return crouchPressed; } set { crouchPressed = value; } }
     public bool CrouchedCover { get { return crouchedCover; } set { crouchedCover = value; } }
+    public bool Crouched { get { return crouched; } set { crouched = value; } }
     public bool RunPressed { get { return runPressed; } }
     public bool CoverPressed { get { return coverPressed; }  set { coverPressed = value; } }
     public bool IsGrounded { get { return isGrounded; } }

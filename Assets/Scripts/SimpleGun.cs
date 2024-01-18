@@ -37,6 +37,8 @@ public class SimpleGun : MonoBehaviour
         {
             nextFire = 0;
         }
+
+        Debug.DrawRay(shootPoint.position, shootPoint.forward * 50f);
     }
 
     public void ShootWeapon()

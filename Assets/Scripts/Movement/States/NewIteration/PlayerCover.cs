@@ -112,7 +112,7 @@ public class PlayerCover : PlayerState
         if (_context.CrouchPressed)
         {
             _context.CrouchPressed = false;
-            ToggleCover();
+            ToggleCrouchCover();
         }
 
         ///Shoot out RayCasts at Players-Collider's width (extents?)
@@ -204,7 +204,7 @@ public class PlayerCover : PlayerState
         _context.PlayerBody.transform.forward = -_context.CoverRayCast.GetCoverPoint().normal;
     }
 
-    private void ToggleCover()
+    private void ToggleCrouchCover()
     {
         _context.CrouchedCover = !_context.CrouchedCover;
         _context.ToggleColliders(!_context.CrouchedCover, _context.CrouchedCover);
