@@ -258,8 +258,8 @@ MonoBehaviour:
   ammoPrefab: {fileID: 7746241450393289543, guid: ea27b0573b9081742a2506e9a3e90848,
     type: 3}
   shootPoint: {fileID: 6663336136834056639}
-  createPos: {x: 0.008, y: -0.02, z: -0.04}
-  createRot: {x: -83.826, y: -204.6, z: 16.349}
+  createPos: {x: 0.00872437, y: -0.01422892, z: -0.05496968}
+  createRot: {x: -87.484, y: 72.174, z: 99.232}
   createScal: {x: 0.42, y: 0.42, z: 0.42}
   fireRate: 0.6
   damage: 5

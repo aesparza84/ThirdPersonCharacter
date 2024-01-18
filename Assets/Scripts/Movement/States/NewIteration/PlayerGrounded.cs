@@ -70,6 +70,7 @@ public class PlayerGrounded : PlayerState
             currentSubState.Update();
         }
 
+
         CheckSwitchConditions();
 
         //Debug.Log("Current SUbstate-- "+currentSubState);

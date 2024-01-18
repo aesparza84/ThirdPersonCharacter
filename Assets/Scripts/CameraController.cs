@@ -181,7 +181,7 @@ public class CameraController : MonoBehaviour
 
     private void rotateVirtualCam()
     {
-        xInput = Mathf.Clamp(xInput, -30, 70);
+        xInput = Mathf.Clamp(xInput, -30, 30);
         Quaternion rotation = Quaternion.Euler(-xInput, yInput, 0f);
         followTarget.rotation = rotation;
     }
