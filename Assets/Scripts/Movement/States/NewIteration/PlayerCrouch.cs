@@ -67,7 +67,6 @@ public class PlayerCrouch : PlayerState
 
     public override void Update()
     {
-        Debug.Log("Crouching");
         CheckSwitchConditions();
 
         if (_context.IsMoving && speed < _context.CrouchSpeed)

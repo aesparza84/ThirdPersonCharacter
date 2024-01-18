@@ -55,7 +55,6 @@ public class PlayerIdle : PlayerState
 
     public override void Update()
     {
-        Debug.Log("Idling");
         CheckSwitchConditions();
 
         if (speed > 0)

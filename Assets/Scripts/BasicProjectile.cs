@@ -9,7 +9,7 @@ public class BasicProjectile : MonoBehaviour
     [SerializeField] private float speed;
     void Start()
     {
-
+        Destroy(gameObject, 3f);
     }
 
     // Update is called once per frame

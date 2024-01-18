@@ -57,7 +57,6 @@ public class PlayerWalk : PlayerState
 
     public override void Update()
     {
-        Debug.Log("Walking");
         CheckSwitchConditions();
 
         if (speed < _context.BaseSpeed)

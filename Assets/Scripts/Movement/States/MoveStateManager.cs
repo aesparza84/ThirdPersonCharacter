@@ -82,7 +82,7 @@ public class MoveStateManager : MonoBehaviour
     public event EventHandler<MoveStateManager> StoppedCrouch;
     public event EventHandler<MoveStateManager> StartedCover;
     public event EventHandler<MoveStateManager> StoppedCover;
-    public event EventHandler<MoveStateManager> OnClimb;
+    //public event EventHandler<MoveStateManager> OnClimb;
 
     private void Awake()
     {

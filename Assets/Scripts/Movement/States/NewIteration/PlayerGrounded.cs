@@ -38,7 +38,7 @@ public class PlayerGrounded : PlayerState
 
     public override void EnterState()
     {
-        Debug.Log("Now In Grounded State");
+
     }
 
     public override void ExitState()
@@ -48,7 +48,6 @@ public class PlayerGrounded : PlayerState
 
     public override void FixedUpdate()
     {
-        Debug.Log("You should always see this: Grounded");
 
         //In grounded state we're always checking and moving with inputs
         setMoveVector();
@@ -63,7 +62,7 @@ public class PlayerGrounded : PlayerState
 
     public override void Update()
     {
-        SetPlayersForward();
+        //SetPlayersForward();
 
         if (currentSubState != null)
         {

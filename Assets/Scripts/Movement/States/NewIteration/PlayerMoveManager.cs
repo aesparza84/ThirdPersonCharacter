@@ -298,7 +298,9 @@ public class PlayerMoveManager : MonoBehaviour
         //Debug.Log("Is moving "+isMoving);
 
         direction = camController.ForwardRotation;
-        camForward = camController.ForwardRotation.forward;
+
+        camForward.x = camController.GetAimPoint().x;
+        camForward.z = camController.GetAimPoint().z;
 
         isGrounded = checkGrounded();
 
@@ -314,7 +316,8 @@ public class PlayerMoveManager : MonoBehaviour
 
         currentState.Update();
 
-        //SetPlayersForward();
+        SetPlayersForward();
+        //playerTransform.forward = CamController.GetAimPoint();
 
         Debug.DrawRay(gameObject.transform.position, moveVector, Color.red);
     }
@@ -326,6 +329,7 @@ public class PlayerMoveManager : MonoBehaviour
         {
             //This faces player to camera forward, AIM CAMERA
             //playerTransform.forward = direction.forward;
+            //playerTransform.forward = camForward;
             playerTransform.forward = camForward;
         }
         else
@@ -378,6 +382,6 @@ public class PlayerMoveManager : MonoBehaviour
         crouchingCollider.enabled = enableCrouch;
     }
 
-    public bool CanClimb() { return coverRayCast.CanClimb; }
-    public bool CanVault() { return coverRayCast.CanVault; }
+    public bool CanClimb() { return coverRayCast.CheckIfClimbable(); }
+    public bool CanVault() { return coverRayCast.CheckIfVaultable(); }
 }

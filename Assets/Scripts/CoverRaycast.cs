@@ -36,6 +36,9 @@ public class CoverRaycast : MonoBehaviour
     [SerializeField] private float playerHeight;
 
     public Transform debugTransform;
+
+    private RaycastHit vaultHit;
+    private RaycastHit climbHit;
     private void Awake()
     {
         if (CoverStart == null)
@@ -68,6 +71,7 @@ public class CoverRaycast : MonoBehaviour
         playerHeight = playerCollider.bounds.extents.y * 2f;
         vaultPoint = Vector3.zero;
         climbPoint = Vector3.zero;
+
     }
 
     private void Update()
@@ -75,24 +79,24 @@ public class CoverRaycast : MonoBehaviour
         setRaypos();
         Debug.DrawRay(rayStart, rayDirection * rayDistance, Color.cyan);
 
-        if (Physics.Raycast(rayStart, gameObject.transform.forward.normalized, out RaycastHit hit, 1.7f, coverMask))
-        {
-            CanClimb = CheckClimbable(climbMax, hit);
-            CanVault = CheckVaultable(vaultMax, hit);
+        //if (Physics.Raycast(rayStart, gameObject.transform.forward.normalized, out RaycastHit hit, 1.7f, coverMask))
+        //{
+        //    CanClimb = CheckClimbable(climbMax, hit);
+        //    CanVault = CheckVaultable(vaultMax, hit);
 
-            //drawClimbRays(climbMax, hit);
-            //drawVaultRays(vaultMax, hit);
+        //    //drawClimbRays(climbMax, hit);
+        //    //drawVaultRays(vaultMax, hit);
 
-            #region Debugging
-            //Debug.Log("Can Climb: "+ CheckClimbable(climbMax, hit));
-            //Debug.Log("Can Vault: "+ CheckVaultable(vaultMax, hit));
-            #endregion
-        }
-        else
-        {
-            CanClimb = false;
-            CanVault = false;
-        }
+        //    #region Debugging
+        //    //Debug.Log("Can Climb: "+ CheckClimbable(climbMax, hit));
+        //    //Debug.Log("Can Vault: "+ CheckVaultable(vaultMax, hit));
+        //    #endregion
+        //}
+        //else
+        //{
+        //    CanClimb = false;
+        //    CanVault = false;
+        //}
 
         
     }
@@ -123,6 +127,7 @@ public class CoverRaycast : MonoBehaviour
     public bool LookForCover()
     {
         CoverPoint = Vector3.zero;
+
         if (Physics.Raycast(rayStart, rayDirection, out RaycastHit hit, rayDistance, coverMask))
         {
             coverCheck = hit;
@@ -190,8 +195,27 @@ public class CoverRaycast : MonoBehaviour
     /// We can prioritize vaulting since both will be true when vault is true.
     /// 
     /// </summary>
-    /// <param name="heightCheck"></param>
+    /// <param name="climbMax"></param>
     /// <returns></returns>
+    /// 
+
+    public bool CheckIfClimbable()
+    {
+        if (Physics.Raycast(rayStart, gameObject.transform.forward.normalized, out climbHit, 1.7f, coverMask))
+        {
+            climbPoint = Vector3.zero;
+            Vector3 insidePoint = climbHit.point + gameObject.transform.forward.normalized * playerRadius;
+            Vector3 topPoint = new Vector3(insidePoint.x, insidePoint.y + playerHeight * climbMax, insidePoint.z);
+
+            if (Physics.Raycast(topPoint, Vector3.down, out RaycastHit newPoint, playerHeight * climbMax, coverMask))
+            {
+                climbPoint = newPoint.point;
+                return true;
+            }
+        }
+
+        return false;
+    }
     private bool CheckClimbable(float heightCheck, RaycastHit hit)
     {
         climbPoint = Vector3.zero;
@@ -238,6 +262,45 @@ public class CoverRaycast : MonoBehaviour
             }
         }
 
+    }
+
+    public bool CheckIfVaultable()
+    {
+        if (Physics.Raycast(rayStart, gameObject.transform.forward.normalized, out vaultHit, 1.7f, coverMask))
+        {
+            vaultPoint = Vector3.zero;
+
+            //Shoot ray from player Collider: Middle 
+            //Shoot ray Vector3.down to see if it clears object of length
+            Vector3 middle = new Vector3(rayStart.x, rayStart.y + playerCollider.bounds.extents.y, rayStart.z);
+
+            Vector3 fromHitPoint = new Vector3(vaultHit.point.x, middle.y, vaultHit.point.z);
+
+            //Checks if our 'middle' isn't collding
+            if (!Physics.Raycast(middle, gameObject.transform.forward.normalized, 1.7f))
+            {
+                //Shoots a ray from the hit point to (direction * maxSlide)
+                if (!Physics.Raycast(fromHitPoint, gameObject.transform.forward, vaultMax))
+                {
+                    Vector3 downPoint = fromHitPoint + (gameObject.transform.forward.normalized * vaultMax);
+                    //Debug.DrawRay(fromHitPoint, gameObject.transform.forward.normalized * maxSlideLength);
+
+                    //Shoots ray Downward to see if obstacle goes past allowed length
+                    if (Physics.Raycast(downPoint, Vector3.down, out RaycastHit groundHit, playerHeight))
+                    {
+                        //Debug.DrawRay(downPoint, Vector3.down * 1, Color.green);
+                        //debugTransform.position = downPoint;
+
+                        //vaultPoint = middle + gameObject.transform.forward.normalized * maxSlideLength;
+                        vaultPoint = groundHit.point;
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
     private bool CheckVaultable(float maxSlideLength, RaycastHit hit)
     {

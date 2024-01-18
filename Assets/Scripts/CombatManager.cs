@@ -25,6 +25,7 @@ public class CombatManager : MonoBehaviour
 
     [Header("Hands Rigging Object")]
     [SerializeField] private Rig handsRig;
+    [SerializeField] private Rig torsoRig;
 
     private Vector3 aimDirection;
 
@@ -33,16 +34,17 @@ public class CombatManager : MonoBehaviour
         PlayerInputs = GetComponent<InputManager>();
         camController = GetComponent<CameraController>();
 
-        if (handsRig == null)
+        if (handsRig == null || torsoRig ==null)
         {
-            Debug.LogWarning("HandRig not set");
+            Debug.LogWarning("A aiming rig not set");
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        setRigWeights(0);
+
         PlayerInputs.input.Player.Shoot.performed += OnShoot;
 
         PlayerInputs.input.Player.Aim.performed += OnAim;
@@ -54,12 +56,12 @@ public class CombatManager : MonoBehaviour
 
     private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-
+        setRigWeights(0);
     }
 
     private void OnAim(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {        
-
+    {
+        setRigWeights(1);
     }
 
     private void OnShoot(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -72,5 +74,11 @@ public class CombatManager : MonoBehaviour
     {
         //aimDirection = camController.GetAimPoint() - camCenterPoint.position;
         //camCenterPoint.forward = aimDirection;
+    }
+
+    private void setRigWeights(int newWeight)
+    {
+        torsoRig.weight = newWeight;
+        handsRig.weight = newWeight;
     }
 }

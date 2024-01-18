@@ -54,7 +54,6 @@ public class PlayerRun : PlayerState
 
     public override void Update()
     {
-        Debug.Log("Running");
         CheckSwitchConditions();
 
         if (speed < _context.SprintSpeed)

@@ -97,7 +97,6 @@ public class PlayerCover : PlayerState
 
     public override void Update()
     {
-        Debug.Log("Cover");
         CheckSwitchConditions();
 
         if (_context.IsMoving)
