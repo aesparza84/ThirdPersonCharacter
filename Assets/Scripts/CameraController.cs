@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Claims;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -29,7 +30,8 @@ public class CameraController : MonoBehaviour
     private Vector2 screenCenter;
     private Vector3 aimPoint;
 
-    bool aimMode;
+    private bool aimMode;
+    private bool canAim;
 
     [SerializeField] private Transform debubTransform;
 
@@ -62,6 +64,8 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         mainCam = Camera.main;
+        aimMode = false;
+        canAim = true;
 
         aimCamera.gameObject.SetActive(false);
         CurrentCamera = thirdPersonCam;
@@ -71,8 +75,16 @@ public class CameraController : MonoBehaviour
 
         playerInputs.input.Player.MouseAIm.performed += OnMouseMoved;
 
+        PlayerState.AllowAim += CanAim;
+
+
         defaultMouseSensitivity = MouseSensitivity;
-        aimMode = false;
+        
+    }
+
+    private void CanAim(object sender, bool e)
+    {
+        canAim = e;
     }
 
     private void OnMouseMoved(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -96,14 +108,16 @@ public class CameraController : MonoBehaviour
 
     private void OnAimPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
+        if (canAim)
+        {
+            thirdPersonCam.gameObject.SetActive(false);
+            aimCamera.gameObject.SetActive(true);
 
-        thirdPersonCam.gameObject.SetActive(false);
-        aimCamera.gameObject.SetActive(true);
+            aimMode = true;
+            //OnAimMode.Invoke(this, aimMode);
 
-        aimMode = true;
-        //OnAimMode.Invoke(this, aimMode);
-
-        CurrentCamera = aimCamera;
+            CurrentCamera = aimCamera;
+        }        
     }
 
     void Update()

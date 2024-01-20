@@ -29,6 +29,9 @@ public class CombatManager : MonoBehaviour
 
     private Vector3 aimDirection;
 
+    private bool canAim;
+    private bool aiming;
+
     private void Awake()
     {
         PlayerInputs = GetComponent<InputManager>();
@@ -45,23 +48,35 @@ public class CombatManager : MonoBehaviour
     {
         setRigWeights(0);
 
+        canAim = true;
+
         PlayerInputs.input.Player.Shoot.performed += OnShoot;
 
         PlayerInputs.input.Player.Aim.performed += OnAim;
         PlayerInputs.input.Player.Aim.canceled += OnAimStopped;
 
+        PlayerState.AllowAim += CanAim;
+
         GameObject gun = Instantiate(weaponPrefab, weaponTransform);
         weapon = gun.GetComponent<SimpleGun>();
     }
 
+    private void CanAim(object sender, bool e)
+    {
+        canAim = e;
+    }
+
     private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        setRigWeights(0);
+        setAim(false);
     }
 
     private void OnAim(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        setRigWeights(1);
+        if (canAim)
+        {
+            setAim(true);
+        }
     }
 
     private void OnShoot(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -74,6 +89,25 @@ public class CombatManager : MonoBehaviour
     {
         //aimDirection = camController.GetAimPoint() - camCenterPoint.position;
         //camCenterPoint.forward = aimDirection;
+
+        if (aiming && !canAim)
+        {
+            setAim(false);
+        }
+    }
+
+    private void setAim(bool aim)
+    {
+        if (aim)
+        {
+            setRigWeights(1);
+        }
+        else
+        {
+            setRigWeights(0);
+        }
+        aiming = aim;
+
     }
 
     private void setRigWeights(int newWeight)

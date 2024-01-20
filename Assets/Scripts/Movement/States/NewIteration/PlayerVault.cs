@@ -26,6 +26,8 @@ public class PlayerVault : PlayerState
 
     public override void EnterState()
     {
+        RaiseAimEvent(false);
+
         _context.JumpedVaultPressed = false;
         _context.Currentspeed = 0;
         _context.ToggleColliders(false,false);
@@ -38,6 +40,8 @@ public class PlayerVault : PlayerState
 
     public override void ExitState()
     {
+        RaiseAimEvent(true);
+
         ToggleAnimationBool(false);
         _context.ToggleColliders(true, false);
     }
@@ -80,4 +84,6 @@ public class PlayerVault : PlayerState
     {
         _context.MyAnimator.SetBool("Vaulting", toggle);
     }
+
+
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,8 @@ public abstract class PlayerState
     protected bool parentState;
 
     protected float speed;
+
+    public static event EventHandler<bool> AllowAim;
     public PlayerState(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory)
     {
         parentState = false;
@@ -61,5 +64,9 @@ public abstract class PlayerState
         currentSubState.FixedUpdate();  
     }
 
+    protected void RaiseAimEvent(bool canAim)
+    {
+        AllowAim.Invoke(this, canAim);
+    }
 
 }
