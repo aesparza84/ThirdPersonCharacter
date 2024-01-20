@@ -222,10 +222,15 @@ public class PlayerMoveManager : MonoBehaviour
 
         playerInputs.input.Player.Cover.performed += OnCoverPressed;
 
-        playerInputs.input.Player.Aim.performed += OnAim;
-        playerInputs.input.Player.Aim.canceled += OnAimStopped;
+        CombatManager.OnAiming += OnAimingEvent;
 
         playerInputs.input.Player.JumpVault.performed += OnJumpVault;
+
+    }
+
+    private void OnAimingEvent(object sender, bool e)
+    {
+        aimMode = e;
     }
 
     private void OnJumpVault(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -235,16 +240,6 @@ public class PlayerMoveManager : MonoBehaviour
             jumpedVaultPressed = true;
             jumpVaultResetTimer = 0.1f;
         }
-    }
-
-    private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        aimMode = false;
-    }
-
-    private void OnAim(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        aimMode = true;
     }
 
     private void OnCoverPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)

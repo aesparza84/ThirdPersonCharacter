@@ -37,14 +37,15 @@ public class PlayerRun : PlayerState
     public override void EnterState()
     {
         speed = _context.Currentspeed;
+        RaiseAimEvent(false);
         //_context.Currentspeed = _context.SprintSpeed;
         ToggleAnimationBool(true);
     }
 
     public override void ExitState()
     {
+        RaiseAimEvent(true);
         ToggleAnimationBool(false);
-
     }
 
     public override void FixedUpdate()

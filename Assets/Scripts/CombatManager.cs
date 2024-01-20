@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,6 +32,8 @@ public class CombatManager : MonoBehaviour
 
     private bool canAim;
     private bool aiming;
+
+    public static event EventHandler<bool> OnAiming;
 
     private void Awake()
     {
@@ -107,7 +110,7 @@ public class CombatManager : MonoBehaviour
             setRigWeights(0);
         }
         aiming = aim;
-
+        OnAiming.Invoke(this, aiming);
     }
 
     private void setRigWeights(int newWeight)
