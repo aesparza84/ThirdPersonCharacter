@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 
-public class BasicProjectile : MonoBehaviour
+public class BasicProjectile : MonoBehaviour, IProjectile
 {
     [SerializeField] private Rigidbody body;
     [SerializeField] private float speed;
+
+    [SerializeField] private int gunDamage;
     void Start()
     {
         Destroy(gameObject, 3f);
@@ -25,6 +27,15 @@ public class BasicProjectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.TryGetComponent<IDamagable>(out IDamagable obj))
+        {
+            obj.TakeDamage(gunDamage);
+        }
         Destroy(gameObject);
+    }
+
+    public void SetDamage(int damage)
+    {
+        gunDamage = damage;
     }
 }

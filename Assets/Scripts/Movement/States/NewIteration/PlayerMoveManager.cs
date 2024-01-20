@@ -314,9 +314,8 @@ public class PlayerMoveManager : MonoBehaviour
             }
         }
 
-        currentState.Update();
-
         SetPlayersForward();
+        currentState.Update();
         //playerTransform.forward = CamController.GetAimPoint();
 
         Debug.DrawRay(gameObject.transform.position, moveVector, Color.red);

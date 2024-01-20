@@ -45,8 +45,10 @@ public class SimpleGun : MonoBehaviour
     {
         if(nextFire == 0)
         {
-            BasicProjectile temp = ammoPrefab.GetComponent<BasicProjectile>();
-            Instantiate(temp, shootPoint.position, shootPoint.rotation);
+            GameObject temp = Instantiate(ammoPrefab, shootPoint.position, shootPoint.rotation);
+
+            temp.GetComponent<IProjectile>().SetDamage(damage);
+
             nextFire = fireRate;
         }
     }
