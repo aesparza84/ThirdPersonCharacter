@@ -10,7 +10,7 @@ public class PlayerFall : PlayerState
         parentState = true;
     }
 
-    public override void CheckSwitchConditions()
+    public override void SwitchConditions()
     {
         if (_context.IsGrounded)
         {
@@ -48,7 +48,7 @@ public class PlayerFall : PlayerState
         {
             currentSubState.Update();
         }
-        CheckSwitchConditions();
+        SwitchConditions();
     }
 
     protected override void ToggleAnimationBool(bool toggle)

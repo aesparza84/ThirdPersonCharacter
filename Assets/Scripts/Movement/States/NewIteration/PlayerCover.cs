@@ -10,20 +10,18 @@ public class PlayerCover : PlayerState
     private Vector3 crossVector;
 
     private bool hitLeft, hitRight;
-
-    private float colliderWidth, colliderHeight, colliderZ;
     private float colliderOffest;
 
-    private bool coverCrouch;
-
     private float prevHorizontal;
+
+    bool reachedCover;
 
     public PlayerCover(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory) : base(passedContext, passedFactory)
     {
         
     }
 
-    public override void CheckSwitchConditions()
+    public override void SwitchConditions()
     {
         if (_context.CoverPressed)
         {
@@ -36,6 +34,12 @@ public class PlayerCover : PlayerState
                 SwitchToState(_factory.Idle());
             }
         }
+        else if (aiming)
+        {
+            _context.Crouched = false;
+            _context.CrouchedCover = false;
+            SwitchToState(_factory.Idle());
+        }
     }
 
     public override void ChooseSubState()
@@ -46,6 +50,8 @@ public class PlayerCover : PlayerState
     public override void EnterState()
     {
         colliderOffest = 0.2f;
+
+        RaiseAimEvent(false);
 
         playerTransform = _context.gameObject.transform;
         //-------//
@@ -58,10 +64,11 @@ public class PlayerCover : PlayerState
         colliderPosLHS = new Vector3(-_context.ColliderWidth + colliderOffest, _context.ColliderHeight * 0.5f, 0);
         colliderPosRHS = new Vector3(_context.ColliderWidth - colliderOffest, _context.ColliderHeight * 0.5f, 0);
 
-        speed = 0; 
+        speed = 0;
 
         //Check the cover ray cast normal hit
         //Restrict RigidBody to perpdenicular axis       
+        
 
         ToggleAnimationBool(true);
     }
@@ -71,6 +78,7 @@ public class PlayerCover : PlayerState
         _context.PhyscialBodyTransfom.forward = _context.PlayerBody.transform.forward;
         _context.CoverPressed = false;
         _context.CrouchedCover = false;
+        _context.MyAnimator.SetBool("IsCrouching", _context.CrouchedCover);
         ToggleAnimationBool(false);
     }
 
@@ -97,7 +105,7 @@ public class PlayerCover : PlayerState
 
     public override void Update()
     {
-        CheckSwitchConditions();
+        SwitchConditions();
 
         if (_context.IsMoving)
         {
@@ -185,7 +193,11 @@ public class PlayerCover : PlayerState
             playerBody.MovePosition(playerPos);
 
             yield return null;
+            reachedCover = true;
         }
+
+        RaiseAimEvent(reachedCover);
+        
     }
     private void StopOnEdge()
     {

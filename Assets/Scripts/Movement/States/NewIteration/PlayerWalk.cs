@@ -9,7 +9,7 @@ public class PlayerWalk : PlayerState
 
     }
 
-    public override void CheckSwitchConditions()
+    public override void SwitchConditions()
     {
         if (!_context.IsMoving)
         {
@@ -19,7 +19,7 @@ public class PlayerWalk : PlayerState
         {
             SwitchToState(_factory.Run());
         }
-        else if (_context.CrouchPressed)
+        else if (_context.CrouchPressed && !aiming)
         {
             SwitchToState(_factory.Crouch());
         }
@@ -57,7 +57,7 @@ public class PlayerWalk : PlayerState
 
     public override void Update()
     {
-        CheckSwitchConditions();
+        SwitchConditions();
 
         if (speed < _context.BaseSpeed)
         {

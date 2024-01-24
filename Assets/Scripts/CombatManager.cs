@@ -58,7 +58,7 @@ public class CombatManager : MonoBehaviour
         PlayerInputs.input.Player.Aim.performed += OnAim;
         PlayerInputs.input.Player.Aim.canceled += OnAimStopped;
 
-        PlayerState.AllowAim += CanAim;
+        PlayerState.AllowAim += CanAim; // Dependency on PlayerState
 
         GameObject gun = Instantiate(weaponPrefab, weaponTransform);
         weapon = gun.GetComponent<SimpleGun>();

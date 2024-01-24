@@ -75,7 +75,7 @@ public class CameraController : MonoBehaviour
 
         playerInputs.input.Player.MouseAIm.performed += OnMouseMoved;
 
-        PlayerState.AllowAim += CanAim;
+        PlayerState.AllowAim += CanAim; // Dependency on PlayerState
 
 
         defaultMouseSensitivity = MouseSensitivity;
@@ -97,12 +97,11 @@ public class CameraController : MonoBehaviour
 
     private void OnAimStopped(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-
-        thirdPersonCam.gameObject.SetActive(true);
-        aimCamera.gameObject.SetActive(false);
+        //thirdPersonCam.gameObject.SetActive(true);
+        //aimCamera.gameObject.SetActive(false);
 
         aimMode = false;
-        //OnAimMode.Invoke(this, aimMode);
+        SwitchCams(aimMode);
 
         CurrentCamera = thirdPersonCam;
     }
@@ -111,10 +110,11 @@ public class CameraController : MonoBehaviour
     {
         if (canAim)
         {
-            thirdPersonCam.gameObject.SetActive(false);
-            aimCamera.gameObject.SetActive(true);
+            //thirdPersonCam.gameObject.SetActive(false);
+            //aimCamera.gameObject.SetActive(true);
 
             aimMode = true;
+            SwitchCams(aimMode);
             CurrentCamera = aimCamera;
         }        
     }
@@ -127,7 +127,18 @@ public class CameraController : MonoBehaviour
                          gameObject.transform.position.y, CurrentCamera.transform.position.z)).normalized;
 
         MouseSensitivity = defaultMouseSensitivity;
-        CheckAimMode();
+
+        if (aimMode)
+        {
+            if (canAim)
+            {
+                SetAimPoint();
+            }
+            else
+            {
+                SwitchCams(false);
+            }
+        }
 
         ForwardRotation.forward = camViewDirection;
     }
@@ -140,26 +151,31 @@ public class CameraController : MonoBehaviour
 
         //Debug.DrawRay(CurrentCamera.transform.position, camViewDirection * 10, Color.magenta);
     }
-    private void CheckAimMode()
+    private void SetAimPoint()
     {
-        if (aimMode)
+        Ray ray = mainCam.ScreenPointToRay(screenCenter);
+
+        Debug.DrawRay(CurrentCamera.transform.position, ray.direction * 50f, Color.magenta);
+
+        aimPoint = mainCam.ScreenToWorldPoint(screenCenter) + ray.direction * 50f;
+
+        camViewDirection = (new Vector3(aimPoint.x, 0, aimPoint.z) - new Vector3(gameObject.transform.position.x,
+                     0, gameObject.transform.position.z)).normalized;
+
+        if (targetTransform != null)
         {
-            Ray ray = mainCam.ScreenPointToRay(screenCenter);
-
-            Debug.DrawRay(CurrentCamera.transform.position, ray.direction * 50f, Color.magenta);
-
-            aimPoint = mainCam.ScreenToWorldPoint(screenCenter) + ray.direction * 50f;
-
-            camViewDirection = (new Vector3(aimPoint.x, 0, aimPoint.z) - new Vector3(gameObject.transform.position.x,
-                         0, gameObject.transform.position.z)).normalized;
-
-            if (targetTransform != null)
-            {
-                targetTransform.position = aimPoint;
-            }
-
-            MouseSensitivity /= 2;
+            targetTransform.position = aimPoint;
         }
+
+        MouseSensitivity /= 2;
+    }
+    
+    private void SwitchCams(bool aim)
+    {
+        thirdPersonCam.gameObject.SetActive(!aim);
+        aimCamera.gameObject.SetActive(aim);
+
+        CurrentCamera = (thirdPersonCam.enabled) ? thirdPersonCam : aimCamera;
     }
 
     private void rotateVirtualCam()

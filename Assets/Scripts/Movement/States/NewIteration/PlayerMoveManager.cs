@@ -110,6 +110,9 @@ public class PlayerMoveManager : MonoBehaviour
     private bool coverPressed;
     [SerializeField]private bool crouchedCover;
     private bool crouched;
+    private float crouchPressTimer = 0.1f;
+    private float currentCrouchTime = 0.0f;
+
     private bool aimMode;
     private bool isMoving;
     private bool runPressed;
@@ -251,9 +254,10 @@ public class PlayerMoveManager : MonoBehaviour
     }
     private void OnCrouchPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        if (!crouchPressed)
+        if (!crouchPressed || currentCrouchTime == 0.0f)
         {
             crouchPressed = true;
+            currentCrouchTime = crouchPressTimer;
         }
     }
 
@@ -306,8 +310,22 @@ public class PlayerMoveManager : MonoBehaviour
             {
                 jumpVaultResetTimer = 0.0f;
                 jumpedVaultPressed = false;
+            }        
+        }
+
+        if (crouchPressed) 
+        {
+            if (currentCrouchTime > 0)
+            {
+                currentCrouchTime -= Time.deltaTime;
+            }
+            else
+            {
+                currentCrouchTime = 0.0f;
+                crouchPressed = false;
             }
         }
+        
 
         SetPlayersForward();
         currentState.Update();

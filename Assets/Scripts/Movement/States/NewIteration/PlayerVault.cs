@@ -11,7 +11,7 @@ public class PlayerVault : PlayerState
         doneVaulting = false;   
     }
 
-    public override void CheckSwitchConditions()
+    public override void SwitchConditions()
     {
         if (doneVaulting)
         {
@@ -53,7 +53,7 @@ public class PlayerVault : PlayerState
 
     public override void Update()
     {
-        CheckSwitchConditions();
+        SwitchConditions();
 
         //Old implementation;
 

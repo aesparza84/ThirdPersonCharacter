@@ -14,16 +14,26 @@ public abstract class PlayerState
 
     protected float speed;
 
+    protected bool aiming;
+
     public static event EventHandler<bool> AllowAim;
     public PlayerState(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory)
     {
         parentState = false;
         _context = passedContext;
         _factory = passedFactory;
+
+        CombatManager.OnAiming += CombatManager_OnAiming;
     }
+
+    private void CombatManager_OnAiming(object sender, bool e)
+    {
+        aiming = e;
+    }
+
     public abstract void Update();
     public abstract void FixedUpdate();
-    public abstract void CheckSwitchConditions();
+    public abstract void SwitchConditions();
     public abstract void EnterState();
     public abstract void ExitState();
     public abstract void ChooseSubState();

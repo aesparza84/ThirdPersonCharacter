@@ -9,7 +9,7 @@ public class PlayerRun : PlayerState
 
     }
 
-    public override void CheckSwitchConditions()
+    public override void SwitchConditions()
     {
         if (!_context.IsMoving)
         {
@@ -55,7 +55,7 @@ public class PlayerRun : PlayerState
 
     public override void Update()
     {
-        CheckSwitchConditions();
+        SwitchConditions();
 
         if (speed < _context.SprintSpeed)
         {

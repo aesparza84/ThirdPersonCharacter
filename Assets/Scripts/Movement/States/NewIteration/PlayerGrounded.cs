@@ -12,7 +12,7 @@ public class PlayerGrounded : PlayerState
         ChooseSubState(); 
     }
 
-    public override void CheckSwitchConditions()
+    public override void SwitchConditions()
     {
         if (!_context.IsGrounded)
         {
@@ -70,7 +70,7 @@ public class PlayerGrounded : PlayerState
         }
 
 
-        CheckSwitchConditions();
+        SwitchConditions();
 
         //Debug.Log("Current SUbstate-- "+currentSubState);
     }

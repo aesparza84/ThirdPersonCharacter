@@ -9,7 +9,7 @@ public class PlayerCrouch : PlayerState
 
     }
 
-    public override void CheckSwitchConditions()
+    public override void SwitchConditions()
     {
         if (_context.RunPressed && _context.IsMoving)
         {
@@ -35,6 +35,10 @@ public class PlayerCrouch : PlayerState
         else if (_context.IsMoving && _context.JumpedVaultPressed && _context.CanVault())
         {
             SwitchToState(_factory.Vault());
+        }
+        else if(aiming)
+        {
+            SwitchToState(_factory.Idle());
         }
     }
 
@@ -67,7 +71,7 @@ public class PlayerCrouch : PlayerState
 
     public override void Update()
     {
-        CheckSwitchConditions();
+        SwitchConditions();
 
         if (_context.IsMoving && speed < _context.CrouchSpeed)
         {
