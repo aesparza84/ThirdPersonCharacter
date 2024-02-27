@@ -130,11 +130,15 @@ public class CoverRaycast : MonoBehaviour
 
         if (Physics.Raycast(rayStart, rayDirection, out RaycastHit hit, rayDistance, coverMask))
         {
-            coverCheck = hit;
-            CoverPoint = coverCheck.point;
+            float coverAngle = Vector3.Angle(Vector3.up, hit.normal);
+            if (Mathf.Approximately(90, coverAngle))
+            {
+                coverCheck = hit;
+                CoverPoint = coverCheck.point;
 
-            //Debug.Log("Hit Normal: " +coverCheck.normal);
-            return true;
+                //Debug.Log("Hit Normal: " +coverCheck.normal);
+                return true;
+            }            
         }
         return false;
     }

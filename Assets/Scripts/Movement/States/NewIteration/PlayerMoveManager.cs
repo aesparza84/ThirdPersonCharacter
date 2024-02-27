@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -110,8 +111,6 @@ public class PlayerMoveManager : MonoBehaviour
     private bool coverPressed;
     [SerializeField]private bool crouchedCover;
     private bool crouched;
-    private float crouchPressTimer = 0.1f;
-    private float currentCrouchTime = 0.0f;
 
     private bool aimMode;
     private bool isMoving;
@@ -231,6 +230,7 @@ public class PlayerMoveManager : MonoBehaviour
 
     }
 
+    
     private void OnAimingEvent(object sender, bool e)
     {
         aimMode = e;
@@ -241,23 +241,25 @@ public class PlayerMoveManager : MonoBehaviour
         if (!jumpedVaultPressed)
         {
             jumpedVaultPressed = true;
-            jumpVaultResetTimer = 0.1f;
+            StartCoroutine(ResetVaultInput(0.1f));
         }
     }
 
     private void OnCoverPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        if (!coverPressed)
+        if (!CoverPressed)
         {
             coverPressed = true;
+            StartCoroutine(ResetCoverInput(0.1f));
         }
     }
+
     private void OnCrouchPressed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        if (!crouchPressed || currentCrouchTime == 0.0f)
+        if (!crouchPressed)
         {
             crouchPressed = true;
-            currentCrouchTime = crouchPressTimer;
+            StartCoroutine(ResetCrouchInput(0.1f));
         }
     }
 
@@ -302,29 +304,6 @@ public class PlayerMoveManager : MonoBehaviour
         camForward.z = camController.GetAimPoint().z;
 
         isGrounded = checkGrounded();
-
-        if (jumpedVaultPressed)
-        {
-            jumpVaultResetTimer -= Time.deltaTime;
-            if (jumpVaultResetTimer < 0)
-            {
-                jumpVaultResetTimer = 0.0f;
-                jumpedVaultPressed = false;
-            }        
-        }
-
-        if (crouchPressed) 
-        {
-            if (currentCrouchTime > 0)
-            {
-                currentCrouchTime -= Time.deltaTime;
-            }
-            else
-            {
-                currentCrouchTime = 0.0f;
-                crouchPressed = false;
-            }
-        }
         
 
         SetPlayersForward();
@@ -334,6 +313,52 @@ public class PlayerMoveManager : MonoBehaviour
         Debug.DrawRay(gameObject.transform.position, moveVector, Color.red);
     }
 
+    #region Input Resetting | Timers
+
+    //Coroutines don't allow for 'ref' keyword within their params.
+    //Thats why theres multiple similar coroutines
+    private IEnumerator ResetCoverInput(float resetTime)
+    {
+        float time = 0.0f;
+        while (time < resetTime)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        coverPressed = false;
+
+        yield return null;
+    }
+
+    private IEnumerator ResetVaultInput(float resetTime)
+    {
+        float time = 0.0f;
+        while (time < resetTime)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        jumpedVaultPressed = false;
+
+        yield return null;
+    }
+
+    private IEnumerator ResetCrouchInput(float resetTime)
+    {
+        float time = 0.0f;
+        while (time < resetTime)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        crouchPressed = false;
+
+        yield return null;
+    }
+    #endregion
     private void SetPlayersForward()
     {
         //direction = followCam.forwaredRotation;
