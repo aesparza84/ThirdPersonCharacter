@@ -50,6 +50,7 @@ public class PlayerMoveManager : MonoBehaviour
 
     [Header("Cover Raycaster")]
     [SerializeField] private CoverRaycast coverRayCast;
+    public LayerMask CoverMask;
     public CoverRaycast CoverRayCast { get { return coverRayCast; } }
 
     [Header("Animator")]
@@ -191,6 +192,7 @@ public class PlayerMoveManager : MonoBehaviour
     }
     void Start()
     {
+
         moveVector = Vector3.zero;
         currentspeed = 0;
         sprintSpeed = baseSpeed * 2.3f; //A random number I chose

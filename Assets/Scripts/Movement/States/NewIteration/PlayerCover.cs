@@ -8,6 +8,9 @@ public class PlayerCover : PlayerState
 
     private Vector3 colliderPosLHS, colliderPosRHS, startingLHS, startingRHS;
     private Vector3 crossVector;
+    private Vector3 LowerLeft, LowerRight;
+
+    private RaycastHit CurrentWallHit;
 
     private bool hitLeft, hitRight;
     private float colliderOffest;
@@ -75,7 +78,7 @@ public class PlayerCover : PlayerState
 
     public override void ExitState()
     {
-        _context.PhyscialBodyTransfom.forward = _context.PlayerBody.transform.forward;
+        _context.PhyscialBodyTransfom.forward = playerTransform.forward;
         _context.CoverPressed = false;
         _context.CrouchedCover = false;
         _context.MyAnimator.SetBool("IsCrouching", _context.CrouchedCover);
@@ -89,8 +92,6 @@ public class PlayerCover : PlayerState
 
         //This works by setting the rigidbody forward to face wall in Updateaction
         //Thats why we move along the rigidbodies transfom.Right
-
-        playerTransform = _context.gameObject.transform;
 
         crossVector = _context.PlayerBody.transform.right;
         _context.MoveVector = Vector3.Project(_context.MoveVector.normalized, crossVector);
@@ -129,6 +130,7 @@ public class PlayerCover : PlayerState
         SpeedAndLeaningDirection();
 
         SetForwards();
+        EdgeStopAndTransition(2);
 
         //if (coverCrouch != context.crouched)
         //{
@@ -143,7 +145,7 @@ public class PlayerCover : PlayerState
 
         hitLeft = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, 1);
         hitRight = Physics.Raycast(startingRHS, _context.gameObject.transform.forward, 1);
-        StopOnEdge();
+        //StopOnEdge();
 
         #region Debugging
         //Debug.Log("HitLeft: " + hitLeft);
@@ -171,50 +173,76 @@ public class PlayerCover : PlayerState
 
     private void MoveToCover()
     {
-        Vector3 newPos = _context.CoverRayCast.GetCoverPoint().point;
         _context.StartCoroutine(getToCover(_context.PlayerBody,
                                           _context.PlayerBody.position,
-                                          newPos,
+                                          _context.CoverRayCast.GetCoverPoint(),
                                           1.3f));
-
-        playerTransform.forward = -_context.CoverRayCast.GetCoverPoint().normal;
-        _context.PhyscialBodyTransfom.forward = -playerTransform.forward;
     }
 
-    private IEnumerator getToCover(Rigidbody playerBody, Vector3 playerPos, Vector3 finalPos, float lerpSpeed)
+    private IEnumerator getToCover(Rigidbody playerBody, Vector3 playerPos, RaycastHit finalPos, float lerpSpeed)
     {
         float t = 0;
         Vector3 currentPos = playerPos;
+        Vector3 finalVector = new Vector3(finalPos.point.x, currentPos.y, finalPos.point.z);
 
+        playerBody.isKinematic = true;
         while (t < 1)
         {
-            playerPos = Vector3.Lerp(currentPos, finalPos, t);
+            playerPos = Vector3.Lerp(currentPos, finalVector, t);
             t += Time.deltaTime * lerpSpeed;
             playerBody.MovePosition(playerPos);
 
             yield return null;
             reachedCover = true;
         }
+        playerBody.isKinematic = false;
 
         RaiseAimEvent(reachedCover);
-        
-    }
-    private void StopOnEdge()
-    {
-        if (!hitLeft)
-        {
-            _context.HorizontalIput = Mathf.Clamp(_context.HorizontalIput, 0, 1);
-        }
-        if (!hitRight)
-        {
-            _context.HorizontalIput = Mathf.Clamp(_context.HorizontalIput, -1, 0);
-        }
+
+        playerTransform.forward = -finalPos.normal;
+        _context.PhyscialBodyTransfom.forward = -playerTransform.forward;
     }
     private void SetForwards()
     {
-        _context.PlayerBody.transform.forward = -_context.CoverRayCast.GetCoverPoint().normal;
-    }
+        if (Physics.Raycast(_context.gameObject.transform.position, _context.gameObject.transform.forward,
+                            out CurrentWallHit, 3.0f, _context.CoverMask))
+        {
+            _context.PlayerBody.transform.forward = -CurrentWallHit.normal;
 
+        }
+    }
+    private void EdgeStopAndTransition(float transitionDistance)
+    {
+        LowerLeft = _context.transform.TransformPoint(new Vector3(colliderPosLHS.x-0.05f, 1, colliderPosLHS.z));
+        LowerRight = _context.transform.TransformPoint(new Vector3(colliderPosRHS.x+0.05f, 1, colliderPosRHS.z));
+
+
+        Debug.DrawRay(LowerLeft, _context.gameObject.transform.forward * transitionDistance, Color.red);
+        Debug.DrawRay(LowerRight, _context.gameObject.transform.forward * transitionDistance, Color.red);
+
+        if (!hitLeft)
+        {
+            if (Physics.Raycast(LowerLeft, _context.gameObject.transform.forward, out RaycastHit lHit, transitionDistance))
+            {
+                _context.StartCoroutine(getToCover(_context.PlayerBody, _context.transform.position, lHit, 3f));
+            }
+            else
+            {
+                _context.HorizontalIput = Mathf.Clamp(_context.HorizontalIput, 0, 1);
+            }
+        }
+        else if (!hitRight)
+        {
+            if (Physics.Raycast(LowerRight, _context.gameObject.transform.forward, out RaycastHit rHit, transitionDistance))
+            {
+                _context.StartCoroutine(getToCover(_context.PlayerBody, _context.transform.position, rHit, 3f));
+            }
+            else
+            {
+                _context.HorizontalIput = Mathf.Clamp(_context.HorizontalIput, -1, 0);
+            }
+        }
+    }
     private void ToggleCrouchCover()
     {
         _context.CrouchedCover = !_context.CrouchedCover;

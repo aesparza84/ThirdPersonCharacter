@@ -1336,7 +1336,7 @@ Transform:
   m_GameObject: {fileID: 5130617266592827783}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.7968764, y: 0.00000047683716, z: -4.16}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2666,6 +2666,9 @@ MonoBehaviour:
     m_Bits: 64
   camController: {fileID: 0}
   coverRayCast: {fileID: 0}
+  CoverMask:
+    serializedVersion: 2
+    m_Bits: 0
   myAnimator: {fileID: 0}
   playerInputs: {fileID: 0}
   baseSpeed: 3
@@ -2730,6 +2733,7 @@ MonoBehaviour:
   playerRadius: 0
   playerHeight: 0
   debugTransform: {fileID: 0}
+  EnableDebug: 0
 --- !u!114 &8253676457932609437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2748,7 +2752,7 @@ MonoBehaviour:
   ForwardRotation: {fileID: 6482552825233688031}
   camViewDirection: {x: 0, y: 0, z: 0}
   MouseSensitivity: 2
-  debubTransform: {fileID: 5264028184151470790}
+  targetTransform: {fileID: 0}
   playerInputs: {fileID: 5259015539716463875}
 --- !u!114 &24731036547046423
 MonoBehaviour:

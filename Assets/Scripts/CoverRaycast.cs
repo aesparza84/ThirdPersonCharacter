@@ -39,6 +39,8 @@ public class CoverRaycast : MonoBehaviour
 
     private RaycastHit vaultHit;
     private RaycastHit climbHit;
+
+    [SerializeField] private bool EnableDebug;
     private void Awake()
     {
         if (CoverStart == null)
@@ -79,6 +81,15 @@ public class CoverRaycast : MonoBehaviour
         setRaypos();
         Debug.DrawRay(rayStart, rayDirection * rayDistance, Color.cyan);
 
+        if (EnableDebug)
+        {
+            if (Physics.Raycast(rayStart, gameObject.transform.forward.normalized, out RaycastHit hit, 1.7f, coverMask))
+            {
+                drawClimbRays(climbMax, hit);
+                drawVaultRays(vaultMax, hit);
+            }
+        }
+
         //if (Physics.Raycast(rayStart, gameObject.transform.forward.normalized, out RaycastHit hit, 1.7f, coverMask))
         //{
         //    CanClimb = CheckClimbable(climbMax, hit);
@@ -92,13 +103,13 @@ public class CoverRaycast : MonoBehaviour
         //    //Debug.Log("Can Vault: "+ CheckVaultable(vaultMax, hit));
         //    #endregion
         //}
-        //else
-        //{
-        //    CanClimb = false;
-        //    CanVault = false;
-        //}
+        ////else
+        ////{
+        ////    CanClimb = false;
+        ////    CanVault = false;
+        ////}
 
-        
+
     }
 
     private void drawClimbRays(float heightCheck, RaycastHit hit)

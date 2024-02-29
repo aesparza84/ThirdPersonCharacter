@@ -87,7 +87,10 @@ public class PlayerGrounded : PlayerState
     }
     private void applyVelocity()
     {
-        _context.PlayerBody.velocity = _context.MoveVector.normalized * _context.Currentspeed;
+        if (!_context.PlayerBody.isKinematic)
+        {
+            _context.PlayerBody.velocity = _context.MoveVector.normalized * _context.Currentspeed;
+        }
     }
 
     private void SetPlayersForward()
