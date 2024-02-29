@@ -244,7 +244,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh32284
+  m_Name: pb_Mesh32312
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -497,7 +497,7 @@ PrefabInstance:
     - target: {fileID: 6527670681639101784, guid: b99687c95e6d936419c55bc4aeee5631,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0916102
+      value: 3.1916103
       objectReference: {fileID: 0}
     - target: {fileID: 6527670681639101784, guid: b99687c95e6d936419c55bc4aeee5631,
         type: 3}
@@ -507,7 +507,7 @@ PrefabInstance:
     - target: {fileID: 6527670681639101784, guid: b99687c95e6d936419c55bc4aeee5631,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.33
+      value: 11.93
       objectReference: {fileID: 0}
     - target: {fileID: 6527670681639101784, guid: b99687c95e6d936419c55bc4aeee5631,
         type: 3}
@@ -3287,7 +3287,7 @@ Transform:
   m_GameObject: {fileID: 1735034002}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.0916102, y: 2.767269, z: 2.33}
+  m_LocalPosition: {x: 3.1916103, y: 2.767269, z: 11.93}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3299,7 +3299,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-680122
+  m_Name: pb_Mesh32276
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -3525,7 +3525,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-15048
+  m_Name: pb_Mesh32262
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -5736,7 +5736,7 @@ PrefabInstance:
     - target: {fileID: 5449774632933928599, guid: 41b650a37d52d364392a8d14be30579f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.11
+      value: 2.21
       objectReference: {fileID: 0}
     - target: {fileID: 5449774632933928599, guid: 41b650a37d52d364392a8d14be30579f,
         type: 3}
@@ -5746,7 +5746,7 @@ PrefabInstance:
     - target: {fileID: 5449774632933928599, guid: 41b650a37d52d364392a8d14be30579f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.07
+      value: 14.67
       objectReference: {fileID: 0}
     - target: {fileID: 5449774632933928599, guid: 41b650a37d52d364392a8d14be30579f,
         type: 3}
@@ -5803,7 +5803,8 @@ PrefabInstance:
       propertyPath: thirdPersonCam
       value: 
       objectReference: {fileID: 1165039668}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8680687320468176758, guid: 41b650a37d52d364392a8d14be30579f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

@@ -9,10 +9,11 @@ public class PlayerCover : PlayerState
     private Vector3 colliderPosLHS, colliderPosRHS, startingLHS, startingRHS;
     private Vector3 crossVector;
     private Vector3 LowerLeft, LowerRight;
-
-    private RaycastHit CurrentWallHit;
+    private RaycastHit[] CoversHit;
 
     private bool hitLeft, hitRight;
+    private bool transitionSide;
+
     private float colliderOffest;
 
     private float prevHorizontal;
@@ -21,7 +22,7 @@ public class PlayerCover : PlayerState
 
     public PlayerCover(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory) : base(passedContext, passedFactory)
     {
-        
+        CoversHit = new RaycastHit[3];
     }
 
     public override void SwitchConditions()
@@ -52,6 +53,8 @@ public class PlayerCover : PlayerState
 
     public override void EnterState()
     {
+        transitionSide = false;
+
         colliderOffest = 0.2f;
 
         RaiseAimEvent(false);
@@ -129,8 +132,12 @@ public class PlayerCover : PlayerState
 
         SpeedAndLeaningDirection();
 
-        SetForwards();
-        EdgeStopAndTransition(2);
+        if (!transitionSide)
+        {
+            EdgeStopAndTransition(2);
+            SetForwards();
+        }
+        
 
         //if (coverCrouch != context.crouched)
         //{
@@ -181,6 +188,8 @@ public class PlayerCover : PlayerState
 
     private IEnumerator getToCover(Rigidbody playerBody, Vector3 playerPos, RaycastHit finalPos, float lerpSpeed)
     {
+        transitionSide = true;
+
         float t = 0;
         Vector3 currentPos = playerPos;
         Vector3 finalVector = new Vector3(finalPos.point.x, currentPos.y, finalPos.point.z);
@@ -197,18 +206,19 @@ public class PlayerCover : PlayerState
         }
         playerBody.isKinematic = false;
 
+        transitionSide = false;
+
         RaiseAimEvent(reachedCover);
 
-        playerTransform.forward = -finalPos.normal;
+        //playerTransform.forward = -finalPos.normal;
         _context.PhyscialBodyTransfom.forward = -playerTransform.forward;
     }
     private void SetForwards()
     {
         if (Physics.Raycast(_context.gameObject.transform.position, _context.gameObject.transform.forward,
-                            out CurrentWallHit, 3.0f, _context.CoverMask))
+                            out RaycastHit CurrentWallHit, 3.0f, _context.CoverMask))
         {
             _context.PlayerBody.transform.forward = -CurrentWallHit.normal;
-
         }
     }
     private void EdgeStopAndTransition(float transitionDistance)
@@ -221,27 +231,32 @@ public class PlayerCover : PlayerState
         Debug.DrawRay(LowerRight, _context.gameObject.transform.forward * transitionDistance, Color.red);
 
         if (!hitLeft)
-        {
+        {            
             if (Physics.Raycast(LowerLeft, _context.gameObject.transform.forward, out RaycastHit lHit, transitionDistance))
             {
-                _context.StartCoroutine(getToCover(_context.PlayerBody, _context.transform.position, lHit, 3f));
+                //_context.StartCoroutine(getToCover(_context.PlayerBody, _context.transform.position, lHit, 3f));
+                _context.PlayerBody.transform.forward = -lHit.normal;
             }
             else
             {
                 _context.HorizontalIput = Mathf.Clamp(_context.HorizontalIput, 0, 1);
             }
+            
         }
         else if (!hitRight)
         {
+            
             if (Physics.Raycast(LowerRight, _context.gameObject.transform.forward, out RaycastHit rHit, transitionDistance))
             {
-                _context.StartCoroutine(getToCover(_context.PlayerBody, _context.transform.position, rHit, 3f));
+                _context.PlayerBody.transform.forward = -rHit.normal;
+                //_context.StartCoroutine(getToCover(_context.PlayerBody, _context.transform.position, rHit, 3f));
             }
             else
             {
                 _context.HorizontalIput = Mathf.Clamp(_context.HorizontalIput, -1, 0);
-            }
+            }            
         }
+
     }
     private void ToggleCrouchCover()
     {

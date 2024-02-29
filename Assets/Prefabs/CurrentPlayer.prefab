@@ -176,7 +176,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.032837383
+  m_Radius: 0.02
   m_Height: 0.16229919
   m_Direction: 1
   m_Center: {x: 0.0006498576, y: 0.07889213, z: -0.0006876325}
@@ -1650,7 +1650,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.032837383
+  m_Radius: 0.02
   m_Height: 0.10237583
   m_Direction: 1
   m_Center: {x: 0.0006498576, y: 0.061719105, z: -0.0006876325}
@@ -3401,13 +3401,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8698122493235236872}
   - component: {fileID: 222059591789690336}
-  - component: {fileID: 8680687320468176758}
-  - component: {fileID: 783270531896211552}
-  - component: {fileID: 6916696323683507119}
-  - component: {fileID: 9197874676887026341}
-  - component: {fileID: 8356034123217932209}
-  - component: {fileID: 1824331084274511529}
-  - component: {fileID: 5842589519945338530}
   m_Layer: 0
   m_Name: BManPrefab
   m_TagString: Untagged
@@ -3459,232 +3452,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8680687320468176758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6534425122939113583}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5729b212a6f895241ad16bc28fccfa02, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerBody: {fileID: 0}
-  playerTransform: {fileID: 0}
-  standingCollider: {fileID: 7014068270316640624}
-  crouchingCollider: {fileID: 2151055843585665372}
-  physicalBodyTransform: {fileID: 7026617737122495254}
-  groundCheckTransform: {fileID: 276025584302348879}
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 64
-  camController: {fileID: 0}
-  coverRayCast: {fileID: 0}
-  CoverMask:
-    serializedVersion: 2
-    m_Bits: 64
-  myAnimator: {fileID: 0}
-  playerInputs: {fileID: 0}
-  baseSpeed: 3
-  currentspeed: 0
-  sprintSpeed: 0
-  crouchSpeed: 0
-  coverSpeed: 2
-  groundDrag: 0
-  moveVector: {x: 0, y: 0, z: 0}
-  gravityVector: {x: 0, y: 0, z: 0}
-  horizontalInput: 0
-  verticalInput: 0
-  gravityMultiplier: 10
-  maxGravityAmount: 10
-  crouchPressed: 0
-  crouchedCover: 0
---- !u!114 &783270531896211552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6534425122939113583}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29bc2ce66eac4d44e910a8ff1a01da05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponTransform: {fileID: 5787059990493854286}
-  camCenterPoint: {fileID: 0}
-  weaponPrefab: {fileID: 2133972120932278465, guid: 91f0ac8d7e6b71843a6e574fb81db0e7,
-    type: 3}
-  PlayerInputs: {fileID: 0}
-  camController: {fileID: 0}
-  animator: {fileID: 0}
-  handsRig: {fileID: 7370086448384649398}
-  torsoRig: {fileID: 4609544633113384751}
---- !u!114 &6916696323683507119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6534425122939113583}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6e6d4e5c5fa3624ca812e78f8558a61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &9197874676887026341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6534425122939113583}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a70a671d0b6eb8489ee59a07ac05973, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CoverStart: {fileID: 7272963597705304290}
-  climbMax: 1.5
-  vaultMax: 2
-  playerBody: {fileID: 7272963597705304290}
-  rayDistance: 5
-  coverMask:
-    serializedVersion: 2
-    m_Bits: 64
-  CoverPoint: {x: 0, y: 0, z: 0}
-  CanClimb: 0
-  CanVault: 0
-  playerCollider: {fileID: 7014068270316640624}
-  playerRadius: 0
-  playerHeight: 0
-  debugTransform: {fileID: 0}
-  EnableDebug: 0
---- !u!114 &8356034123217932209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6534425122939113583}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63926811599a3fe458d0355b0bdf70cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thirdPersonCam: {fileID: 0}
-  aimCamera: {fileID: 0}
-  followTarget: {fileID: 129320898048903957}
-  ForwardRotation: {fileID: 7272963597705304290}
-  camViewDirection: {x: 0, y: 0, z: 0}
-  MouseSensitivity: 2
-  targetTransform: {fileID: 4351308793430379487}
-  playerInputs: {fileID: 6916696323683507119}
---- !u!114 &1824331084274511529
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6534425122939113583}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fff0960ef4ea6e04eac66b4a7fd2189d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RigLayers:
-  - m_Rig: {fileID: 7635985735484693327}
-    m_Active: 1
-  - m_Rig: {fileID: 4609544633113384751}
-    m_Active: 1
-  - m_Rig: {fileID: 7370086448384649398}
-    m_Active: 1
-  m_Effectors: []
---- !u!114 &5842589519945338530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6534425122939113583}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2d8418b0b9634b1892b0268dd9c2743, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boneShape: 1
-  drawBones: 1
-  drawTripods: 0
-  boneSize: 1
-  tripodSize: 1
-  boneColor: {r: 0, g: 0, b: 1, a: 0.5}
-  m_Transforms:
-  - {fileID: 4568519625247285237}
-  - {fileID: 3126731835604905191}
-  - {fileID: 7528202035114221268}
-  - {fileID: 1041202774794416166}
-  - {fileID: 5504762290919380233}
-  - {fileID: 3889373927017091089}
-  - {fileID: 2786190743209090099}
-  - {fileID: 4497991959276786721}
-  - {fileID: 4055231162677068037}
-  - {fileID: 467401963260595320}
-  - {fileID: 4523867174104796820}
-  - {fileID: 3205865744858602333}
-  - {fileID: 7915214955042339269}
-  - {fileID: 4590331197706830213}
-  - {fileID: 2262032235763423637}
-  - {fileID: 4099243306723537769}
-  - {fileID: 7717411256898378391}
-  - {fileID: 5276039016818964954}
-  - {fileID: 9080084847735407036}
-  - {fileID: 2113198528013321258}
-  - {fileID: 922568045789211377}
-  - {fileID: 8281548139330479977}
-  - {fileID: 357675672410848185}
-  - {fileID: 8624744516868708109}
-  - {fileID: 5850685785574505505}
-  - {fileID: 1899470594469222511}
-  - {fileID: 6992906390468400929}
-  - {fileID: 3136629818856620797}
-  - {fileID: 3852905258047758390}
-  - {fileID: 5645679804419610739}
-  - {fileID: 1706011224949046829}
-  - {fileID: 2153860252217360955}
-  - {fileID: 9038313797484611751}
-  - {fileID: 4425850366664384591}
-  - {fileID: 1785325945666898290}
-  - {fileID: 5945973410237500523}
-  - {fileID: 8065900028627787861}
-  - {fileID: 5838726425961098818}
-  - {fileID: 7755477640155067418}
-  - {fileID: 2115925176334396585}
-  - {fileID: 5600569718087616390}
-  - {fileID: 2417403747693372518}
-  - {fileID: 6008092839325389700}
-  - {fileID: 8878818930152052951}
-  - {fileID: 3102383532779229732}
-  - {fileID: 3594484693916060194}
-  - {fileID: 9199013095693435745}
-  - {fileID: 3321778754161600708}
-  - {fileID: 7009746901101662197}
-  - {fileID: 1075769639687090182}
-  - {fileID: 6365220390122371060}
-  - {fileID: 489122705648443192}
-  - {fileID: 8113400898700720702}
-  - {fileID: 7627028783148287115}
-  - {fileID: 5436411139016399193}
-  - {fileID: 5966539854082078003}
-  - {fileID: 9064007512664628764}
-  - {fileID: 5801818178403905238}
-  - {fileID: 4936088893860829546}
-  - {fileID: 4563243401987449659}
-  - {fileID: 1938009465968456568}
-  - {fileID: 6889775145034691141}
-  - {fileID: 160556705032727264}
-  - {fileID: 8052100567232362160}
 --- !u!1 &6576684413069411804
 GameObject:
   m_ObjectHideFlags: 0

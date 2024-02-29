@@ -263,7 +263,8 @@ public class CoverState : MovingState
     }
 
     private IEnumerator getToCover(Rigidbody playerBody, Vector3 playerPos, Vector3 finalPos, float lerpSpeed)
-    {        
+    {
+
         float t = 0;
         Vector3 currentPos = playerPos;
 
