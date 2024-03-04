@@ -9,6 +9,7 @@ public class PlayerCover : PlayerState
     private Vector3 colliderPosLHS, colliderPosRHS, startingLHS, startingRHS;
     private Vector3 crossVector;
     private Vector3 LowerLeft, LowerRight;
+
     private RaycastHit[] CoversHit;
 
     private bool hitLeft, hitRight;
@@ -21,7 +22,7 @@ public class PlayerCover : PlayerState
     bool reachedCover;
 
     public PlayerCover(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory) : base(passedContext, passedFactory)
-    {
+    {        
         CoversHit = new RaycastHit[3];
     }
 
@@ -134,8 +135,8 @@ public class PlayerCover : PlayerState
 
         if (!transitionSide)
         {
-            EdgeStopAndTransition(2);
             SetForwards();
+            EdgeStopAndTransition(2);
         }
         
 
@@ -147,19 +148,21 @@ public class PlayerCover : PlayerState
         ///
 
 
-        startingLHS = _context.transform.TransformPoint(colliderPosLHS);
-        startingRHS = _context.transform.TransformPoint(colliderPosRHS);
+        //startingLHS = _context.transform.TransformPoint(colliderPosLHS);
+        //startingRHS = _context.transform.TransformPoint(colliderPosRHS);
 
-        hitLeft = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, 1);
-        hitRight = Physics.Raycast(startingRHS, _context.gameObject.transform.forward, 1);
+        //Side Cover detection
+        //hitLeft = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, 1);
+        //hitRight = Physics.Raycast(startingRHS, _context.gameObject.transform.forward, 1);
+
         //StopOnEdge();
 
         #region Debugging
         //Debug.Log("HitLeft: " + hitLeft);
         //Debug.Log("HitRight: " + hitRight);
 
-        Debug.DrawRay(startingLHS, _context.gameObject.transform.forward, Color.green);
-        Debug.DrawRay(startingRHS, _context.gameObject.transform.forward, Color.magenta);
+        //Debug.DrawRay(startingLHS, _context.gameObject.transform.forward, Color.green);
+        //Debug.DrawRay(startingRHS, _context.gameObject.transform.forward, Color.magenta);
 
         //Drawing the normal
         //Debug.DrawRay(_context.StandingCollider.transform.position,
@@ -210,26 +213,75 @@ public class PlayerCover : PlayerState
 
         RaiseAimEvent(reachedCover);
 
-        //playerTransform.forward = -finalPos.normal;
+        playerTransform.forward = -finalPos.normal;
         _context.PhyscialBodyTransfom.forward = -playerTransform.forward;
     }
     private void SetForwards()
     {
-        if (Physics.Raycast(_context.gameObject.transform.position, _context.gameObject.transform.forward,
-                            out RaycastHit CurrentWallHit, 3.0f, _context.CoverMask))
+        //if (Physics.Raycast(_context.gameObject.transform.position, _context.gameObject.transform.forward,
+        //                    out RaycastHit CurrentWallHit, 3.0f, _context.CoverMask))
+        //{
+        //    _context.PlayerBody.transform.forward = -CurrentWallHit.normal;
+        //}
+
+        Physics.RaycastNonAlloc(_context.gameObject.transform.position, _context.gameObject.transform.forward,
+                                                 CoversHit, 3.0f, _context.CoverMask);
+
+        if (CoversHit[0].transform != null)
         {
-            _context.PlayerBody.transform.forward = -CurrentWallHit.normal;
+            _context.PlayerBody.transform.forward = -CoversHit[0].normal;
         }
     }
     private void EdgeStopAndTransition(float transitionDistance)
     {
         LowerLeft = _context.transform.TransformPoint(new Vector3(colliderPosLHS.x-0.05f, 1, colliderPosLHS.z));
         LowerRight = _context.transform.TransformPoint(new Vector3(colliderPosRHS.x+0.05f, 1, colliderPosRHS.z));
-
-
         Debug.DrawRay(LowerLeft, _context.gameObject.transform.forward * transitionDistance, Color.red);
         Debug.DrawRay(LowerRight, _context.gameObject.transform.forward * transitionDistance, Color.red);
 
+        startingLHS = _context.transform.TransformPoint(colliderPosLHS);
+        startingRHS = _context.transform.TransformPoint(colliderPosRHS);
+
+        if (_context.HorizontalIput < 0)
+        {
+            hitLeft = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, 1);
+            Debug.DrawRay(startingLHS, _context.gameObject.transform.forward, Color.green);
+
+            if (!hitLeft)
+            {
+                if (Physics.Raycast(LowerLeft, _context.gameObject.transform.forward, out RaycastHit lHit, transitionDistance))
+                {
+                    //_context.StartCoroutine(getToCover(_context.PlayerBody, _context.transform.position, lHit, 3f));
+                    _context.PlayerBody.transform.forward = -lHit.normal;
+                }
+                else
+                {
+                    _context.HorizontalIput = Mathf.Clamp(_context.HorizontalIput, 0, 1);
+                }
+
+            }
+        }
+        else if (_context.HorizontalIput > 0)
+        {
+            hitRight = Physics.Raycast(startingRHS, _context.gameObject.transform.forward, 1);
+            Debug.DrawRay(startingRHS, _context.gameObject.transform.forward, Color.magenta);
+
+            if (!hitRight)
+            {
+
+                if (Physics.Raycast(LowerRight, _context.gameObject.transform.forward, out RaycastHit rHit, transitionDistance))
+                {
+                    _context.PlayerBody.transform.forward = -rHit.normal;
+                    //_context.StartCoroutine(getToCover(_context.PlayerBody, _context.transform.position, rHit, 3f));
+                }
+                else
+                {
+                    _context.HorizontalIput = Mathf.Clamp(_context.HorizontalIput, -1, 0);
+                }
+            }
+        }
+
+        /*
         if (!hitLeft)
         {            
             if (Physics.Raycast(LowerLeft, _context.gameObject.transform.forward, out RaycastHit lHit, transitionDistance))
@@ -256,7 +308,7 @@ public class PlayerCover : PlayerState
                 _context.HorizontalIput = Mathf.Clamp(_context.HorizontalIput, -1, 0);
             }            
         }
-
+        */
     }
     private void ToggleCrouchCover()
     {

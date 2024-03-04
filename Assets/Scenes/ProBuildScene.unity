@@ -507,7 +507,7 @@ PrefabInstance:
     - target: {fileID: 6527670681639101784, guid: b99687c95e6d936419c55bc4aeee5631,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 11.93
+      value: 12.360001
       objectReference: {fileID: 0}
     - target: {fileID: 6527670681639101784, guid: b99687c95e6d936419c55bc4aeee5631,
         type: 3}
@@ -3287,7 +3287,7 @@ Transform:
   m_GameObject: {fileID: 1735034002}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.1916103, y: 2.767269, z: 11.93}
+  m_LocalPosition: {x: 3.1916103, y: 2.767269, z: 12.360001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3519,6 +3519,12 @@ LightingSettings:
   m_PVRFilteringAtrousPositionSigmaAO: 1
   m_PVRTiledBaking: 0
   m_RespectSceneVisibilityWhenBakingGI: 0
+--- !u!136 &1928248749 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 7014068270316640624, guid: 41b650a37d52d364392a8d14be30579f,
+    type: 3}
+  m_PrefabInstance: {fileID: 8043643889729250207}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &2009233023
 Mesh:
   m_ObjectHideFlags: 0
@@ -5728,6 +5734,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 806918963405311049, guid: 41b650a37d52d364392a8d14be30579f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2033020592599598650, guid: 41b650a37d52d364392a8d14be30579f,
         type: 3}
       propertyPath: m_Name
@@ -5746,7 +5757,7 @@ PrefabInstance:
     - target: {fileID: 5449774632933928599, guid: 41b650a37d52d364392a8d14be30579f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 14.67
+      value: 15.1
       objectReference: {fileID: 0}
     - target: {fileID: 5449774632933928599, guid: 41b650a37d52d364392a8d14be30579f,
         type: 3}
@@ -5793,6 +5804,11 @@ PrefabInstance:
       propertyPath: thirdPersonCam
       value: 
       objectReference: {fileID: 1165039668}
+    - target: {fileID: 7371822559176941895, guid: 41b650a37d52d364392a8d14be30579f,
+        type: 3}
+      propertyPath: standingCollider
+      value: 
+      objectReference: {fileID: 1928248749}
     - target: {fileID: 8356034123217932209, guid: 41b650a37d52d364392a8d14be30579f,
         type: 3}
       propertyPath: aimCamera
