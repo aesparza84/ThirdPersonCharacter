@@ -251,8 +251,8 @@ public class PlayerCover : PlayerState
             hitLeft = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, out CurrentHit, 1.5f, _context.CoverMask);
             Debug.DrawRay(startingLHS, _context.gameObject.transform.forward * 1.5f, Color.green);
 
-            directLeft = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, out RaycastHit directLeftHit, 0.5f, _context.CoverMask);
-            Debug.DrawRay(startingLHS, -_context.gameObject.transform.right * 0.5f, Color.green);
+            directLeft = Physics.Raycast(_context.gameObject.transform.position, -_context.gameObject.transform.right, out RaycastHit directLeftHit, 0.5f, _context.CoverMask);
+            Debug.DrawRay(_context.gameObject.transform.position, -_context.gameObject.transform.right * _context.ColliderWidth, Color.green);
 
 
             if (!hitLeft)
@@ -267,7 +267,7 @@ public class PlayerCover : PlayerState
                 }
                 else if (directLeft)
                 {
-
+                    FaceCoverRotation = Quaternion.LookRotation(-directLeftHit.normal, Vector3.up);
                 }
             }
         }
@@ -276,8 +276,8 @@ public class PlayerCover : PlayerState
             hitRight = Physics.Raycast(startingRHS, _context.gameObject.transform.forward, out CurrentHit, 1.5f, _context.CoverMask);
             Debug.DrawRay(startingRHS, _context.gameObject.transform.forward * 1.5f, Color.magenta);
 
-            directRight = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, out RaycastHit directRightHit, 0.5f, _context.CoverMask);
-            Debug.DrawRay(startingRHS, _context.gameObject.transform.right * 0.5f, Color.magenta);
+            directRight = Physics.Raycast(_context.gameObject.transform.position, _context.gameObject.transform.right, out RaycastHit directRightHit, 0.5f, _context.CoverMask);
+            Debug.DrawRay(_context.gameObject.transform.position, _context.gameObject.transform.right * _context.ColliderWidth, Color.magenta);
 
             if (!hitRight)
             {
@@ -288,6 +288,10 @@ public class PlayerCover : PlayerState
                 if (CurrentHit.distance >= minTransitionDistance && Vector3.Angle(CurrentNormal, CurrentHit.normal) <= maxTransitionAngle)
                 {
                     FaceCoverRotation = Quaternion.LookRotation(-CurrentHit.normal, Vector3.up);
+                }
+                else if (directRight)
+                {
+                    FaceCoverRotation = Quaternion.LookRotation(-directRightHit.normal, Vector3.up);
                 }
             }
         }
