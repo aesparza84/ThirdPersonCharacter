@@ -8,15 +8,25 @@ public class PlayerCover : PlayerState
 
     private Vector3 colliderPosLHS, colliderPosRHS, startingLHS, startingRHS;
     private Vector3 crossVector;
-    private Vector3 LowerLeft, LowerRight;
+    private Vector3 LowerLeft;
+    private Vector3 LowerRight;
+
     private Vector3 CurrentNormal;
+
+    private Quaternion FaceCoverRotation;
+    private Quaternion PrevFaceCoverRotation;
 
     private RaycastHit[] CoversHit;
     private RaycastHit CurrentHit;
 
-    private bool hitLeft, hitRight;
+    private bool hitLeft;
+    private bool hitRight;
+    private bool directLeft;
+    private bool directRight;
+
     private float colliderOffest;
     private float prevHorizontal;
+
     private int prevInput;
 
     bool reachedCover;
@@ -24,6 +34,9 @@ public class PlayerCover : PlayerState
     public PlayerCover(PlayerMoveManager passedContext, PlayerMoveFactory passedFactory) : base(passedContext, passedFactory)
     {        
         CoversHit = new RaycastHit[3];
+
+        FaceCoverRotation = new Quaternion();
+        PrevFaceCoverRotation = new Quaternion();
     }
 
     public override void SwitchConditions()
@@ -130,10 +143,11 @@ public class PlayerCover : PlayerState
         //Shoot out RayCasts at Players-Collider's width
         //to detect if we passed a wall's edge
 
+        _context.transform.rotation = FaceCoverRotation;
+        SetCurrentNormal();
         SpeedAndLeaningDirection();
 
-            //SetForwards();
-        EdgeStopAndTransition(2);
+        EdgeStopAndTransition(1, 60);
 
         //Records direction facing
         if (_context.HorizontalIput < 0)
@@ -145,11 +159,9 @@ public class PlayerCover : PlayerState
             prevInput = 1;
         }
 
+        //Set last frames wall look-rotation
+        PrevFaceCoverRotation = FaceCoverRotation;
 
-        //if (coverCrouch != context.crouched)
-        //{
-        //    coverCrouch = context.crouched;
-        //}
         ///Loacl positon + (collider extnents); local position is relative to transform i want to use
         ///
 
@@ -189,17 +201,19 @@ public class PlayerCover : PlayerState
 
     private void MoveToCover()
     {
-        _context.StartCoroutine(getToCover(_context.PlayerBody,
+        _context.StartCoroutine(NewGetToCover(_context.PlayerBody,
                                           _context.PlayerBody.position,
                                           _context.CoverRayCast.GetCoverPoint(),
                                           1.3f));
     }
-
-    private IEnumerator getToCover(Rigidbody playerBody, Vector3 playerPos, RaycastHit finalPos, float lerpSpeed)
+    
+    private IEnumerator NewGetToCover(Rigidbody playerBody, Vector3 playerPos, RaycastHit finalPos, float lerpSpeed)
     {
         float t = 0;
         Vector3 currentPos = playerPos;
         Vector3 finalVector = new Vector3(finalPos.point.x, currentPos.y, finalPos.point.z);
+
+        FaceCoverRotation = Quaternion.LookRotation(-_context.CoverRayCast.GetCoverPoint().normal, Vector3.up);
 
         playerBody.isKinematic = true;
         while (t < 1)
@@ -214,12 +228,11 @@ public class PlayerCover : PlayerState
         playerBody.isKinematic = false;
 
         RaiseAimEvent(reachedCover);
-
-        playerTransform.forward = -finalPos.normal;
         _context.PhyscialBodyTransfom.forward = -playerTransform.forward;
-    }
-    
-    private void EdgeStopAndTransition(float transitionDistance)
+
+        yield return null;
+    }    
+    private void EdgeStopAndTransition(float minTransitionDistance, float maxTransitionAngle)
     {
         /*
         LowerLeft = _context.transform.TransformPoint(new Vector3(colliderPosLHS.x-0.05f, 1, colliderPosLHS.z));
@@ -231,12 +244,16 @@ public class PlayerCover : PlayerState
         startingLHS = _context.transform.TransformPoint(colliderPosLHS);
         startingRHS = _context.transform.TransformPoint(colliderPosRHS);
 
-        SetForwards();
+        //SetForwards();
 
         if (prevInput < 0) //_context.HoriztonalInput > 0
         {
-            hitLeft = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, out CurrentHit, 1.0f, _context.CoverMask);
-            Debug.DrawRay(startingLHS, _context.gameObject.transform.forward, Color.green);
+            hitLeft = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, out CurrentHit, 1.5f, _context.CoverMask);
+            Debug.DrawRay(startingLHS, _context.gameObject.transform.forward * 1.5f, Color.green);
+
+            directLeft = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, out RaycastHit directLeftHit, 0.5f, _context.CoverMask);
+            Debug.DrawRay(startingLHS, -_context.gameObject.transform.right * 0.5f, Color.green);
+
 
             if (!hitLeft)
             {
@@ -244,24 +261,23 @@ public class PlayerCover : PlayerState
             }
             else
             {
-                //_context.PlayerBody.transform.forward = -CurrentHit.normal;
+                if (CurrentHit.distance >= minTransitionDistance && Vector3.Angle(CurrentNormal, CurrentHit.normal) <= maxTransitionAngle)
+                {
+                    FaceCoverRotation = Quaternion.LookRotation(-CurrentHit.normal, Vector3.up);
+                }
+                else if (directLeft)
+                {
 
-                CurrentNormal = CurrentHit.normal;
-
-                //if (hit.normal != CurrentNormal)
-                //{
-                //    if (Vector3.Angle(CurrentNormal, hit.normal) <= 70.0f && hit.distance > 0.8f)
-                //    {
-                //        Vector3 sideWallPosition = new Vector3(hit.point.x, _context.PlayerBody.position.y, hit.point.z);
-                //        _context.PlayerBody.transform.forward = -hit.normal;
-                //    }
-                //}
+                }
             }
         }
         else if (prevInput > 0) //_context.HoriztonalInput > 0
         {
-            hitRight = Physics.Raycast(startingRHS, _context.gameObject.transform.forward, out CurrentHit, 1.0f, _context.CoverMask);
-            Debug.DrawRay(startingRHS, _context.gameObject.transform.forward, Color.magenta);
+            hitRight = Physics.Raycast(startingRHS, _context.gameObject.transform.forward, out CurrentHit, 1.5f, _context.CoverMask);
+            Debug.DrawRay(startingRHS, _context.gameObject.transform.forward * 1.5f, Color.magenta);
+
+            directRight = Physics.Raycast(startingLHS, _context.gameObject.transform.forward, out RaycastHit directRightHit, 0.5f, _context.CoverMask);
+            Debug.DrawRay(startingRHS, _context.gameObject.transform.right * 0.5f, Color.magenta);
 
             if (!hitRight)
             {
@@ -269,11 +285,14 @@ public class PlayerCover : PlayerState
             }
             else
             {
-                //_context.PlayerBody.transform.forward = -CurrentHit.normal;
+                if (CurrentHit.distance >= minTransitionDistance && Vector3.Angle(CurrentNormal, CurrentHit.normal) <= maxTransitionAngle)
+                {
+                    FaceCoverRotation = Quaternion.LookRotation(-CurrentHit.normal, Vector3.up);
+                }
             }
         }
     }
-    private void SetForwards()
+    private void SetCurrentNormal()
     {
         Physics.RaycastNonAlloc(_context.gameObject.transform.position, _context.gameObject.transform.forward,
                                                  CoversHit, 3.0f, _context.CoverMask);
@@ -282,7 +301,6 @@ public class PlayerCover : PlayerState
         if (CoversHit[0].transform != null)
         {
             CurrentNormal = CoversHit[0].normal;
-           _context.PlayerBody.transform.forward = -CoversHit[0].normal;
         }
     }
     private void ToggleCrouchCover()
